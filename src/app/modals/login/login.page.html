@@ -1,0 +1,58 @@
+
+
+<ion-content>
+
+    <br><br>
+
+  <ion-list padding lines="none" style="max-width:400px;margin:0 auto;">
+      <ion-item style="margin:0 auto;">
+          <img style="margin:0 auto;width:50%;" src="/assets/puppy-512.png">
+      </ion-item>
+      <ion-item>
+          <h1 style="margin:0 auto;color:darkslateblue;">PupMoney Login</h1>
+      </ion-item>
+      
+
+        <!-- INPUTS -->
+        <ion-item [hidden]="codeReady">
+            <ion-input name="email" [(ngModel)]="email" style="border-bottom:1px solid gray;" 
+            required type="email" placeholder="Enter email"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="!codeReady">
+            <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;" required type="text" placeholder="Enter code"></ion-input>
+        </ion-item>
+        <ion-item [hidden]="!codeReady">
+            <p style="font-size:medium;">Please enter the code we just emailed to you.</p>
+        </ion-item>
+
+            <!-- DISPLAY ERROR -->
+        <ion-item [hidden]="!displayError" style="color:red;">
+                {{displayError}}
+        </ion-item>
+
+        <!-- BUTTONS -->
+        <ion-item [hidden]="codeReady">
+            <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="primary" (click)="next();">
+                Next <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+            </ion-button>
+        </ion-item>
+        <ion-item [hidden]="!codeReady">
+            <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="tertiary" (click)="back();">
+                    <ion-icon slot="start" name="arrow-round-back"></ion-icon> Back
+            </ion-button>
+            <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="primary" (click)="submit();">Login</ion-button>
+        </ion-item>
+
+
+
+        <ion-item [hidden]="codeReady">
+            <p style="color:gray;margin:0 auto;margin-top:20px;">We don't use passwords. We'll send a code to your email address that allows your access.</p>
+        </ion-item>
+
+
+
+  </ion-list>
+
+</ion-content>
+
+

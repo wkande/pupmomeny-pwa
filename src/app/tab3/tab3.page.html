@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Settings
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-list>
+
+
+
+  <!-- EMAIL -->
+  <ion-item href="#" detail>
+      <ion-icon slot="start" name="mail"></ion-icon>
+      <ion-label>{{user.email}}</ion-label>
+  </ion-item>
+
+  <!-- NAME -->
+  <ion-item href="#" detail>
+      <ion-icon slot="start" name="person"></ion-icon>
+      <ion-label>{{user.name}}</ion-label>
+  </ion-item>
+
+  <!-- WALLETS -->
+  <ion-item href="#" detail>
+      <ion-icon slot="start" name="wallet"></ion-icon>
+      <ion-label>Wallets</ion-label>
+      <ion-label style="color:gray;font-size:small;">Current wallet: {{wallet.name}}</ion-label> 
+  </ion-item>
+
+
+  <!-- LOGOUT -->
+  <ion-item>
+      <div style="width:100%;text-align:center;"><ion-button (click)="logout()" size="default">Logout</ion-button></div>
+  </ion-item>
+
+
+
+
+</ion-list>
+
+    
+</ion-content>
