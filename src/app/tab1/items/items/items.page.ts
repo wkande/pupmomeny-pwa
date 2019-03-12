@@ -1,24 +1,28 @@
-import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { timeout } from 'rxjs/operators';
-import { AuthGuard } from '../services/auth.guard';
+import { AuthGuard } from '../../../services/auth.guard';
 import { ModalController, NavController, Events } from '@ionic/angular';
-import { FilterPage } from '../modals/filter/filter.page';
-import { FilterService } from '../services/filter.service';
-import { UtilsService } from '../services/utils/utils.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FilterPage } from '../../../modals/filter/filter.page';
+import { FilterService } from '../../../services/filter.service';
+import { UtilsService } from '../../../services/utils/utils.service';
 import {Decimal} from 'decimal.js';
 
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-items',
+  templateUrl: './items.page.html',
+  styleUrls: ['./items.page.scss'],
 })
 
 
-export class Tab1Page {
+export class ItemsPage implements OnInit {
+
+
+  category:any;
   wallet:object;
-  expenses:any;
+  items:any;
   errorDisplay:any;
   loading:boolean = false;
   dttmStart:string;
@@ -36,24 +40,32 @@ export class Tab1Page {
   formatter = new Intl.NumberFormat('en-US', this.cur);
 
 
-
-  constructor(private http: HttpClient, private authGuard:AuthGuard, private modalController:ModalController,
+  constructor(private router:ActivatedRoute, private http: HttpClient, private authGuard:AuthGuard, 
+    private modalController:ModalController,
     private filterService:FilterService, private events: Events, private navController:NavController,
-    private utilsService:UtilsService) {
-  }
+    private utilsService:UtilsService) { 
+
+    }
 
 
-  ngOnInit(){
+  ngOnInit() {
+    //console.log(this.navParams.get('userParams'))
+
+    const params:any = this.router.params;
+    this.category = params._value;
+    // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
+    console.log('ngOnInit', params._value);
+
     try{
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
       this.filter = this.filterService.getFilter();
-      this.getExpenses(); 
+      this.getExpenseItems(); 
 
       this.events.subscribe('filter-changed', (data) => {
           try{
-            console.log('subscribe> filter-changed');
+            console.log('subscribe> filter-changed')
             this.filter = this.filterService.getFilter();
-            this.getExpenses();
+            this.getExpenseItems();
           }
           catch(err){
             this.errorDisplay = this.utilsService.getErrorMessage(err);
@@ -77,35 +89,30 @@ export class Tab1Page {
   }
 
 
-  async getExpenses(){
+  async getExpenseItems(){
     try{
-      this.expenses = [];
+      this.items = [];
       this.errorDisplay = null;
       this.loading = true;
-      console.log('--> getExpenses: FILTER', this.filter);
+      console.log('--> getExpenseItems: FILTER', this.filter);
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
-      console.log('--> getExpenses: HEADERS', headers);
+      console.log('--> getExpenseItems: HEADERS', headers);
 
-      let q:string = ''; // cannot be null for the psql function which checks for length
-      if(this.filter.searchToggle){
-        q = this.filter.text;
-      }
-      console.log(q)
-
-      var result = await this.http.get('http://192.168.0.14:3000/expenses?q='+q+'&dttmStart='+this.filter.start+'&dttmEnd='+this.filter.end, {headers: headers})
+      var result = await this.http.get('http://192.168.0.14:3000/expenses/'+this.category.id+'/expense-items?dttmStart='+this.filter.start+'&dttmEnd='+this.filter.end, {headers: headers})
       .pipe(timeout(5000))
       .toPromise();
-      this.expenses = result['expenses'];
+      console.log(result)
+      this.items = result['items'];
+      
       // Get total amt of all expenses
       // floating point arithmetic is not always 100% accurate, use Decimals
       this.total = new Decimal(0);
-      for(var i=0; i<this.expenses.length; i++){
-        this.total = Decimal.add(this.total, this.expenses[i].sum.amt);
+      for(var i=0; i<this.items.length; i++){
+        this.total = Decimal.add(this.total, this.items[i].amt);
       }
       this.total = parseFloat(this.total.toString());
-
     }
     catch(err){
       this.errorDisplay = this.utilsService.getErrorMessage(err);
@@ -113,11 +120,6 @@ export class Tab1Page {
     finally{
       this.loading = false;
     }
-  }
-
-
-  showItem(){
-    this.navController.navigateForward(['items', {item:'Data you want to send'}]);
   }
 
 }

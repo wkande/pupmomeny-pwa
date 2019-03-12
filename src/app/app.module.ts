@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms'; // Needs to be imported so ngModel
 
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 
+
 import { LoginPage } from './modals/login/login.page';
 import { FilterPage } from './modals/filter/filter.page';
 

@@ -1,28 +1,30 @@
-<ion-header >
+<ion-header>
   <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
-    <ion-title>
-      Categories
-    </ion-title>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref=""></ion-back-button>
+      </ion-buttons>
+    <ion-title>{{category.name}}</ion-title>
     <ion-button fill="clear" slot="end" (click)="presentFilterModal()">
-      <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
-    </ion-button>
+        <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
+      </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+
     <!-- ERROR -->
     <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
     <ion-card [hidden]="!errorDisplay">
-      <ion-card-header>
-        <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
-      </ion-card-header>
-      <ion-item lines="none" href="#" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 15px;">
-        <ion-icon style="font-size:350%;color:maroon" name="flag" slot="start"></ion-icon>
-        There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
-        Try again but if it persists email us at supportme@pupmoney.com.
-      </ion-item>
-    </ion-card>
+        <ion-card-header>
+          <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
+        </ion-card-header>
+        <ion-item lines="none" href="#" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 15px;">
+          <ion-icon style="font-size:350%;color:maroon" name="flag" slot="start"></ion-icon>
+          There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
+          Try again but if it persists email us at supportme@pupmoney.com.
+        </ion-item>
+      </ion-card>
 
       <!-- LOADING -->
       <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
@@ -45,24 +47,24 @@
             {{filter.tag}}
           </div>
           <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
-
       </ion-item-divider>
       <div style="background-color:#9370DB;text-align:center;color:white;" *ngIf="filter.startDisplay">
-        {{filter.startDisplay}} - {{filter.endDisplay}}
-      </div>
-      <div style="background-color:#9370DB;text-align:center;color:white;" *ngIf="filter.searchToggle">
-          {{filter.text}}
+          {{filter.startDisplay}} - {{filter.endDisplay}}
         </div>
 
 
-      <ion-item-sliding *ngFor="let item of expenses; index as i;">
-        <ion-item [routerLink]="['/items', item.id, item.name, item.dttm, item.sum.amt]" detail>
+      <ion-item-sliding *ngFor="let item of items; index as i;">
+        <ion-item [routerLink]="[]" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
-          <ion-label class="name">{{item.name}}<span class="cnt"> ({{item.sum.cnt}})</span></ion-label>
+          <ion-label class="name">{{item.vendor}} 
+            <br><span class="dttm">{{item.dttm}}</span>
+            <br><span class="dttm">{{item.note}}</span> 
+          </ion-label>
+
           
           <!--  https://angular.io/api/common/CurrencyPipe -->
           <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
-          <ion-label class="amt">{{item.sum.amt | number : '1.2-2'}}</ion-label>
+          <ion-label class="amt">{{item.amt | number : '1.2-2'}}</ion-label>
         </ion-item>
         <ion-item-options side="start">
           <ion-item-option onClick="unread(item)" style="width:75px;">Edit</ion-item-option>
@@ -70,17 +72,15 @@
         </ion-item-options>
       </ion-item-sliding>
 
+
       <div style="text-align:center;margin-top:10px;">
           <ion-button size="medium" fill="outline">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
-              Add a Category
+              Add an Expense
           </ion-button>
-
       </div>
       
 
 
   </ion-list>
-
-
 </ion-content>

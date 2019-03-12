@@ -42,6 +42,7 @@ export class FilterPage implements OnInit {
             }
 
             // Save to localStorage
+            console.log('filter.page > apply', this.selection)
             localStorage.setItem("filter", JSON.stringify(this.selection));
 
             // Send app wide event notice

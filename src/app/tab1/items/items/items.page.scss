@@ -1,0 +1,21 @@
+.amt{
+    color:gray;
+    text-align:right;
+    margin-right:20px;
+  }
+  
+  .name{
+    color:grayscale($color: #667878);
+    font-weight:bold;
+  }
+
+  .dttm{
+    color:grayscale($color: #667878);
+    font-weight:normal;
+  }
+  
+  .cnt{
+    color:gray;
+  
+    font-size:small;
+  }
