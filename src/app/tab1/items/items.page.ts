@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { timeout } from 'rxjs/operators';
-import { AuthGuard } from '../../../services/auth.guard';
+import { AuthGuard } from '../../services/auth.guard';
 import { ModalController, NavController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FilterPage } from '../../../modals/filter/filter.page';
-import { FilterService } from '../../../services/filter.service';
-import { UtilsService } from '../../../services/utils/utils.service';
+import { FilterPage } from '../../modals/filter/filter.page';
+import { FilterService } from '../../services/filter.service';
+import { UtilsService } from '../../services/utils/utils.service';
 import {Decimal} from 'decimal.js';
 
 
@@ -30,6 +30,10 @@ export class ItemsPage implements OnInit {
   total:any;
   num:string = "2";
   filter:any;
+  skip:number = 0;
+  totalCount:number = 0;
+
+  eventHandler:any; // method to carry "this" into the event handler
 
   cur = {
     style: 'currency',
@@ -44,37 +48,56 @@ export class ItemsPage implements OnInit {
     private modalController:ModalController,
     private filterService:FilterService, private events: Events, private navController:NavController,
     private utilsService:UtilsService) { 
-
     }
 
-
+    
   ngOnInit() {
-    //console.log(this.navParams.get('userParams'))
+      const params:any = this.router.params;
+      this.category = params._value;
+      // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
+      console.log('ItemsPage ngOnInit', this.category);
 
-    const params:any = this.router.params;
-    this.category = params._value;
-    // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-    console.log('ngOnInit', params._value);
+      try{
+        this.wallet = JSON.parse(localStorage.getItem('wallet'));
+        this.filter = this.filterService.getFilter();
+        this.getExpenseItems(); 
 
+        // This round about way keeps the event from firing itself more thatn 
+        // once when the view is destroy. Because the removal of the event cannot be done
+        // with a promise. And without it will remove it for all views.
+        // https://github.com/ionic-team/ionic/issues/13446
+        this.eventHandler = this.loadEvent.bind( this );
+        this.events.subscribe('filter-changed', this.eventHandler);
+      }
+      catch(err){
+        this.errorDisplay = this.utilsService.getErrorMessage(err);
+      }
+  }
+
+  
+  ngOnDestroy(){
+    console.log('ItemsPage ngOnDestroy');
+    this.events.unsubscribe('filter-changed', this.eventHandler);
+  }
+
+  
+  loadEvent(){
     try{
-      this.wallet = JSON.parse(localStorage.getItem('wallet'));
+      console.log('ItemsPage > ngOnInit > subscribe > fired > filter-changed')
+      console.log(this)
       this.filter = this.filterService.getFilter();
-      this.getExpenseItems(); 
-
-      this.events.subscribe('filter-changed', (data) => {
-          try{
-            console.log('subscribe> filter-changed')
-            this.filter = this.filterService.getFilter();
-            this.getExpenseItems();
-          }
-          catch(err){
-            this.errorDisplay = this.utilsService.getErrorMessage(err);
-          }
-      });
+      this.skip = 0;
+      this.getExpenseItems();
     }
     catch(err){
+      console.log('loadEvent', err)
       this.errorDisplay = this.utilsService.getErrorMessage(err);
     }
+  }
+
+
+  tryAgain(){
+    this.getExpenseItems();
   }
 
 
@@ -88,22 +111,38 @@ export class ItemsPage implements OnInit {
     console.log('Tab1Page:presentFilterModal():dismissed');
   }
 
+  getMore(){
+    this.skip = this.skip+50;
+    this.getExpenseItems();
+  }
+
+  getLess(){
+    this.skip = this.skip-50;
+    this.getExpenseItems();
+  }
 
   async getExpenseItems(){
     try{
       this.items = [];
       this.errorDisplay = null;
       this.loading = true;
-      console.log('--> getExpenseItems: FILTER', this.filter);
+      //console.log('--> getExpenseItems: FILTER', this.filter);
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
       console.log('--> getExpenseItems: HEADERS', headers);
 
-      var result = await this.http.get('http://192.168.0.14:3000/expenses/'+this.category.id+'/expense-items?dttmStart='+this.filter.start+'&dttmEnd='+this.filter.end, {headers: headers})
+    
+      let q = this.utilsService.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
+      console.log('final q', q)
+
+      var result = await this.http.get('http://192.168.0.14:3000/expenses/'+this.category.id+'/expense-items?q='+q
+        +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, 
+        {headers: headers})
       .pipe(timeout(5000))
       .toPromise();
-      console.log(result)
+
+      this.totalCount = result['totalCount'];
       this.items = result['items'];
       
       // Get total amt of all expenses
@@ -115,11 +154,14 @@ export class ItemsPage implements OnInit {
       this.total = parseFloat(this.total.toString());
     }
     catch(err){
+      console.log("ERROR getExpenses", err)
       this.errorDisplay = this.utilsService.getErrorMessage(err);
     }
     finally{
       this.loading = false;
     }
   }
+
+
 
 }

@@ -3,42 +3,43 @@
       <ion-buttons slot="start">
           <ion-back-button defaultHref=""></ion-back-button>
       </ion-buttons>
-    <ion-title>{{category.name}}</ion-title>
+    <ion-title>{{category.name}} ({{totalCount}})</ion-title>
     <ion-button fill="clear" slot="end" (click)="presentFilterModal()">
-        <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
-      </ion-button>
+      <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+{{fired}}
 
     <!-- ERROR -->
     <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <ion-card [hidden]="!errorDisplay">
-        <ion-card-header>
+    <div [hidden]="!errorDisplay" padding>
+        <ion-card-header style="text-align:center;">
           <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
         </ion-card-header>
-        <ion-item lines="none" href="#" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 15px;">
-          <ion-icon style="font-size:350%;color:maroon" name="flag" slot="start"></ion-icon>
+        <ion-item lines="none" style="color:gray;border:solid 1px gray;padding:15px 5px 15px 5px;border-radius: 5px;">
+          <ion-button slot="start" color="tertiary" size="default" (click)="tryAgain()">Try Again</ion-button>
           There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
-          Try again but if it persists email us at supportme@pupmoney.com.
+          <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
         </ion-item>
-      </ion-card>
+      </div>
 
       <!-- LOADING -->
       <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-      <ion-card [hidden]="!loading" style="margin-top:100px;">
+      <div [hidden]="!loading" style="margin-top:100px;">
         <ion-card-header style="text-align:center;">
-          <ion-card-subtitle>Loading please wait...</ion-card-subtitle>
-          <ion-card-title><ion-spinner name="dots" style="font-size:300%;"></ion-spinner></ion-card-title>
+          <ion-card-subtitle style="font-size:x-large;">Loading please wait...</ion-card-subtitle>
+          <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
         </ion-card-header>
-      </ion-card>
+      </div>
 
 
   <!-- LIST -->
   <ion-list [hidden]="loading || errorDisplay">
- 
+
+      
     
       <!-- LIST SUMMARY -->
       <ion-item-divider style="border-bottom:1px solid lightgrey;">
@@ -48,15 +49,26 @@
           </div>
           <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
       </ion-item-divider>
-      <div style="background-color:#9370DB;text-align:center;color:white;" *ngIf="filter.startDisplay">
-          {{filter.startDisplay}} - {{filter.endDisplay}}
-        </div>
+      
+      <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+          *ngIf="filter.range.startDisplay">
+        {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
+      </div>
+      <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
+          *ngIf="filter.search.toggle">
+        Search: {{filter.search.text}}
+      </div>
+
+      <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0">
+        <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
+      </ion-button>
 
 
       <ion-item-sliding *ngFor="let item of items; index as i;">
         <ion-item [routerLink]="[]" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
-          <ion-label class="name">{{item.vendor}} 
+          <span slot="start">{{i+skip+1}}</span>
+          <ion-label class="name">{{item.vendor}} - {{item.id}}
             <br><span class="dttm">{{item.dttm}}</span>
             <br><span class="dttm">{{item.note}}</span> 
           </ion-label>
@@ -72,15 +84,17 @@
         </ion-item-options>
       </ion-item-sliding>
 
+      <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount">
+        <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
+      </ion-button>
 
-      <div style="text-align:center;margin-top:10px;">
-          <ion-button size="medium" fill="outline">
-              <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
-              Add an Expense
-          </ion-button>
-      </div>
-      
 
 
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="color:#9370DB;">
+      <ion-fab-button color="ion-color-tertiary-tint">
+        <ion-icon name="add" style="font-size:350%;"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 </ion-content>

@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
+
 export class AppComponent {
   constructor(
     private platform: Platform,
@@ -24,14 +25,12 @@ export class AppComponent {
       this.splashScreen.hide();
 
       // Set filter if null
-      console.log('FILTER >', localStorage.getItem("filter"));
       if(!localStorage.getItem("filter")){
-
-        let filter =  {parent:'btnThisMonth',
-                       start:'2019-03-08', end:'2019-03-10',
-                       searchToggle:true, text:'HELLO'};
-        localStorage.setItem("filter", JSON.stringify(filter));
+          let filter =  {tag:'btnThisMonth',
+                        range:{start:null, end:null}, search:{toggle:false, text:null}};
+          localStorage.setItem("filter", JSON.stringify(filter));
       }
+      //console.log('AppComponent.initializeApp() > filter >', localStorage.getItem("filter"));
     });
   }
 }

@@ -25,12 +25,13 @@ export class AuthGuard implements CanActivate {
 
 
   async presentLoginModal() {
+    console.log('AuthGuard:presentLoginModal()')
     const modal = await this.modalController.create({
       component: LoginPage,
-      componentProps: { path: '/tab2' }
+      componentProps: { path: '/tab1' }
     });
     await modal.present();
-    //console.log('AuthGuard:presentLoginModal()', 'after await')
+    
 
     const { data } = await modal.onDidDismiss();
     //console.log('AuthGuard:presentLoginModal():dismissed: data',data);

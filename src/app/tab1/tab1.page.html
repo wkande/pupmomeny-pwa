@@ -10,29 +10,40 @@
 </ion-header>
 
 <ion-content>
+    <!-- REFRESHER -->
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner=""
+        refreshingText="">
+      </ion-refresher-content>
+    </ion-refresher>
+
+
+
 
     <!-- ERROR -->
     <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <ion-card [hidden]="!errorDisplay">
-      <ion-card-header>
+    <div [hidden]="!errorDisplay" padding>
+      <ion-card-header style="text-align:center;">
         <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
       </ion-card-header>
-      <ion-item lines="none" href="#" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 15px;">
-        <ion-icon style="font-size:350%;color:maroon" name="flag" slot="start"></ion-icon>
+      <ion-item lines="none" style="color:gray;border:solid 1px gray;padding:15px 5px 15px 5px;border-radius: 5px;">
+        <ion-button slot="start" color="tertiary" size="default" (click)="tryAgain()">Try Again</ion-button>
         There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
-        Try again but if it persists email us at supportme@pupmoney.com.
+        <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
       </ion-item>
-    </ion-card>
+    </div>
 
       <!-- LOADING -->
       <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-      <ion-card [hidden]="!loading" style="margin-top:100px;">
+      <div [hidden]="!loading" style="margin-top:100px;">
         <ion-card-header style="text-align:center;">
-          <ion-card-subtitle>Loading please wait...</ion-card-subtitle>
-          <ion-card-title><ion-spinner name="dots" style="font-size:300%;"></ion-spinner></ion-card-title>
+          <ion-card-subtitle style="font-size:x-large;">Loading please wait...</ion-card-subtitle>
+          <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
         </ion-card-header>
-      </ion-card>
-
+      </div>
 
   <!-- LIST -->
   <ion-list [hidden]="loading || errorDisplay">
@@ -45,37 +56,37 @@
             {{filter.tag}}
           </div>
           <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
-
       </ion-item-divider>
-      <div style="background-color:#9370DB;text-align:center;color:white;" *ngIf="filter.startDisplay">
-        {{filter.startDisplay}} - {{filter.endDisplay}}
+      
+      <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+          *ngIf="filter.range.startDisplay">
+        {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
       </div>
-      <div style="background-color:#9370DB;text-align:center;color:white;" *ngIf="filter.searchToggle">
-          {{filter.text}}
-        </div>
+      <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
+          *ngIf="filter.search.toggle">
+        Search: {{filter.search.text}}
+      </div>
 
 
       <ion-item-sliding *ngFor="let item of expenses; index as i;">
-        <ion-item [routerLink]="['/items', item.id, item.name, item.dttm, item.sum.amt]" detail>
-          <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
-          <ion-label class="name">{{item.name}}<span class="cnt"> ({{item.sum.cnt}})</span></ion-label>
-          
+        <ion-item [routerLink]="['/items', item.id, item.name]" detail>
+          <div slot="start" style="color:purple;font-size:small;">{{item.id}}</div>
+          <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
           <!--  https://angular.io/api/common/CurrencyPipe -->
           <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
           <ion-label class="amt">{{item.sum.amt | number : '1.2-2'}}</ion-label>
         </ion-item>
         <ion-item-options side="start">
-          <ion-item-option onClick="unread(item)" style="width:75px;">Edit</ion-item-option>
-          <ion-item-option onClick="unread(item)" style="width:75px;" color="danger">Delete</ion-item-option>
+          <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
+          <ion-item-option style="width:75px;" color="danger">Delete</ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
 
       <div style="text-align:center;margin-top:10px;">
-          <ion-button size="medium" fill="outline">
+          <ion-button size="medium" fill="outline" (click)="presentUpsertModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add a Category
           </ion-button>
-
       </div>
       
 

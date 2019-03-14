@@ -17,14 +17,14 @@ export class FilterService {
     try{
       let filter = JSON.parse(localStorage.getItem('filter'));
 
-      if(filter.parent == 'btnThisMonth') return(this.thisMonth(filter));
-      else if(filter.parent == 'btnLastMonth') return(this.lastMonth(filter));
-      else if(filter.parent == 'btnThisQuarter') return(this.thisQuarter(filter));
-      else if(filter.parent == 'btnLastQuarter') return(this.lastQuarter(filter));
-      else if(filter.parent == 'btnThisYear') return(this.thisYear(filter));
-      else if(filter.parent == 'btnLastYear') return(this.lastYear(filter));
-      else if(filter.parent == 'btnAll') return(this.all(filter));
-      else if(filter.parent == 'btnDateRange') return(this.dateRange(filter));
+      if(filter.tag == 'btnThisMonth') return(this.thisMonth(filter));
+      else if(filter.tag == 'btnLastMonth') return(this.lastMonth(filter));
+      else if(filter.tag == 'btnThisQuarter') return(this.thisQuarter(filter));
+      else if(filter.tag == 'btnLastQuarter') return(this.lastQuarter(filter));
+      else if(filter.tag == 'btnThisYear') return(this.thisYear(filter));
+      else if(filter.tag == 'btnLastYear') return(this.lastYear(filter));
+      else if(filter.tag == 'btnAll') return(this.all(filter));
+      else if(filter.tag == 'btnDateRange') return(this.dateRange(filter));
     }
     catch(err){
       throw err;
@@ -62,7 +62,7 @@ export class FilterService {
     var lastDay = new Date(date.getFullYear(), (date.getMonth()) + 1, 0);
     let start = firstDay.getFullYear() +'-'+this.pad2(firstDay.getMonth()+1) +'-'+this.pad2(firstDay.getDate());
     let end = lastDay.getFullYear() +'-'+this.pad2(lastDay.getMonth()+1) +'-'+this.pad2(lastDay.getDate());
-    return {tag:'This Month', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'This Month', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
   private lastMonth(filter:any){
@@ -71,7 +71,7 @@ export class FilterService {
     var lastDay = new Date(date.getFullYear(), (date.getMonth()-1) + 1, 0);
     let start = firstDay.getFullYear() +'-'+this.pad2(firstDay.getMonth()+1) +'-'+this.pad2(firstDay.getDate());
     let end = lastDay.getFullYear() +'-'+this.pad2(lastDay.getMonth()+1) +'-'+this.pad2(lastDay.getDate());
-    return {tag:'Previous Month', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'Previous Month', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
 
@@ -97,7 +97,7 @@ export class FilterService {
       start = dttm.getFullYear() +'-10-01'; 
       end = dttm.getFullYear() +'-12-31';
     }
-    return {tag:'This Quarter', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'This Quarter', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
 
@@ -123,34 +123,37 @@ export class FilterService {
       start = dttm.getFullYear() +'-07-01'; 
       end = dttm.getFullYear() +'-09-30';
     }
-    return {tag:'Previous Quarter', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'Previous Quarter', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
 
   private thisYear(filter:any){
     let start = new Date().getFullYear() +'-01-01'; 
     let end = new Date().getFullYear() +'-12-31';
-    return {tag:'This Year', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'This Year', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
 
   private lastYear(filter:any){
     let start = new Date().getFullYear()-1 +'-01-01'; 
     let end = new Date().getFullYear()-1 +'-12-31';
-    return {tag:'Previous Year', start:start, end:end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'Previous Year', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
   }
 
 
   private all(filter:any){
-    return {tag:'All', start:'1950-01-01', end:'2300-12-31', searchToggle:filter.searchToggle, text:filter.text};
+    let start = '1950-01-01'; 
+    let end = new Date().getFullYear() +'-12-31';
+    return {tag:'All', range:{start:start, end:end}, search:{toggle:filter.search.toggle, text:filter.search.text}};
+
   }
 
 
   private dateRange(filter:any){
     let now = new Date(filter.start)
 
-    let arrStart = filter.start.split("-");
-    let arrEnd = filter.end.split("-");
+    let arrStart = filter.range.start.split("-");
+    let arrEnd = filter.range.end.split("-");
 
     let arr = ['01','02','03','04','05','06','07','08','09','10','11','12'];
     let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -159,11 +162,14 @@ export class FilterService {
         arrStart[1] = arrStart[1].replace(arr[i], months[i]);
         arrEnd[1]   = arrEnd[1].replace(arr[i], months[i]);
     }
-    let start = arrStart[1]+' '+arrStart[2]+', '+arrStart[0];
-    let end = arrEnd[1]+' '+arrEnd[2]+', '+arrEnd[0];
-    console.log('dateRange', start, end)
+    let startDisplay = arrStart[1]+' '+arrStart[2]+', '+arrStart[0];
+    let endDisplay = arrEnd[1]+' '+arrEnd[2]+', '+arrEnd[0];
+    console.log('dateRange', startDisplay, endDisplay)
 
-    return {tag:'Date Range', startDisplay:start, start:filter.start, endDisplay:end, end:filter.end, searchToggle:filter.searchToggle, text:filter.text};
+    return {tag:'Date Range', 
+            range:{start:filter.range.start, end:filter.range.end, startDisplay:startDisplay, endDisplay:endDisplay}, 
+            search:{toggle:filter.search.toggle, text:filter.search.text}};
+
   }
 
 

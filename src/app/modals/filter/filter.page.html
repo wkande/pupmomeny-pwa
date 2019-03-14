@@ -19,7 +19,7 @@
 
   <ion-list [style.border]="'solid 2px gray'" [style.border-radius]="'5px'">
 
-      <ion-radio-group (ionChange)="changed($event)" [(ngModel)]="selection.parent">
+      <ion-radio-group (ionChange)="changed($event)" [(ngModel)]="filter.tag">
           <!-- THIS MONTH -->
           <ion-item #thisMonth >
               <ion-radio slot="end" value="btnThisMonth" (ionSelect)="selected($event, 'btnThisMonth')"></ion-radio>
@@ -69,11 +69,11 @@
           </ion-item>
           <ion-item [hidden]="hideDateRange" style="color:#3880ff;">
               <ion-label slot="end">Start Date <ion-icon name="arrow-dropdown"></ion-icon></ion-label>
-              <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="selection.start" (ionChange)="selected($event, 'btnDateRange', 'start')"></ion-datetime>
+              <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="filter.range.start" (ionChange)="selected($event, 'btnDateRange', 'start')"></ion-datetime>
           </ion-item>
           <ion-item [hidden]="hideDateRange" style="color:#3880ff;">
               <ion-label slot="end">End Date <ion-icon name="arrow-dropdown"></ion-icon></ion-label>
-              <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="selection.end" (ionChange)="selected($event, 'btnDateRange', 'end')"></ion-datetime>
+              <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="filter.range.end" (ionChange)="selected($event, 'btnDateRange', 'end')"></ion-datetime>
           </ion-item>
 
       </ion-radio-group>
@@ -87,10 +87,10 @@
   <ion-list style="margin-top:40px;border:solid 2px gray;border-radius: 5px;">
       <ion-item>
           <ion-label>Include Search Text</ion-label>
-          <ion-toggle slot="start" [(ngModel)]="selection.searchToggle"></ion-toggle>
+          <ion-toggle slot="start" [(ngModel)]="filter.search.toggle"></ion-toggle>
       </ion-item>
-      <ion-item [hidden]="!selection.searchToggle">
-          <ion-input [(ngModel)]="selection.text" placeholder="Enter search text" autocomplete="true"></ion-input>
+      <ion-item [hidden]="!filter.search.toggle">
+          <ion-input [(ngModel)]="filter.search.text" placeholder="Enter search text" autocomplete="true"></ion-input>
       </ion-item>
   </ion-list>
 

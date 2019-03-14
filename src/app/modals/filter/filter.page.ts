@@ -9,32 +9,31 @@ import { ModalController, AlertController, Events} from '@ionic/angular';
 })
 export class FilterPage implements OnInit {
 
-  selection:any = {}; // {parent:'btnThisMonth',
-                      //  start:'2019-03-08', end:'2019-03-10',
-                      //  searchToggle:true, text:'HELLO'};
+
+  filter:any = {}; // {parent:'btnThisMonth',
+                      //  start:'2019-03-08', end:'2019-03-10', searchToggle:true, text:'HELLO'
+                      // };
   hideDateRange:boolean = true;
 
 
   constructor(private modalController: ModalController, 
     private alertController:AlertController, private events: Events) { 
-
   }
 
 
   ngOnInit() {
-    this.selection = JSON.parse(localStorage.getItem("filter"));
-    if(this.selection.parent == 'btnDateRange') this.hideDateRange = false;
-
-    console.log('FilterPage.onInit >', this.selection);
+    this.filter = JSON.parse(localStorage.getItem("filter"));
+    if(this.filter.tag == 'btnDateRange') this.hideDateRange = false;
+    console.log('FilterPage.onInit >', this.filter);
   }
 
 
   async apply() {
         try{
             // If btnDateRange make sure start <= end
-            if (this.selection.parent == 'btnDateRange'){
-                let start = new Date(this.selection.start);
-                let end = new Date(this.selection.end);
+            if (this.filter.tag == 'btnDateRange'){
+                let start = new Date(this.filter.range.start);
+                let end = new Date(this.filter.range.end);
                 if(start > end){
                   this.presentAlert('Date Problem', 'The start date cannot be before the end date.');
                   return;
@@ -42,11 +41,11 @@ export class FilterPage implements OnInit {
             }
 
             // Save to localStorage
-            console.log('filter.page > apply', this.selection)
-            localStorage.setItem("filter", JSON.stringify(this.selection));
+            console.log('filter.page > apply', this.filter)
+            localStorage.setItem("filter", JSON.stringify(this.filter));
 
             // Send app wide event notice
-            this.events.publish('filter-changed', this.selection);
+            this.events.publish('filter-changed', this.filter);
 
             this.modalController.dismiss();
         }
@@ -61,7 +60,7 @@ export class FilterPage implements OnInit {
     // changed() fires after selected() and if a date range start/end changed we 
     // need change the selection.parent back to btnDateRange
     if (event.detail.value.indexOf('btn') == -1){
-        this.selection.parent = 'btnDateRange';
+        this.filter.tag = 'btnDateRange';
     }
 
     // Show start/end dates if btnDateRange is the parent
@@ -72,8 +71,8 @@ export class FilterPage implements OnInit {
 
 
   selected(event:any, btn:string, slot:string){
-      this.selection.start = ((slot == "start") ? event.detail.value : this.selection.start);
-      this.selection.end = ((slot == "end") ? event.detail.value : this.selection.end);
+      this.filter.search.start = ((slot == "start") ? event.detail.value : this.filter.search.start);
+      this.filter.search.end = ((slot == "end") ? event.detail.value : this.filter.search.end);
   }
 
 
