@@ -15,23 +15,31 @@ export class UtilsService {
 
   getErrorMessage(err){
     console.log('--> OOPS', err);
-    console.log('--> OOPS err.status:', err.status)
-    console.log('--> OOPS err.name:', err.name)
-    console.log('--> OOPS err.statusText:', err.statusText)
-    console.log('--> OOPS err.error:', err.error)
+    //console.log('--> OOPS err.status:', err.status)
+    //console.log('--> OOPS err.name:', err.name)
+    //console.log('--> OOPS err.statusText:', err.statusText)
+    console.log('--> OOPS err.error:', (err.error || '?'));
+    //console.log('--> OOPS err.error.text:', (err.error.text || '?'));
 
+    let msg:String = '';
     // http errors
     if(err.status === 0)
-        return 'Seems to be a connection issue, please try again';
+        msg += 'Seems to be a connection issue, please try again. ';
     else if(err.name == 'TimeoutError')
-        return 'There was a timeout issue waiting for a response, please wait a moment and try again.';
+        msg+=  'There was a timeout issue waiting for a response, please wait a moment and try again. ';
     else if(typeof err.status != 'undefined'){
-      return "Error getting data: " +err.status+ " "+(err.error.statusMessage || '')+" "+err.error.statusMsg;
+        msg += "Error getting data: " 
+        //if (err.message) msg += err.message;
+        //if (err.error && err.error.text) msg += err.text;
+        msg += err.status+ ": "
+        if(err.error)
+          msg += (err.error.statusMessage || '')+": "+(err.error.statusMsg || '');
     }
         
-
     // Something other than http errored
-    else return err.toString();
+    else msg += err.toString();
+    console.log(msg)
+    return msg;
   }
 
   /**

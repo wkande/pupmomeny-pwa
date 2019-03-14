@@ -2,6 +2,7 @@ import { Component, OnInit, Input  } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AuthGuard } from '../../services/auth.guard';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 
 @Component({

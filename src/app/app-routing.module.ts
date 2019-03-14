@@ -5,7 +5,8 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'filter', loadChildren: './modals/filter/filter.module#FilterPageModule' },
-  { path: 'items/:id/:name', loadChildren: './tab1/items/items.module#ItemsPageModule' }
+  { path: 'items/:id/:name', loadChildren: './tab1/items/items.module#ItemsPageModule' },
+  { path: 'delete-category.page', loadChildren: './tab1/delete-category.page/delete-category.page.module#DeleteCategory.PagePageModule' }
 
 ];
 @NgModule({

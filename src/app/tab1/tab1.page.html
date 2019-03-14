@@ -78,7 +78,7 @@
         </ion-item>
         <ion-item-options side="start">
           <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
-          <ion-item-option style="width:75px;" color="danger">Delete</ion-item-option>
+          <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
 

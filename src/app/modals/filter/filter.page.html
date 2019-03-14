@@ -22,39 +22,39 @@
       <ion-radio-group (ionChange)="changed($event)" [(ngModel)]="filter.tag">
           <!-- THIS MONTH -->
           <ion-item #thisMonth >
-              <ion-radio slot="end" value="btnThisMonth" (ionSelect)="selected($event, 'btnThisMonth')"></ion-radio>
+              <ion-radio slot="end" value="btnThisMonth" (ionSelect)="selected($event, 'btnThisMonth', null)"></ion-radio>
               <ion-label>This Month</ion-label>
           </ion-item>
           <!-- PREVIOUS MONTH -->
           <ion-item>
-              <ion-radio slot="end" value="btnLastMonth" (ionSelect)="selected($event, 'btnLastMonth')"></ion-radio>
+              <ion-radio slot="end" value="btnLastMonth" (ionSelect)="selected($event, 'btnLastMonth', null)"></ion-radio>
               <ion-label>Previous Month</ion-label>
           </ion-item>
 
           <!-- THIS QUARTER -->
           <ion-item>
-              <ion-radio slot="end" value="btnThisQuarter" (ionSelect)="selected($event, 'btnThisQuarter')"></ion-radio>
+              <ion-radio slot="end" value="btnThisQuarter" (ionSelect)="selected($event, 'btnThisQuarter', null)"></ion-radio>
               <ion-label>This Quarter</ion-label>
           </ion-item>
           <!-- PREVIOUS QUARTER -->
           <ion-item>
-              <ion-radio slot="end" value="btnLastQuarter" (ionSelect)="selected($event, 'btnLastQuarter')"></ion-radio>
+              <ion-radio slot="end" value="btnLastQuarter" (ionSelect)="selected($event, 'btnLastQuarter', null)"></ion-radio>
               <ion-label>Previous Quarter</ion-label>
           </ion-item>
 
           <!-- THIS YEAR -->
           <ion-item>
-              <ion-radio slot="end" value="btnThisYear" (ionSelect)="selected($event, 'btnThisYear')"></ion-radio>
+              <ion-radio slot="end" value="btnThisYear" (ionSelect)="selected($event, 'btnThisYear', null)"></ion-radio>
               <ion-label>This Year</ion-label>
           </ion-item>
           <!-- PREVIOUS YEAR -->
           <ion-item>
-              <ion-radio slot="end" value="btnLastYear" (ionSelect)="selected($event, 'btnLastYear')"></ion-radio>
+              <ion-radio slot="end" value="btnLastYear" (ionSelect)="selected($event, 'btnLastYear', null)"></ion-radio>
               <ion-label>Previous Year</ion-label>
           </ion-item>
           <!-- ALL -->
           <ion-item>
-              <ion-radio slot="end" value="btnAll" (ionSelect)="selected($event, 'btnAll')"></ion-radio>
+              <ion-radio slot="end" value="btnAll" (ionSelect)="selected($event, 'btnAll', null)"></ion-radio>
               <ion-label>All</ion-label>
           </ion-item>
 
@@ -63,7 +63,7 @@
       
           <!-- DATE RANGE-->
           <ion-item>
-              <ion-radio slot="end" value="btnDateRange" (ionSelect)="selected($event, 'btnDateRange')"></ion-radio>
+              <ion-radio slot="end" value="btnDateRange" (ionSelect)="selected($event, 'btnDateRange', null)"></ion-radio>
               <ion-label>Date Range
               </ion-label> 
           </ion-item>

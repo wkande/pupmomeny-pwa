@@ -12,16 +12,17 @@ import { FormsModule } from '@angular/forms'; // Needs to be imported so ngModel
 
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 
-
 import { LoginPage } from './modals/login/login.page';
 import { FilterPage } from './modals/filter/filter.page';
 import { UpsertCategoryPage } from './tab1/upsert-category/upsert-category.page';
+import { DeleteCategoryPage } from './tab1/delete-category/delete-category.page';
+
 
 
 
 @NgModule({
-  declarations: [AppComponent, LoginPage, FilterPage, UpsertCategoryPage],
-  entryComponents: [LoginPage, FilterPage, UpsertCategoryPage],
+  declarations: [AppComponent, FilterPage, LoginPage, UpsertCategoryPage, DeleteCategoryPage],
+  entryComponents: [FilterPage, LoginPage, UpsertCategoryPage, DeleteCategoryPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     HttpClientModule,

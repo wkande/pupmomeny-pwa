@@ -10,8 +10,8 @@ import { AuthGuard } from '../services/auth.guard';
 export class Tab3Page {
 
 
-  user = {};
-  wallet = {};
+  user = {email:null, name:null};
+  wallet = {name:null};
 
 
   constructor(private authGuard:AuthGuard){

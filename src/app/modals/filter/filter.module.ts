@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
@@ -14,6 +14,7 @@ const routes: Routes = [
   }
 ];
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -21,6 +22,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [FilterPage]
+  declarations: []
 })
 export class FilterPageModule {}
+
