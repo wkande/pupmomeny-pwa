@@ -69,7 +69,7 @@
 
 
       <ion-item-sliding *ngFor="let item of expenses; index as i;">
-        <ion-item [routerLink]="['/items', item.id, item.name]" detail>
+        <ion-item [routerLink]="['/expenses', item.id, item.name]" detail>
           <div slot="start" style="color:purple;font-size:small;">{{item.id}}</div>
           <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
           <!--  https://angular.io/api/common/CurrencyPipe -->

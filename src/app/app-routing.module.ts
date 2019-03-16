@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-//import { ItemsPage } from './tab1/items/items/item.page'
+
 
 const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'filter', loadChildren: './modals/filter/filter.module#FilterPageModule' },
-  { path: 'items/:id/:name', loadChildren: './tab1/items/items.module#ItemsPageModule' },
-  { path: 'delete-category.page', loadChildren: './tab1/delete-category.page/delete-category.page.module#DeleteCategory.PagePageModule' }
+  { path: 'expenses/:id/:name', loadChildren: './tab1/expenses/expenses.module#ExpensesPageModule' },
+  //{ path: 'delete-expense', loadChildren: './tab1/expenses/delete-expense/delete-expense.module#DeleteExpensePageModule' },
+  //{ path: 'delete-category', loadChildren: './tab1/delete-category/delete-category.page.module#DeleteCategoryPageModule' }
 
 ];
 @NgModule({

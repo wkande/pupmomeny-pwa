@@ -8,16 +8,17 @@ import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
 import { UtilsService } from '../../services/utils/utils.service';
 import {Decimal} from 'decimal.js';
+import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 
 
 @Component({
-  selector: 'app-items',
-  templateUrl: './items.page.html',
-  styleUrls: ['./items.page.scss'],
+  selector: 'app-expenses',
+  templateUrl: './expenses.page.html',
+  styleUrls: ['./expenses.page.scss'],
 })
 
 
-export class ItemsPage implements OnInit {
+export class ExpensesPage implements OnInit {
 
 
   category:any;
@@ -162,6 +163,30 @@ export class ItemsPage implements OnInit {
     }
   }
 
+
+
+  async presentDeleteModal(expense:any) {
+    try{
+        console.log('ExpensesPage:presentDeleteModal()', expense)
+        const modal = await this.modalController.create({
+          component: DeleteExpensePage,
+          componentProps: { expense: expense, category:this.category }
+        });
+        await modal.present();
+        
+        const { data } = await modal.onDidDismiss();
+        console.log('ExpensesPage:presentDeleteModal():dismissed');
+
+        // Reload
+        if(data != null){
+          this.filter = this.filterService.getFilter();
+          this.getExpenseItems();
+        }
+    }
+    catch(err){
+      this.errorDisplay = this.utilsService.getErrorMessage(err);
+    } 
+  }
 
 
 }

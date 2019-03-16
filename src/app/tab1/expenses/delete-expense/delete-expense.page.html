@@ -1,0 +1,71 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="secondary">
+            <ion-button (click)="cancel()">
+                Cancel
+            </ion-button>
+        </ion-buttons>
+      <ion-title>Delete Expense</ion-title>
+      <ion-buttons slot="primary">
+          <ion-button (click)="apply()">
+              Delete
+          </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  
+  <ion-content padding>
+
+      <ion-list [hidden]="loading || errorDisplay">
+          <ion-item padding>
+              <ion-label style="font-size:medium;color:gray;">Are you sure you want to delete this expense?</ion-label>
+          </ion-item>
+
+          
+          <ion-item>
+            <div slot="start" style="width:100px;">Category:</div>
+            <ion-label color="medium" style="font-size:large;">{{category.name}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <div slot="start" style="width:100px;">Date:</div>
+            <ion-label color="medium" style="font-size:large;">{{expense.dttm}}</ion-label>
+          </ion-item>  
+          <ion-item>
+            <div slot="start" style="width:100px;">Amount:</div>
+            <ion-label color="medium" style="font-size:large;">{{expense.amt}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <div slot="start" style="width:100px;">Vendor:</div>
+            <ion-label color="medium" style="font-size:large;">{{expense.vendor}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label text-wrap color="medium" style="font-size:large;">{{expense.note}}</ion-label>
+          </ion-item>
+      </ion-list>
+
+
+
+    <!-- ERROR -->
+    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
+    <div [hidden]="!errorDisplay" padding>
+      <ion-card-header style="text-align:center;">
+        <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
+      </ion-card-header>
+      <ion-item lines="none" style="color:gray;border:solid 1px gray;padding:15px 5px 15px 5px;border-radius: 5px;">
+        There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
+        <br><br>Please "Cancel" this operation using the Cancel button above and try again.
+      </ion-item>
+    </div>
+    
+    <!-- LOADING -->
+    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
+    <div [hidden]="!loading" style="margin-top:100px;">
+      <ion-card-header style="text-align:center;">
+        <ion-card-subtitle style="font-size:large;">Please wait...</ion-card-subtitle>
+        <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
+      </ion-card-header>
+    </div>
+  
+</ion-content>
+  

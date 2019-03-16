@@ -155,7 +155,7 @@ export class Tab1Page {
         console.log('Tab1Page:presentDeleteModal()', category)
         const modal = await this.modalController.create({
           component: DeleteCategoryPage,
-          componentProps: { category: category }
+          componentProps: { category: category, categories:this.expenses }
         });
         await modal.present();
         
