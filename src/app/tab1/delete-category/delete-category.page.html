@@ -7,7 +7,7 @@
         </ion-buttons>
       <ion-title>Delete Category</ion-title>
       <ion-buttons slot="primary">
-          <ion-button (click)="apply()" [attr.disabled]="!radioSelection">
+          <ion-button (click)="apply()" [attr.disabled]="!radioSelection && transactionCnt > 0">
               Delete
           </ion-button>
       </ion-buttons>
@@ -28,15 +28,16 @@
               <div style="font-size:large;">{{category.name}}</div>
           </ion-item>
           <ion-item padding>
-              <div style="font-size:medium;color:gray;">Are you sure you want to delete this category? Proceed by selecting a  
-                <b>Delete Option</b> shown below.</div>
+              <div style="font-size:medium;color:gray;">Are you sure you want to delete this category? 
+                <span [hidden]="transactionCnt == 0">Proceed by selecting a  
+                <b>Delete Option</b> shown below.</span></div>
           </ion-item>
 
       </ion-list>
 
 
   
-      <div [hidden]="loading || errorDisplay">
+      <div [hidden]="loading || errorDisplay || transactionCnt == 0">
         
               <ion-list-header>
                 <ion-label>Delete Options</ion-label>

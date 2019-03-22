@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ExpensesPage } from './expenses.page';
+import { ErrorModule } from '../../components/error/error.module';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    ErrorModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ExpensesPage]

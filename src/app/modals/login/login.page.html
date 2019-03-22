@@ -2,9 +2,19 @@
 
 <ion-content>
 
-    <br><br>
+        <br><br>
+        <ion-segment (ionChange)="segmentChanged($event)">
+                <ion-segment-button value="login" checked>
+                  <ion-label>Login</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="terms">
+                  <ion-label>Terms of Service</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+              
+    
 
-  <ion-list padding lines="none" style="max-width:400px;margin:0 auto;">
+  <ion-list [hidden]="segment=='terms'" padding lines="none" style="max-width:400px;margin:0 auto;">
       <ion-item style="margin:0 auto;">
           <img style="margin:0 auto;width:50%;" src="/assets/puppy-512.png">
       </ion-item>
@@ -15,18 +25,26 @@
 
         <!-- INPUTS -->
         <ion-item [hidden]="codeReady">
-            <ion-input name="email" [(ngModel)]="email" style="border-bottom:1px solid gray;" 
+            <ion-input name="email" [(ngModel)]="email" style="border-bottom:1px solid gray;font-size:120%;"
             required type="email" placeholder="Enter email"></ion-input>
         </ion-item>
         <ion-item [hidden]="!codeReady">
-            <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;" required type="text" placeholder="Enter code"></ion-input>
+            <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;font-size:120%;" required type="text" placeholder="Enter code"></ion-input>
         </ion-item>
         <ion-item [hidden]="!codeReady">
-            <p style="font-size:medium;">Please enter the code we just emailed to you.</p>
+            <p style="font-size:medium;color:gray;">Please enter the code we just emailed to you.</p>
         </ion-item>
 
+        <!-- TERMS -->
+        <ion-item [hidden]="!codeReady">
+            <ion-label>I agree to the Terms of Service</ion-label>
+            <ion-checkbox slot="start" [(ngModel)]="terms"></ion-checkbox>
+
+        </ion-item>
+
+
         <!-- DISPLAY ERROR -->
-        <ion-item [hidden]="!displayError" style="color:red;">
+        <ion-item [hidden]="!displayError" style="color:red;border:1px solid gray;">
                 {{displayError}}
         </ion-item>
 
@@ -40,7 +58,9 @@
             <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="tertiary" (click)="back();">
                     <ion-icon slot="start" name="arrow-round-back"></ion-icon> Back
             </ion-button>
-            <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="primary" (click)="submit();">Login</ion-button>
+            <ion-button style="margin:0 auto;margin-top:20px;" [disabled]="!terms"  expand="block" size="medium" color="primary" (click)="submit();">
+                Login
+            </ion-button>
         </ion-item>
 
 
@@ -49,9 +69,18 @@
             <p style="color:gray;margin:0 auto;margin-top:20px;">We don't use passwords. We'll send a code to your email address that allows your access.</p>
         </ion-item>
 
-
-
   </ion-list>
+
+
+
+
+
+
+  <!-- TERMS -->
+  <div [hidden]="segment=='login'">
+
+    TERMS
+  </div>
 
 </ion-content>
 

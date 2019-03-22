@@ -7,7 +7,7 @@
       </ion-buttons>
     <ion-title>{{title}}</ion-title>
     <ion-buttons slot="primary">
-        <ion-button (click)="apply()" [attr.disabled]="loading == true ? true : null">
+        <ion-button (click)="apply()" [attr.disabled]="loading == true ? true : null || !ready">
             Apply
         </ion-button>
     </ion-buttons>
@@ -16,27 +16,13 @@
 
 
 <ion-content padding>
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component>
 
-
-  <!-- INPUTS -->
-  <ion-item style="margin-top:50px;">
-      <ion-label position="stacked" style="font-size:large;color:gray;">Category Name</ion-label>
+    <!-- INPUTS -->
+    <ion-item style="margin-top:30px;" [hidden]="!ready">
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Category Name</ion-label>
       <input type="text" #nameInput placeholder="Enter name">
     </ion-item>
-
-  <!-- DISPLAY ERROR -->
-  <ion-item [hidden]="!errorDisplay" style="color:red;">
-      {{errorDisplay}}
-  </ion-item>
-
-  <!-- LOADING -->
-  <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-  <div [hidden]="!loading" style="margin-top:100px;">
-    <ion-card-header style="text-align:center;">
-      <ion-card-subtitle style="font-size:large;">Please wait...</ion-card-subtitle>
-      <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
-    </ion-card-header>
-  </div>
 
 
 </ion-content>

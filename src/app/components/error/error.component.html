@@ -1,0 +1,12 @@
+
+<div [hidden]="!message" padding>
+  <ion-card-header style="text-align:center;">
+    <ion-card-title style="color:red;font-size:medium;">{{message}}</ion-card-title>
+  </ion-card-header>
+  <ion-item [hidden]="!showButton" lines="none" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 5px;">
+    <ion-button slot="start" size="default" (click)="tryAgain($event)">Try Again</ion-button>
+    <p style="font-size:medium;">There was an issue accessing the server. Many things could cause this including an internet disconnect. 
+    <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
+    </p>
+  </ion-item>
+</div>

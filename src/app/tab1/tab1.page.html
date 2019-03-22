@@ -10,6 +10,9 @@
 </ion-header>
 
 <ion-content>
+
+
+
     <!-- REFRESHER -->
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
@@ -20,33 +23,11 @@
       </ion-refresher-content>
     </ion-refresher>
 
-
-
-
-    <!-- ERROR -->
-    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <div [hidden]="!errorDisplay" padding>
-      <ion-card-header style="text-align:center;">
-        <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
-      </ion-card-header>
-      <ion-item lines="none" style="color:gray;border:solid 1px gray;padding:15px 5px 15px 5px;border-radius: 5px;">
-        <ion-button slot="start" color="tertiary" size="default" (click)="tryAgain()">Try Again</ion-button>
-        There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
-        <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
-      </ion-item>
-    </div>
-
-      <!-- LOADING -->
-      <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-      <div [hidden]="!loading" style="margin-top:100px;">
-        <ion-card-header style="text-align:center;">
-          <ion-card-subtitle style="font-size:x-large;">Loading please wait...</ion-card-subtitle>
-          <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
-        </ion-card-header>
-      </div>
+    
+  
 
   <!-- LIST -->
-  <ion-list [hidden]="loading || errorDisplay">
+  <ion-list>
  
     
       <!-- LIST SUMMARY -->
@@ -57,18 +38,22 @@
           </div>
           <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
       </ion-item-divider>
-      
+      <!-- DATE RANGE -->
       <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
           *ngIf="filter.range.startDisplay">
         {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
       </div>
+      <!-- TEXT SEARCH -->
       <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
           *ngIf="filter.search.toggle">
         Search: {{filter.search.text}}
       </div>
 
 
-      <ion-item-sliding *ngFor="let item of expenses; index as i;">
+      <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+
+
+      <ion-item-sliding *ngFor="let item of categories; index as i;">
         <ion-item [routerLink]="['/expenses', item.id, item.name]" detail>
           <div slot="start" style="color:purple;font-size:small;">{{item.id}}</div>
           <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
@@ -82,16 +67,15 @@
         </ion-item-options>
       </ion-item-sliding>
 
-      <div style="text-align:center;margin-top:10px;">
+      <div [hidden]="error" style="text-align:center;margin-top:10px;">
           <ion-button size="medium" fill="outline" (click)="presentUpsertModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add a Category
           </ion-button>
       </div>
-      
-
 
   </ion-list>
 
 
+  
 </ion-content>

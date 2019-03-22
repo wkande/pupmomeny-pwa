@@ -1,0 +1,41 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="secondary">
+            <ion-button (click)="cancel()">
+                Cancel
+            </ion-button>
+        </ion-buttons>
+      <ion-title>Update Name</ion-title>
+      <ion-buttons slot="primary">
+          <ion-button (click)="apply()">
+              Apply
+          </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+
+  <ion-content padding>
+
+    <!-- INPUTS -->
+    <ion-item style="margin-top:50px;">
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Name</ion-label>
+      <input type="text" #nameInput placeholder="Enter name">
+    </ion-item>
+  
+    <!-- DISPLAY ERROR -->
+    <ion-item [hidden]="!errorDisplay" style="color:red;">
+        {{errorDisplay}}
+    </ion-item>
+  
+    <!-- LOADING -->
+    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
+    <div [hidden]="!loading" style="margin-top:100px;">
+      <ion-card-header style="text-align:center;">
+        <ion-card-subtitle style="font-size:120%;">Please wait...</ion-card-subtitle>
+        <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
+      </ion-card-header>
+    </div>
+  
+  
+  </ion-content>

@@ -2,7 +2,8 @@ import { Component, OnInit, Input  } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AuthGuard } from '../../services/auth.guard';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { timeout } from 'rxjs/operators';
+import { BACKEND } from '../../../environments/environment';
 
 
 @Component({
@@ -18,6 +19,8 @@ export class LoginPage implements OnInit {
   code:string = null;
   codeReady:boolean = false;
   displayError:string = null;
+  terms:boolean = false;
+  segment:string = 'login'
 
   constructor(private modalController: ModalController, private authGuard:AuthGuard,
     private http: HttpClient) {
@@ -37,7 +40,7 @@ export class LoginPage implements OnInit {
     if(this.isValidMailFormat() == true){
         console.log('next', this.email);
         try{
-          var result = await this.http.post('http://192.168.0.14:3000/code', {email:this.email}).toPromise();
+          var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).toPromise();
           this.code = result['data'].code;
           this.codeReady = true;
         }
@@ -54,7 +57,7 @@ export class LoginPage implements OnInit {
   async submit() {
     console.log('next', this.email, this.code);
         try{
-          var result = await this.http.post('http://192.168.0.14:3000/me', {email:this.email, code:this.code}).toPromise();
+          var result = await this.http.post(BACKEND.url+'/me', {email:this.email, code:this.code}).pipe(timeout(5000)).toPromise();
           this.authGuard.activate(true, result['user']);
           this.modalController.dismiss({path:this.path});
         }
@@ -63,6 +66,12 @@ export class LoginPage implements OnInit {
         }
   };
 
+
+
+  segmentChanged(ev){
+    console.log(ev.detail.value)
+    this.segment = ev.detail.value;
+  }
 
 
   back(){

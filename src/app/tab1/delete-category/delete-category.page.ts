@@ -4,6 +4,7 @@ import { ModalController} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
+import { BACKEND } from '../../../environments/environment';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class DeleteCategoryPage implements OnInit {
   @Input("category") category:any;
   @Input("categories") categories:any;
   categoriesList = [];
-  //title:string;
   wallet:any;
   loading:boolean = false;
   transactionCnt:number;
@@ -34,8 +34,6 @@ export class DeleteCategoryPage implements OnInit {
   ngOnInit() {
       try{
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
-        console.log('DeleteCategoryPage ngOnInit', this.category);
-        //this.title = ((this.category == null) ? 'Delete Category' : this.category.name);
 
         this.getCategory();
 
@@ -73,8 +71,8 @@ export class DeleteCategoryPage implements OnInit {
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
   
     
-      var result = await this.http.get('http://192.168.0.14:3000/expenses/'+this.category.id, {headers: headers} ).pipe(timeout(5000)).toPromise();
-      this.category = result['expense'];
+      var result = await this.http.get(BACKEND.url+'/categories/'+this.category.id, {headers: headers} ).pipe(timeout(5000)).toPromise();
+      this.category = result['category'];
       console.log(result)
       this.transactionCnt = result['transactionCnt'];
     }
@@ -91,10 +89,9 @@ export class DeleteCategoryPage implements OnInit {
   async apply() {
     try{
         this.errorDisplayEntry = null;
-        console.log('APPLY', this.radioSelection, this.moveTo, this.categories)
+        //console.log('APPLY', this.radioSelection, this.moveTo, this.categories)
         let transferID = "";
-        if(this.radioSelection == "move"){
-          console.log('MOVE')
+        if(this.radioSelection == "move" && this.transactionCnt > 0){
             if(this.moveTo == "0") {
               this.errorDisplayEntry = this.utilsService.getErrorMessage(`Please select an category to move expenses to. See "Move to Category" below.`);
               return;
@@ -102,7 +99,7 @@ export class DeleteCategoryPage implements OnInit {
             else 
               transferID = "/"+this.moveTo;
         }
-        console.log(transferID)
+        console.log(this.authGuard.getUser(), this.wallet)
 
         this.errorDisplay = null;
         this.loading = true;
@@ -110,8 +107,8 @@ export class DeleteCategoryPage implements OnInit {
         headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
         headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
-        console.log('http://192.168.0.14:3000/expenses/'+this.category.id+transferID, {headers: headers} )
-        var result = await this.http.delete('http://192.168.0.14:3000/expenses/'+this.category.id+transferID, {headers: headers} ).pipe(timeout(5000)).toPromise();
+        console.log(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} )
+        var result = await this.http.delete(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} ).pipe(timeout(5000)).toPromise();
         this.modalController.dismiss({status:"OK"});
     }
     catch(err){

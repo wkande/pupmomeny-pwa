@@ -38,7 +38,7 @@
   <!-- LIST -->
   <ion-list [hidden]="loading || errorDisplay">
 
-      
+      <error-component [error]="httpError" (tryAgainSelected)="tryAgain($event)"></error-component>
     
       <!-- LIST SUMMARY -->
       <ion-item-divider style="border-bottom:1px solid lightgrey;">
@@ -63,7 +63,7 @@
       </ion-button>
 
 
-      <ion-item-sliding *ngFor="let item of items; index as i;">
+      <ion-item-sliding *ngFor="let item of expenses; index as i;">
         <ion-item [routerLink]="[]" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
           <span slot="start">{{i+skip+1}}</span>
@@ -86,14 +86,15 @@
       <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount">
         <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
       </ion-button>
-
-
-
   </ion-list>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="color:#9370DB;">
-      <ion-fab-button color="ion-color-tertiary-tint">
-        <ion-icon name="add" style="font-size:350%;"></ion-icon>
-      </ion-fab-button>
+
+  
+
+    <!-- USING a tab button to match the root tab bar -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-tab-button tab="tab2">
+        <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
+      </ion-tab-button>
     </ion-fab>
 </ion-content>

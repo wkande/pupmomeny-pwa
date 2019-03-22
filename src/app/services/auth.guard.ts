@@ -55,16 +55,21 @@ export class AuthGuard implements CanActivate {
     this.activated = flag;
     if(!flag){
       localStorage.removeItem( "user");
-      // Do not remove the wallet, it will get reused
+      localStorage.removeItem( "wallet");
       this.user = null;
       window.location.reload();
     }
     else{
+      // Rule change.
+      // When the user logs in they must start with the default wallet.
+      // This helps keep the wallet info in localstroage up to date.
+
+
       localStorage.setItem( "user", JSON.stringify(user));
       // If the wallet is null then set the wallet to the first one in the wallet array which is the user's default wallet
-      if(!localStorage.getItem( "wallet")){
-        localStorage.setItem( "wallet", JSON.stringify(user['wallets'][0]));
-      }
+      //if(!localStorage.getItem( "wallet")){
+      localStorage.setItem( "wallet", JSON.stringify(user['wallets'][0]));
+      /*}
       else{
         let wallet = JSON.parse(localStorage.getItem( "wallet"));
         let flag = false;
@@ -78,7 +83,7 @@ export class AuthGuard implements CanActivate {
         if(!flag){
             localStorage.setItem( "wallet", JSON.stringify(user['wallets'][0]));
         }
-      }
+      }*/
 
       this.user = user;
     }
