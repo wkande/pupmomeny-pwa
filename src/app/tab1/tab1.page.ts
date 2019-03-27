@@ -2,14 +2,16 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../services/auth.guard';
-import { ModalController, NavController, Events, LoadingController } from '@ionic/angular';
+import { ModalController, Events } from '@ionic/angular';
 import { FilterPage } from '../modals/filter/filter.page';
 import { FilterService } from '../services/filter.service';
 import { UtilsService } from '../services/utils/utils.service';
+import { CacheService } from '../services/cache/cache.service';
 import { Decimal } from 'decimal.js';
 import { UpsertCategoryPage } from './upsert-category/upsert-category.page';
 import { DeleteCategoryPage } from './delete-category/delete-category.page';
 import { BACKEND } from '../../environments/environment';
+import { delay } from 'rxjs/internal/operators'; // Testing only
 
 
 @Component({
@@ -25,39 +27,29 @@ export class Tab1Page {
   error:any;
   dttmStart:string;
   dttmEnd:string;
-  total:any;
+  total:any = 0;
   num:string = "2";
   filter:any;
-  load:any;
-
-  /*cur = {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-  };*/
-
-  //formatter = new Intl.NumberFormat('en-US', this.cur);
-
+  loading:boolean = true;
+  presentLoader:boolean = true;
 
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, private modalController:ModalController,
-    private filterService:FilterService, private events: Events, private navController:NavController,
-    private utilsService:UtilsService, private loadingController:LoadingController) {
-
+    private filterService:FilterService, private events: Events, 
+    private utils:UtilsService, private cache:CacheService) {
+      console.log('>>>>>>>>>>>>>>>> Tab1Page.constructor <<<<<<<<<<<<<<<<<')
   }
 
 
   ngOnInit(){
     try{
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
-      this.filter = this.filterService.getFilter();
       this.getCategories(); 
 
       this.events.subscribe('filter-changed', (data) => {
           try{
             this.error = null;
-            console.log('Tab1Page > ngOnInit > subscribe > fired > filter-changed');
-            this.filter = this.filterService.getFilter();
+            console.log('Tab1Page > ngOnInit > subscribe > fired > categories-list-changed');
             this.getCategories();
           }
           catch(err){
@@ -71,78 +63,70 @@ export class Tab1Page {
   }
 
 
-  tryAgain(ev){
+  tryAgain(ev:any){
     console.log('tryAgain')
     this.getCategories();
   }
 
 
- 
-
-
   async getCategories(){
-    
     try{
-      await this.presentLoading(); // wait for it so it exists, otehwise it may still be null when finally runs
+      this.loading = true;
+      this.total = 0;
       this.categories = [];
+      this.filter = this.filterService.getFilter();
       
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
-      let q = this.utilsService.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      console.log('Tab1Page.getExpenses >  q', q, BACKEND.url)
+      let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
+      //console.log('Tab1Page.getExpenses >  q', q, BACKEND.url)
 
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
-      .pipe(timeout(5000))
+      .pipe(timeout(5000), delay (this.utils.delayTimer))
       .toPromise();
       console.log(result)
       this.categories = result['categories'];
-
+      
       // floating point arithmetic is not always 100% accurate, use Decimals
       this.total = new Decimal(0);
       for(var i=0; i<this.categories.length; i++){
         this.total = Decimal.add(this.total, this.categories[i].sum.amt);
       }
       this.total = parseFloat(this.total.toString());
+      this.cache.categories = this.categories;
+      this.cache.dummy();
       this.error = null;
     }
     catch(err){
       this.error = err;
     }
     finally{
-      this.load.dismiss();
+      this.loading = false;
     }
   }
 
 
-  async presentFilterModal() {
-    const modal = await this.modalController.create({
-      component: FilterPage
-    });
-    await modal.present();
+  async presentFilterModal(ev:any) {
+      try{
+          const modal = await this.modalController.create({
+            component: FilterPage
+          });
+          await modal.present();
 
-    const { data } = await modal.onDidDismiss();
-    console.log('Tab1Page:presentFilterModal():dismissed');
+          const { data } = await modal.onDidDismiss();
+      }
+      catch(err){
+        this.error = err;
+      } 
   }
   
-
-  async presentLoading() {
-    this.load = await this.loadingController.create({
-      message: 'Getting categories please wait...',
-      keyboardClose:true,
-      showBackdrop:true
-    });
-    await this.load.present();
-    //const { role, data } = await this.load.onDidDismiss();
-    //console.log('Loading dismissed!');
-  }
-
 
   async presentUpsertModal(category:any, mode:string) {
     try{
         this.error = null;
-        console.log('Tab1Page:presentUpsertModal()', category)
+        //console.log('Tab1Page:presentUpsertModal()', category)
         const modal = await this.modalController.create({
           component: UpsertCategoryPage,
           componentProps: { category: category, mode:mode }
@@ -150,11 +134,10 @@ export class Tab1Page {
         await modal.present();
         
         const { data } = await modal.onDidDismiss();
-        console.log('Tab1Page:presentUpsertModal():dismissed: data',data);
+        //console.log('Tab1Page:presentUpsertModal():dismissed: data',data);
 
         // Reload
         if(data != null){
-          this.filter = this.filterService.getFilter();
           this.getCategories();
         }
     }
@@ -179,7 +162,6 @@ export class Tab1Page {
 
         // Reload
         if(data != null){
-          this.filter = this.filterService.getFilter();
           this.getCategories();
         }
     }
@@ -189,9 +171,8 @@ export class Tab1Page {
   }
 
 
-  doRefresh(event) {
-    console.log('Begin async operation');
-    this.filter = this.filterService.getFilter();
+  doRefresh(event:any) {
+    console.log('Begin refresh async operation');
     this.getCategories();
 
     setTimeout(() => {

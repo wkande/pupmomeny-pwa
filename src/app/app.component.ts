@@ -21,8 +21,8 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       //this.statusBar.styleDefault();
-      this.statusBar.styleBlackOpaque()
-      this.splashScreen.hide();
+      //this.statusBar.styleBlackOpaque()
+      //this.splashScreen.hide();
 
       // Set filter if null
       if(!localStorage.getItem("filter")){

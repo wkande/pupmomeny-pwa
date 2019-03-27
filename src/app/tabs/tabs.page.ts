@@ -12,9 +12,12 @@ import { BACKEND } from '../../environments/environment';
 export class TabsPage {
 
   backend:any = BACKEND;
+  wallet:any;
 
   constructor(){
     console.log(this.backend.name)
+    this.wallet = JSON.parse(localStorage.getItem('wallet'));
+    console.log(this.wallet)
   }
 
 

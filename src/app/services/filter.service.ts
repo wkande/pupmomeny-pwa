@@ -103,7 +103,7 @@ export class FilterService {
 
   private lastQuarter(filter:any){
     let qtr = this.getCurrentQuarter()-1;
-    console.log('lastQuarter', this.getCurrentQuarter()-1)
+    //console.log('lastQuarter', this.getCurrentQuarter()-1)
     let dttm = new Date();
     let start:string;
     let end:string;
@@ -164,7 +164,7 @@ export class FilterService {
     }
     let startDisplay = arrStart[1]+' '+arrStart[2]+', '+arrStart[0];
     let endDisplay = arrEnd[1]+' '+arrEnd[2]+', '+arrEnd[0];
-    console.log('dateRange', startDisplay, endDisplay)
+    //console.log('dateRange', startDisplay, endDisplay)
 
     return {tag:'Date Range', 
             range:{start:filter.range.start, end:filter.range.end, startDisplay:startDisplay, endDisplay:endDisplay}, 

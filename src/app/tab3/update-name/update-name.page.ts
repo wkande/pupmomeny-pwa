@@ -14,6 +14,8 @@ export class UpdateNamePage implements OnInit {
 
   @ViewChild('nameInput') nameInput: ElementRef;
   user:any;
+  error:any;
+  loading:any;
 
 
   constructor(private modalController:ModalController) { }

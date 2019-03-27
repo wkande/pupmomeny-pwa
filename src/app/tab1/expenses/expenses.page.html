@@ -4,7 +4,7 @@
           <ion-back-button defaultHref=""></ion-back-button>
       </ion-buttons>
     <ion-title>{{category.name}} ({{totalCount}})</ion-title>
-    <ion-button fill="clear" slot="end" (click)="presentFilterModal()">
+    <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
       <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
     </ion-button>
   </ion-toolbar>
@@ -12,37 +12,24 @@
 
 <ion-content>
 
-    <!-- ERROR -->
-    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <div [hidden]="!errorDisplay" padding>
-        <ion-card-header style="text-align:center;">
-          <ion-card-title style="color:gray;">{{errorDisplay}}</ion-card-title>
-        </ion-card-header>
-        <ion-item lines="none" style="color:gray;border:solid 1px gray;padding:15px 5px 15px 5px;border-radius: 5px;">
-          <ion-button slot="start" color="tertiary" size="default" (click)="tryAgain()">Try Again</ion-button>
-          There was an issue getting data from the servers. Many things could cause this including an internet disconnect. 
-          <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
-        </ion-item>
-      </div>
 
-      <!-- LOADING -->
-      <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-      <div [hidden]="!loading" style="margin-top:100px;">
-        <ion-card-header style="text-align:center;">
-          <ion-card-subtitle style="font-size:x-large;">Loading please wait...</ion-card-subtitle>
-          <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
-        </ion-card-header>
-      </div>
+  <!-- REFRESHER -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner=""
+      refreshingText="">
+    </ion-refresher-content>
+  </ion-refresher>
 
 
   <!-- LIST -->
-  <ion-list [hidden]="loading || errorDisplay">
+  <ion-list>
 
-      <error-component [error]="httpError" (tryAgainSelected)="tryAgain($event)"></error-component>
-    
       <!-- LIST SUMMARY -->
       <ion-item-divider style="border-bottom:1px solid lightgrey;">
-          <div slot="start" fill="clear" (click)="presentFilterModal()" 
+          <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
               style="margin-left:-5px;font-size:120%;color:black;">
             {{filter.tag}}
           </div>
@@ -58,16 +45,22 @@
         Search: {{filter.search.text}}
       </div>
 
-      <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0">
+      <!-- LOADING  & ERROR-->
+      <loading-component [loading]="loading"></loading-component>
+      <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+
+
+      <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || loading">
         <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
       </ion-button>
 
 
       <ion-item-sliding *ngFor="let item of expenses; index as i;">
-        <ion-item [routerLink]="[]" detail>
+        <!-- expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName -->
+        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name]" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
           <span slot="start">{{i+skip+1}}</span>
-          <ion-label class="name">{{item.vendor}} - {{item.id}}
+          <ion-label class="name">{{item.vendor}}
             <br><span class="dttm">{{item.dttm}}</span>
             <br><span class="dttm">{{item.note}}</span> 
           </ion-label>
@@ -78,12 +71,12 @@
           <ion-label class="amt">{{item.amt | number : '1.2-2'}}</ion-label>
         </ion-item>
         <ion-item-options side="start">
-          <ion-item-option style="width:75px;">Edit</ion-item-option>
+          <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
           <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
 
-      <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount">
+      <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || loading">
         <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
       </ion-button>
   </ion-list>

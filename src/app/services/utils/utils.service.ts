@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BACKEND } from '../../../environments/environment';
 
 
 @Injectable({
@@ -9,38 +10,38 @@ import { Injectable } from '@angular/core';
 export class UtilsService {
 
 
+  delayTimer:number = 0;
+
+
   constructor() { 
+    
+    console.log('------------> UtilsService.constructor');
+    if(BACKEND.name === 'Dev') this.delayTimer = 500
   }
 
 
   getErrorMessage(err){
-    console.log('--> OOPS', err);
-    //console.log('--> OOPS err.status:', err.status)
-    //console.log('--> OOPS err.name:', err.name)
-    //console.log('--> OOPS err.statusText:', err.statusText)
-    console.log('--> OOPS err.error:', (err.error || '?'));
-    //console.log('--> OOPS err.error.text:', (err.error.text || '?'));
 
-    let msg:String = '';
-    // http errors
-    if(err.status === 0)
-        msg += 'Seems to be a connection issue, please try again. ';
-    else if(err.name == 'TimeoutError')
-        msg+=  'There was a timeout issue waiting for a response, please wait a moment and try again. ';
+    console.log('--> OOPS', err);
+
+    let message = '';
+
+    if(err.status === 0) message += 'There seems to be a connection issue, please try again. ';
+    else if(err.name == 'TimeoutError') message+=  'There was a timeout issue waiting for a response, please wait a moment and try again. ';
     else if(typeof err.status != 'undefined'){
-        msg += "Error getting data: " 
+      message += "Error getting data: " 
         //if (err.message) msg += err.message;
         //if (err.error && err.error.text) msg += err.text;
-        msg += err.status+ ": "
-        if(err.error)
-          msg += (err.error.statusMessage || '')+": "+(err.error.statusMsg || '');
+        message += err.status+ ": "
+        if(err.error) message += (err.error.statusMessage || '')+": "+(err.error.statusMsg || '');
     }
         
     // Something other than http errored
-    else msg += err.toString();
-    console.log(msg)
-    return msg;
+    else message += err.toString();
+    console.log('>>>', message)
+    return message;
   }
+
 
   /**
    * Formats the search text for a text search in PostgreSQL. The API wil add back the & sign since it is

@@ -13,6 +13,11 @@
               </ion-segment>
               
     
+    <div [hidden]="!error" style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
+    <div [hidden]="!errorSupport" padding style="text-align:center;color:dimgray;margin-top:5px;">
+        Please make sure your internet connection is working. If this issue persists please email supportme@pupmoney.com.
+    </div>
+      
 
   <ion-list [hidden]="segment=='terms'" padding lines="none" style="max-width:400px;margin:0 auto;">
       <ion-item style="margin:0 auto;">
@@ -21,6 +26,7 @@
       <ion-item>
           <h1 style="margin:0 auto;color:darkslateblue;">PupMoney Login</h1>
       </ion-item>
+
       
 
         <!-- INPUTS -->
@@ -32,7 +38,7 @@
             <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;font-size:120%;" required type="text" placeholder="Enter code"></ion-input>
         </ion-item>
         <ion-item [hidden]="!codeReady">
-            <p style="font-size:medium;color:gray;">Please enter the code we just emailed to you.</p>
+            <p style="font-size:medium;color:gray;">Please enter the code emailed to you.</p>
         </ion-item>
 
         <!-- TERMS -->
@@ -42,11 +48,6 @@
 
         </ion-item>
 
-
-        <!-- DISPLAY ERROR -->
-        <ion-item [hidden]="!displayError" style="color:red;border:1px solid gray;">
-                {{displayError}}
-        </ion-item>
 
         <!-- BUTTONS -->
         <ion-item [hidden]="codeReady">
@@ -77,10 +78,7 @@
 
 
   <!-- TERMS -->
-  <div [hidden]="segment=='login'">
-
-    TERMS
-  </div>
+  <div [hidden]="segment=='login'" style="color:dimgray;" [innerHTML]="termsHTML" padding></div>
 
 </ion-content>
 

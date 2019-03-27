@@ -7,8 +7,10 @@ import { Tab1Page } from './tab1.page';
 
 // ErrorModule child modals use it as well, though they also must declare it.
 import { ErrorModule } from '../components/error/error.module';
+import { LoadingModule } from '../components/loading/loading.module';
 
-import { UpsertCategoryPage } from '../tab1/upsert-category/upsert-category.page';
+import { UpsertCategoryPage } from './upsert-category/upsert-category.page';
+import { DeleteCategoryPage } from './delete-category/delete-category.page';
 
 @NgModule({
   imports: [
@@ -16,8 +18,13 @@ import { UpsertCategoryPage } from '../tab1/upsert-category/upsert-category.page
     CommonModule,
     FormsModule,
     ErrorModule,
-    RouterModule.forChild([{ path: '', component: Tab1Page }, { path: '/upsert-category', component: UpsertCategoryPage }])
+    LoadingModule,
+    RouterModule.forChild([
+      { path: '', component: Tab1Page }, 
+      { path: '/upsert-category', component: UpsertCategoryPage },
+      { path: '/delete-category', component: DeleteCategoryPage }
+    ])
   ],
-  declarations: [Tab1Page, UpsertCategoryPage,]
+  declarations: [Tab1Page, UpsertCategoryPage, DeleteCategoryPage]
 })
 export class Tab1PageModule {}

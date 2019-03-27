@@ -1,0 +1,51 @@
+<ion-header>
+    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref=""></ion-back-button>
+        </ion-buttons>
+      <ion-title>Expense</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content padding>
+    <!--error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component-->
+  <ion-list>
+
+    <ion-item style="margin-top:30px;">
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Category</ion-label>
+      <div type="data">{{expense.catName}}</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Date</ion-label>
+      <div type="data">{{expense.dttm}}</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Amount</ion-label>
+      <div type="data">{{expense.amt}}</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Vendor</ion-label>
+      <div type="data">{{expense.vendor}}</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" style="font-size:120%;color:gray;">Note</ion-label>
+      <div type="data">{{expense.note}}</div>
+    </ion-item>
+
+
+  </ion-list>
+
+  <div style="text-align:center;margin-top:10px;">
+      <ion-button size="medium" (click)="presentExpenseUpsertModal(null, 'insert')">
+          Edit
+      </ion-button>
+      <ion-button size="medium" color="danger" style="margin-left:15px;" (click)="presentExpenseDeleteModal($event)">
+          Delete
+      </ion-button>
+  </div>
+
+</ion-content>

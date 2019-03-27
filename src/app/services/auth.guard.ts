@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ModalController, NavController, Events } from '@ionic/angular';
 import { LoginPage } from '../modals/login/login.page';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,7 @@ export class AuthGuard implements CanActivate {
 
 
   constructor(private modalController: ModalController, private navController:NavController, private events:Events){
-    console.log('--> AuthGuard.consructor');
+    console.log('------------> AuthGuard.constructor');
     this.user = JSON.parse(localStorage.getItem( "user"));
     if(this.user){
       this.activated = true;

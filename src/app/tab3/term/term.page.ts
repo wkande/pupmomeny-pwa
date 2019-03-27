@@ -13,24 +13,21 @@ import { timeout } from 'rxjs/operators';
 export class TermPage implements OnInit {
 
 
-  terms:any;
+  termsHTML:any;
 
   constructor(private http:HttpClient) { }
 
+  
 
   ngOnInit() {
     this.getTerms();
   }
 
+    
   async getTerms(){
-
-
-
-    var result = await this.http.get('http://192.168.3.44:8080/terms')
-      .pipe(timeout(5000))
-      .toPromise();
-      this.terms = result;
-      //console.log(JSON.parse(result))
-      //this.categories = result['categories'];
+    this.http.get('assets/terms.html', { responseType: 'text' as 'json'}).subscribe((data:string) => {
+      console.log(data.length);
+      this.termsHTML = data;
+    });
   }
 }

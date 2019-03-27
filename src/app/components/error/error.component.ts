@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-//import { IonicModule } from '@ionic/angular'; 
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core'; 
+import { UtilsService } from '../../services/utils/utils.service';
+
 
 @Component({
   selector: 'error-component',
@@ -25,32 +26,36 @@ export class ErrorComponent implements OnInit {
   @Input() error:string;
   @Input() showButton:boolean = false;
   @Output() tryAgainSelected: EventEmitter<any> = new EventEmitter<any>();
-  message:string;
+  message:any;
 
 
-  constructor() { }
+  constructor(private utils:UtilsService) { }
+
 
   ngOnInit() {
-    console.log('34', this.tryAgainSelected)
   }
 
+
   ngOnChanges(changes: SimpleChanges) {
+    //console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
     if(this.error){
       //console.log('ngOnChanges', changes.errorMsg.currentValue);
-      console.log('this.error', this.error)
-      this.getErrorMessage(this.error);
+      //console.log('this.error', this.error)
+      //this.getErrorMessage(this.error);
+      this.message = this.utils.getErrorMessage(this.error);
     }
-    
-    // You can also use categoryId.previousValue and 
-    // categoryId.firstChange for comparing old and new values
+    else{
+      this.message = null;
+    }
+  }
 
-}
 
   tryAgain(event:any){
     this.tryAgainSelected.emit();
   }
 
-  getErrorMessage(err:any){
+
+  /*getErrorMessage(err:any){
     console.log('--> OOPS', err);
 
     this.message = '';
@@ -69,6 +74,6 @@ export class ErrorComponent implements OnInit {
     else this.message += err.toString();
     console.log('>>>', this.message)
 
-  }
+  }*/
 
 }

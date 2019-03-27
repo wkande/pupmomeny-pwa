@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MsgComponent } from './msg.component';
+import { LoadingComponent } from './loading.component';
 import { IonicModule } from '@ionic/angular';
 
 // Example usage for ionic components
@@ -8,11 +8,11 @@ import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
-    MsgComponent
+    LoadingComponent
   ],
   imports:[IonicModule],
-  exports: [MsgComponent]
+  exports: [LoadingComponent]
 })
 
 
-export class MsgModule {}
+export class LoadingModule {}

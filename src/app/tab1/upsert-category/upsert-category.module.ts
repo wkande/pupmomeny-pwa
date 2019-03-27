@@ -23,7 +23,7 @@ const routes: Routes = [
     ErrorModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [UpsertCategoryPage]
+  declarations: []
 })
 
 

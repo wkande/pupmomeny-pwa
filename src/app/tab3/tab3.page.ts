@@ -4,6 +4,7 @@ import { ModalController, NavController, Events } from '@ionic/angular';
 import { UpdateNamePage } from './update-name/update-name.page';
 import { UpdateEmailPage } from './update-email/update-email.page';
 import { UtilsService } from '../services/utils/utils.service';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -15,13 +16,13 @@ import { UtilsService } from '../services/utils/utils.service';
 export class Tab3Page {
 
 
-  user = {email:null, name:null};
+  user = {email:null, name:null, sub_expires:null, wallets:null};
   wallet = {name:null};
   errorDisplay:any;
 
 
   constructor(private authGuard:AuthGuard, private modalController:ModalController,
-    private utilsService:UtilsService){
+    private utilsService:UtilsService, private http:HttpClient){
     this.user = JSON.parse(localStorage.getItem('user'));
     console.log(this.user)
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
@@ -32,6 +33,7 @@ export class Tab3Page {
   logout(){
     this.authGuard.activate(false, {});
   }
+
 
   async presentEmailModal(ev){
     try{

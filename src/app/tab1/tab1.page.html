@@ -3,7 +3,7 @@
     <ion-title>
       Categories
     </ion-title>
-    <ion-button fill="clear" slot="end" (click)="presentFilterModal()">
+    <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
       <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
     </ion-button>
   </ion-toolbar>
@@ -13,30 +13,31 @@
 
 
 
-    <!-- REFRESHER -->
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content
-        pullingIcon="arrow-dropdown"
-        pullingText="Pull to refresh"
-        refreshingSpinner=""
-        refreshingText="">
-      </ion-refresher-content>
-    </ion-refresher>
+  <!-- REFRESHER -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner=""
+      refreshingText="">
+    </ion-refresher-content>
+  </ion-refresher>
 
-    
-  
+
+ 
 
   <!-- LIST -->
   <ion-list>
  
-    
       <!-- LIST SUMMARY -->
       <ion-item-divider style="border-bottom:1px solid lightgrey;">
-          <div slot="start" fill="clear" (click)="presentFilterModal()" 
+          <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
               style="margin-left:-5px;font-size:120%;color:black;">
             {{filter.tag}}
           </div>
-          <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
+          <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">
+            {{total | number : '1.2-2' }}
+          </ion-label>
       </ion-item-divider>
       <!-- DATE RANGE -->
       <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
@@ -49,15 +50,16 @@
         Search: {{filter.search.text}}
       </div>
 
-
+      <!-- LOADING  & ERROR-->
+      <loading-component [loading]="loading"></loading-component>
       <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
 
 
       <ion-item-sliding *ngFor="let item of categories; index as i;">
         <ion-item [routerLink]="['/expenses', item.id, item.name]" detail>
-          <div slot="start" style="color:purple;font-size:small;">{{item.id}}</div>
+          <!--div slot="start" style="color:purple;font-size:small;">{{item.id}}</div-->
           <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
-          <!--  https://angular.io/api/common/CurrencyPipe -->
+          <!-- https://angular.io/api/common/CurrencyPipe -->
           <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
           <ion-label class="amt">{{item.sum.amt | number : '1.2-2'}}</ion-label>
         </ion-item>
@@ -67,7 +69,7 @@
         </ion-item-options>
       </ion-item-sliding>
 
-      <div [hidden]="error" style="text-align:center;margin-top:10px;">
+      <div [hidden]="error || loading" style="text-align:center;margin-top:10px;">
           <ion-button size="medium" fill="outline" (click)="presentUpsertModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add a Category
