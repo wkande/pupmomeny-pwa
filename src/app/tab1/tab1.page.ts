@@ -8,8 +8,8 @@ import { FilterService } from '../services/filter.service';
 import { UtilsService } from '../services/utils/utils.service';
 import { CacheService } from '../services/cache/cache.service';
 import { Decimal } from 'decimal.js';
-import { UpsertCategoryPage } from './upsert-category/upsert-category.page';
-import { DeleteCategoryPage } from './delete-category/delete-category.page';
+import { UpsertCategoryPage } from './categories/upsert-category/upsert-category.page';
+import { DeleteCategoryPage } from './categories/delete-category/delete-category.page';
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 

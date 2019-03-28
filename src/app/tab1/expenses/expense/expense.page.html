@@ -1,7 +1,14 @@
 <ion-header>
     <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
         <ion-buttons slot="start">
-            <ion-back-button defaultHref=""></ion-back-button>
+
+          <!-- https://github.com/ionic-team/ionic/issues/17421 -->
+          <!-- POST ID: 442623641 commented -->
+          <!-- Works with or without routerDirection="back" not sure why or if it is needed -->
+          <ion-back-button defaultHref="" routerLink="{{routerLinkBack}}" routerDirection="back"></ion-back-button>
+
+          <!--ion-back-button defaultHref="" routerLink="/tabs/tab1" routerDirection="back">1) {{fromSearch}}</ion-back-button-->
+
         </ion-buttons>
       <ion-title>Expense</ion-title>
     </ion-toolbar>

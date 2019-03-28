@@ -24,7 +24,8 @@ const routes: Routes = [
           {
             path: '',
             canActivate: [AuthGuard],
-            loadChildren: '../tab2/tab2.module#Tab2PageModule'
+            loadChildren: '../tab1/expenses/expenses.module#ExpensesPageModule'
+            //loadChildren: '../tab2/tab2.module#Tab2PageModule'
           }
         ]
       },

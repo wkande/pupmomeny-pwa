@@ -9,3 +9,14 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+
+
+.searchbar-input {
+    //background: #FFF !important;
+    border-radius: 30px !important;
+    height: 40px !important;
+    color:black;
+    font-size: .75em !important;
+    border: 1px solid transparent;
+  }

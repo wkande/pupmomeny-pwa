@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { ModalController, LoadingController} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthGuard } from '../../services/auth.guard';
+import { AuthGuard } from '../../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
-import { BACKEND } from '../../../environments/environment';
+import { BACKEND } from '../../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
-import { UtilsService } from '../../services/utils/utils.service';
+import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
   selector: 'app-upsert-category',

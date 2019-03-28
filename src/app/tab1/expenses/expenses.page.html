@@ -1,12 +1,21 @@
 <ion-header>
   <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
-      <ion-buttons slot="start">
+      <ion-buttons [hidden]="isSearch" slot="start">
           <ion-back-button defaultHref=""></ion-back-button>
       </ion-buttons>
-    <ion-title>{{category.name}} ({{totalCount}})</ion-title>
-    <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
+    <ion-title [hidden]="isSearch">{{category.name}} ({{totalCount}})</ion-title>
+    <!--ion-title [hidden]="!isSearch">Search Expenses</ion-title-->
+    
+    <ion-button [hidden]="isSearch" fill="clear" slot="end" (click)="presentFilterModal($event)">
       <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
     </ion-button>
+
+    <ion-searchbar mode="md" style="background-color:gray;font-size:200%;" 
+      [hidden]="!isSearch" (ionChange)="startSearch($event)" debounce="1000">
+    </ion-searchbar>
+    <!-- SEARCH SUMMARY -->
+    <div [hidden]="!isSearch" style="text-align:center;">{{totalCount}}</div>
+
   </ion-toolbar>
 </ion-header>
 
@@ -27,23 +36,28 @@
   <!-- LIST -->
   <ion-list>
 
-      <!-- LIST SUMMARY -->
-      <ion-item-divider style="border-bottom:1px solid lightgrey;">
-          <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
-              style="margin-left:-5px;font-size:120%;color:black;">
-            {{filter.tag}}
-          </div>
-          <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
-      </ion-item-divider>
       
-      <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
-          *ngIf="filter.range.startDisplay">
-        {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
+
+      <!-- CATEGORY LIST SUMMARY -->
+      <div [hidden]="isSearch">
+        <ion-item-divider style="border-bottom:1px solid lightgrey;">
+            <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
+                style="margin-left:-5px;font-size:120%;color:black;">
+              {{filter.tag}}
+            </div>
+            <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
+        </ion-item-divider>
+        
+        <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+            *ngIf="filter.range.startDisplay">
+          {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
+        </div>
+        <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
+            *ngIf="filter.search.toggle">
+          Search: {{filter.search.text}}
+        </div>
       </div>
-      <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
-          *ngIf="filter.search.toggle">
-        Search: {{filter.search.text}}
-      </div>
+
 
       <!-- LOADING  & ERROR-->
       <loading-component [loading]="loading"></loading-component>
@@ -55,9 +69,11 @@
       </ion-button>
 
 
-      <ion-item-sliding *ngFor="let item of expenses; index as i;">
+      <ion-item-sliding [hidden]="!expenses" *ngFor="let item of expenses; index as i;">
         <!-- expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName -->
-        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name]" detail>
+
+
+        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, rootTab]" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
           <span slot="start">{{i+skip+1}}</span>
           <ion-label class="name">{{item.vendor}}
