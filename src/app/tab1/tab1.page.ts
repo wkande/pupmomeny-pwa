@@ -28,6 +28,7 @@ export class Tab1Page {
   dttmStart:string;
   dttmEnd:string;
   total:any = 0;
+  sumTotal = 0; // Number of trasnactions
   num:string = "2";
   filter:any;
   loading:boolean = true;
@@ -43,6 +44,7 @@ export class Tab1Page {
 
   ngOnInit(){
     try{
+      console.log('>>>>>>>>>>>>>>>> Tab1Page.ngOnInit <<<<<<<<<<<<<<<<<')
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
       this.getCategories(); 
 
@@ -73,6 +75,7 @@ export class Tab1Page {
     try{
       this.loading = true;
       this.total = 0;
+      this.sumTotal = 0;
       this.categories = [];
       this.filter = this.filterService.getFilter();
       
@@ -92,8 +95,10 @@ export class Tab1Page {
       // floating point arithmetic is not always 100% accurate, use Decimals
       this.total = new Decimal(0);
       for(var i=0; i<this.categories.length; i++){
+        this.sumTotal += this.categories[i].sum.cnt;
         this.total = Decimal.add(this.total, this.categories[i].sum.amt);
       }
+
       this.total = parseFloat(this.total.toString());
       this.cache.categories = this.categories;
       this.cache.dummy();
@@ -123,10 +128,10 @@ export class Tab1Page {
   }
   
 
-  async presentUpsertModal(category:any, mode:string) {
+  async presentUpsertCategoryModal(category:any, mode:string) {
     try{
         this.error = null;
-        //console.log('Tab1Page:presentUpsertModal()', category)
+        console.log('Tab1Page:presentUpsertCategoryModal()', category)
         const modal = await this.modalController.create({
           component: UpsertCategoryPage,
           componentProps: { category: category, mode:mode }
@@ -140,6 +145,33 @@ export class Tab1Page {
         if(data != null){
           this.getCategories();
         }
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
+
+  async presentUpsertExpenseModal(expense:any, mode:string) {
+    try{
+        /*this.error = null;
+        console.log('Tab1Page:presentUpsertExpenseModal()', expense)
+        const modal = await this.modalController.create({
+          component: UpsertExpensePage,
+          componentProps: { expense: expense, mode:mode }
+        });
+        await modal.present();
+        
+        const { data } = await modal.onDidDismiss();
+        console.log('ExpensesPage:presentUpsertModal():dismissed: data',data);
+
+        // Reload
+        if(data != null){
+          this.filter = this.filterService.getFilter();
+
+          // @TODO 
+          // Need to add the expense if it is in fact part of the displayed filter
+          // this.getExpenses();
+        }*/
     }
     catch(err){
       this.error = err;

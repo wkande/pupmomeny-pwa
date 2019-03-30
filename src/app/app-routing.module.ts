@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'filter', loadChildren: './modals/filter/filter.module#FilterPageModule' },
   { path: 'expenses/:id/:name', loadChildren: './tab1/expenses/expenses.module#ExpensesPageModule' },
   { path: 'expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName/:rootTab', loadChildren: './tab1/expenses/expense/expense.module#ExpensePageModule' },
+  //{ path: 'expense/:id', loadChildren: './tab1/expenses/expense/expense.module#ExpensePageModule' },
 
   
   { path: 'term', loadChildren: './tab3/term/term.module#TermPageModule' },

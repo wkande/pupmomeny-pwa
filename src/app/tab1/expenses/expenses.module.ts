@@ -8,17 +8,19 @@ import { IonicModule } from '@ionic/angular';
 import { ExpensesPage } from './expenses.page';
 import { ErrorModule } from '../../components/error/error.module';
 import { LoadingModule } from '../../components/loading/loading.module';
+import { UpsertExpenseSharedPageModule } from  './upsert-expense/upsert-expense-shared.module';
+import { DeleteExpenseSharedPageModule } from  './delete-expense/delete-expense-shared.module';
+
 
 //import { UpsertCategoryPage } from './../upsert-category/upsert-category.page';
 
-import { UpsertExpensePage } from '../../tab1/expenses/upsert-expense/upsert-expense.page';
-import { DeleteExpensePage } from '../../tab1/expenses/delete-expense/delete-expense.page';
+import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
+import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 
 const routes: Routes = [
   { path: '',component: ExpensesPage },
-  { path: '/delete-expense', component: DeleteExpensePage },
-  { path: '/upsert-expense', component: UpsertExpensePage },
-  //{ path: '/upsert-expense', component: UpsertCategoryPage }
+  //{ path: '/delete-expense', component: DeleteExpensePage },
+  //{ path: '/upsert-expense', component: UpsertExpensePage },
 ];
 
 @NgModule({
@@ -28,9 +30,13 @@ const routes: Routes = [
     IonicModule,
     ErrorModule,
     LoadingModule,
+    UpsertExpenseSharedPageModule,
+    DeleteExpenseSharedPageModule,
     RouterModule.forChild(routes)
   ],
 
-  declarations: [ExpensesPage, DeleteExpensePage, UpsertExpensePage]
+  declarations: [ExpensesPage],
+
+  entryComponents: [ UpsertExpensePage, DeleteExpensePage ],
 })
 export class ExpensesPageModule {}

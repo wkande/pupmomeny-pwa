@@ -10,7 +10,6 @@ import { UtilsService } from '../../services/utils/utils.service';
 import { Decimal } from 'decimal.js';
 import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from './delete-expense/delete-expense.page';
-//import { DeleteCategoryPage } from '../delete-category/delete-category.page';
 import { BACKEND } from '../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 
@@ -25,11 +24,7 @@ import { delay } from 'rxjs/internal/operators'; // Testing only
 export class ExpensesPage implements OnInit {
 
 
-  // Page is used by category list (tab1) and search page (tab2)
-  rootTab:string = '/tabs/tab1'; // tab1 or tab2
-  isSearch:boolean = false;
-
-  category:any = {};
+  category:any = {}; // Will be null when the view is in search mode
   wallet:object;
   expenses:any;
   loading:boolean = false;
@@ -53,39 +48,32 @@ export class ExpensesPage implements OnInit {
     private modalController:ModalController,
     private filterService:FilterService, private events: Events, private navController:NavController,
     private utils:UtilsService, private actionSheetController:ActionSheetController) { 
+
+      console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
     }
 
     
   ngOnInit() {
       try{
+        console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         this.filter = this.filterService.getFilter();
 
         const params:any = this.router.params;
 
-        // Will contain the cat id and name if from tab1.
-        // Will be an emtpy object if from tab 2
-        if(!params._value.id){ 
-          console.log('SEARCH MODE')
-          this.rootTab = '/tabs/tab2';
-          this.isSearch = true;
-        }
-        else {
-          this.rootTab = '/tabs/tab1';
-          this.category = params._value;
-          console.log('CATEGORY MODE')
-          this.getExpenses();
+        this.category = params._value;
+        this.getExpenses();
 
-          // This round about way keeps the event from firing itself more than 
-          // once when the view is destroyed. Because the removal of the event cannot be done
-          // with a promise. And without it will remove it for all views.
-          // https://github.com/ionic-team/ionic/issues/13446
-          this.eventHandler = this.loadEvent.bind( this );
-          this.events.subscribe('filter-changed', this.eventHandler);
-        }
+        // This round about way keeps the event from firing itself more than 
+        // once when the view is destroyed. Because the removal of the event cannot be done
+        // with a promise. And without it will remove it for all views.
+        // https://github.com/ionic-team/ionic/issues/13446
+        this.eventHandler = this.loadEvent.bind( this );
+        this.events.subscribe('filter-changed', this.eventHandler);
+
       
         // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-        console.log('ExpensesPage this.router.params', this.rootTab, this.router.params);
+        console.log('ExpensesPage this.router.params', this.router.params);
       }
       catch(err){
         this.error = err;
@@ -94,14 +82,14 @@ export class ExpensesPage implements OnInit {
 
   
   ngOnDestroy(){
-    console.log('ExpensesPage ngOnDestroy');
+    console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
     this.events.unsubscribe('filter-changed', this.eventHandler);
   }
 
   
   loadEvent(){
     try{
-      console.log('ExpensesPage > ngOnInit > subscribe > fired > filter-changed')
+      console.log('ExpensesPage > loadEvent > subscribe > fired > filter-changed')
       console.log(this)
       this.filter = this.filterService.getFilter();
       this.skip = 0;
@@ -115,8 +103,7 @@ export class ExpensesPage implements OnInit {
 
 
   tryAgain(ev:any){
-    if(this.isSearch) this.searchExpenses(this.searchEvent);
-    else this.getExpenses();
+    this.getExpenses();
   }
 
 
@@ -133,24 +120,20 @@ export class ExpensesPage implements OnInit {
 
   getMore(){
     this.skip = this.skip+50;
-    if(this.isSearch) this.searchExpenses(this.searchEvent);
-    else this.getExpenses();
+    this.getExpenses();
   }
 
 
   getLess(){
     this.skip = this.skip-50;
-    if(this.isSearch) this.searchExpenses(this.searchEvent);
-    else this.getExpenses();
+    this.getExpenses();
   }
 
 
 
   doRefresh(event) {
     console.log('Begin refresh async operation');
-    //this.filter = this.filterService.getFilter();
-    if(this.isSearch) this.searchExpenses(this.searchEvent);
-    else this.getExpenses();
+    this.getExpenses();
 
     setTimeout(() => {
       console.log('Async operation has ended');
@@ -189,6 +172,7 @@ export class ExpensesPage implements OnInit {
         this.total = Decimal.add(this.total, this.expenses[i].amt);
       }
       this.total = parseFloat(this.total.toString());
+
     }
     catch(err){
       console.log("ERROR getExpenses", err)
@@ -228,15 +212,14 @@ export class ExpensesPage implements OnInit {
       this.expenses = result['expenses'];
       
       
-      /*if(!this.isSearch){
         // Get total amt of all expenses
         // floating point arithmetic is not always 100% accurate, use Decimals
-        this.total = new Decimal(0);
+        /*this.total = new Decimal(0);
         for(var i=0; i<this.expenses.length; i++){
           this.total = Decimal.add(this.total, this.expenses[i].amt);
         }
         this.total = parseFloat(this.total.toString());
-      }*/
+        */
       
     }
     catch(err){

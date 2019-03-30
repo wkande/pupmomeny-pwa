@@ -9,6 +9,7 @@ import { Tab1Page } from './tab1.page';
 import { ErrorModule } from '../components/error/error.module';
 import { LoadingModule } from '../components/loading/loading.module';
 
+
 import { UpsertCategoryPage } from './categories/upsert-category/upsert-category.page';
 import { DeleteCategoryPage } from './categories/delete-category/delete-category.page';
 

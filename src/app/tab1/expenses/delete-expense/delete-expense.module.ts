@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
-import { ErrorModule } from '../../../components/error/error.module';
+//
+//import { ErrorModule } from '../../../components/error/error.module';
 
 import { DeleteExpensePage } from './delete-expense.page';
 
@@ -19,8 +19,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
-    ErrorModule,
+    //IonicModule,
+    //ErrorModule,
     RouterModule.forChild(routes)
   ],
   declarations: []

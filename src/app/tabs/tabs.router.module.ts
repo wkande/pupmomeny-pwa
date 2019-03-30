@@ -24,8 +24,8 @@ const routes: Routes = [
           {
             path: '',
             canActivate: [AuthGuard],
-            loadChildren: '../tab1/expenses/expenses.module#ExpensesPageModule'
-            //loadChildren: '../tab2/tab2.module#Tab2PageModule'
+            //loadChildren: '../tab1/expenses/expenses.module#ExpensesPageModule'
+            loadChildren: '../tab2/tab2.module#Tab2PageModule'
           }
         ]
       },
@@ -39,6 +39,16 @@ const routes: Routes = [
           }
         ]
       },
+      /*{
+        path: 'tab4',
+        children: [
+          {
+            path: '',
+            canActivate: [AuthGuard],
+            loadChildren: '../tab1/expenses/upsert-expense/upsert-expense-shared.module#UpsertExpenseSharedPageModule'
+          }
+        ]
+      },*/
       {
         path: '',
         redirectTo: '/tabs/tab1',

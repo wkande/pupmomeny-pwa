@@ -1,9 +1,76 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Tab Two
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
+      <ion-searchbar mode="md" style="background-color:gray;font-size:200%;" (ionChange)="startSearch($event)" debounce="800">
+      </ion-searchbar>
+      <!-- SEARCH SUMMARY -->
+      <div style="text-align:center;">Found: {{totalCount}} <span [hidden]="totalCount == 0">- Showing: {{skip+1}} - {{skip+50}}</span></div>
 
-<ion-content></ion-content>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+  
+  
+    <!-- REFRESHER -->
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner=""
+        refreshingText="">
+      </ion-refresher-content>
+    </ion-refresher>
+  
+  
+    <!-- LIST -->
+    <ion-list>
+  
+      
+  
+        <!-- LOADING  & ERROR-->
+        <loading-component [loading]="loading"></loading-component>
+        <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+  
+  
+        <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || loading">
+          <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
+        </ion-button>
+  
+  
+        <ion-item-sliding [hidden]="!expenses" *ngFor="let item of expenses; index as i;">
+            <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, item.c_id, item.c_name, '/tabs/tab2']" detail>
+            <!--ion-item (click)="click($event, item)" detail-->
+                <span slot="start">{{i+skip+1}}</span>
+
+                <ion-label class="name">{{item.c_name}}
+                  <br><span class="dttm">{{item.vendor}}</span>
+                  <br><span class="dttm">{{item.dttm}}</span>
+                  <br><span class="dttm">{{item.note}}</span> 
+                </ion-label>
+                
+                <!-- https://angular.io/api/common/CurrencyPipe -->
+                <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
+                <ion-label class="amt">{{item.amt | number : '1.2-2'}}</ion-label>
+            </ion-item>
+            <ion-item-options side="start">
+                <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
+                <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
+            </ion-item-options>
+        </ion-item-sliding>
+  
+        <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || loading">
+          <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
+        </ion-button>
+    </ion-list>
+  
+  
+    
+  
+      <!-- USING a tab button to match the root tab bar -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-tab-button tab="tab2">
+          <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
+        </ion-tab-button>
+      </ion-fab>
+  </ion-content>
+  

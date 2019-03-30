@@ -15,25 +15,33 @@ export class ExpensePage implements OnInit {
   expense:any;
   error:any;
   //fromSearch:boolean = false; // Inbound parameter tells us if coming from tab1 or tab2
-  routerLinkBack:string = '/tabs/tab1';
+  routerLinkBack:string = null;
 
 
-  constructor(private router:ActivatedRoute) { }
+  constructor(private router:ActivatedRoute) { 
+    //console.log('>>>>>>>>>>>>>>>> ExpensePage.constructor <<<<<<<<<<<<<<<<<')
+
+  }
 
 
   ngOnInit() {
+      console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnInit <<<<<<<<<<<<<<<<<')
+      console.log('ExpensePage ngOnInit > expense', this.expense);
       console.log('ExpensePage:this.router.params', this.router.params)
-      const params:any = this.router.params;
 
       // Set back button
-      this.routerLinkBack = this.router.params['_value'].rootTab; // Gives us a string
+      this.routerLinkBack = this.router.params['_value'].rootTab;
+
+      // We want to use the statndar back button for/tabs/tab1
+      if(this.routerLinkBack == '/tabs/tab1') this.routerLinkBack = null;
+
       //if(this.router.params['_value'].rootTab) this.routerLinkBack = '/tabs/tab2';
       console.log('this.routerLinkBack', this.routerLinkBack);
 
       // Set expense object
       // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-      this.expense = params._value;
-      console.log('ExpensePage ngOnInit > expense', this.expense);
+      this.expense = this.router.params['_value'];
+      
 
       // Get Wallet
       try{
@@ -44,6 +52,11 @@ export class ExpensePage implements OnInit {
       }
   }
 
+
+  ngOnDestroy(){
+    console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+
+  }
 
 
   presentExpenseUpsertModal(expense:any, mode:string){

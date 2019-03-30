@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, NgModule} from '@angular/core';
 import { ModalController, AlertController, PopoverController} from '@ionic/angular';
 import { CategoriesPopoverComponent } from '../../../components/categories/categories-popover/categories.popover.component';
 

@@ -1,20 +1,13 @@
 <ion-header>
   <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
-      <ion-buttons [hidden]="isSearch" slot="start">
-          <ion-back-button defaultHref=""></ion-back-button>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="" routerDirection="back"></ion-back-button>
       </ion-buttons>
-    <ion-title [hidden]="isSearch">{{category.name}} ({{totalCount}})</ion-title>
-    <!--ion-title [hidden]="!isSearch">Search Expenses</ion-title-->
-    
-    <ion-button [hidden]="isSearch" fill="clear" slot="end" (click)="presentFilterModal($event)">
+    <ion-title>{{category.name}}</ion-title>
+
+    <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
       <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
     </ion-button>
-
-    <ion-searchbar mode="md" style="background-color:gray;font-size:200%;" 
-      [hidden]="!isSearch" (ionChange)="startSearch($event)" debounce="1000">
-    </ion-searchbar>
-    <!-- SEARCH SUMMARY -->
-    <div [hidden]="!isSearch" style="text-align:center;">{{totalCount}}</div>
 
   </ion-toolbar>
 </ion-header>
@@ -39,12 +32,15 @@
       
 
       <!-- CATEGORY LIST SUMMARY -->
-      <div [hidden]="isSearch">
+      <div>
         <ion-item-divider style="border-bottom:1px solid lightgrey;">
             <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
                 style="margin-left:-5px;font-size:120%;color:black;">
               {{filter.tag}}
             </div>
+            <ion-label slot="start" style="color:dimgray;margin-right:24px;">
+                <span [hidden]="loading" class="cnt"> &nbsp;({{totalCount}})</span>
+            </ion-label>
             <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
         </ion-item-divider>
         
@@ -73,10 +69,19 @@
         <!-- expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName -->
 
 
-        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, rootTab]" detail>
+        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, '/tabs/tab1']" detail>
           <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
           <span slot="start">{{i+skip+1}}</span>
-          <ion-label class="name">{{item.vendor}}
+
+          <!-- tab1 -->
+          <ion-label [hidden]="isSearch" class="name">{{item.vendor}}
+            <br><span class="dttm">{{item.dttm}}</span>
+            <br><span class="dttm">{{item.note}}</span> 
+          </ion-label>
+
+          <!-- tab2 SEARCH -->
+          <ion-label [hidden]="!isSearch" class="name">{{item.c_name}}
+            <br><span class="dttm">{{item.vendor}}</span>
             <br><span class="dttm">{{item.dttm}}</span>
             <br><span class="dttm">{{item.note}}</span> 
           </ion-label>
@@ -100,9 +105,9 @@
 
   
 
-    <!-- USING a tab button to match the root tab bar -->
+  <!-- USING a tab button to match the root tab bar -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-tab-button tab="tab2">
+    <ion-tab-button tab="tab1" (click)="presentUpsertModal(null, 'insert')">
         <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
       </ion-tab-button>
     </ion-fab>

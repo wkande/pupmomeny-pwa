@@ -35,8 +35,11 @@
               style="margin-left:-5px;font-size:120%;color:black;">
             {{filter.tag}}
           </div>
+          <ion-label slot="start" style="color:dimgray;margin-right:24px;">
+              <span [hidden]="loading" class="cnt"> &nbsp;({{sumTotal}})</span>
+          </ion-label>
           <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">
-            {{total | number : '1.2-2' }}
+              <span [hidden]="loading">{{total | number : '1.2-2' }}</span>
           </ion-label>
       </ion-item-divider>
       <!-- DATE RANGE -->
@@ -50,7 +53,7 @@
         Search: {{filter.search.text}}
       </div>
 
-      <!-- LOADING  & ERROR-->
+      <!-- LOADING & ERROR-->
       <loading-component [loading]="loading"></loading-component>
       <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
 
@@ -70,7 +73,7 @@
       </ion-item-sliding>
 
       <div [hidden]="error || loading" style="text-align:center;margin-top:10px;">
-          <ion-button size="medium" fill="outline" (click)="presentUpsertModal(null, 'insert')">
+          <ion-button size="medium" fill="outline" (click)="presentUpsertCategoryModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add a Category
           </ion-button>
@@ -79,5 +82,12 @@
   </ion-list>
 
 
+
+  <!-- USING a tab button to match the root tab bar -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-tab-button tab="tab1" (click)="presentUpsertModal(null, 'insert')">
+      <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
+    </ion-tab-button>
+  </ion-fab>
   
 </ion-content>
