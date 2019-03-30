@@ -13,10 +13,5 @@ export class CacheService {
     console.log('------------> CacheService.constructor');
   }
 
-  
-  dummy(){
-
-  }
-
 
 }

@@ -8,6 +8,8 @@ import { IonicModule } from '@ionic/angular';
 import { ExpensesPage } from './expenses.page';
 import { ErrorModule } from '../../components/error/error.module';
 import { LoadingModule } from '../../components/loading/loading.module';
+import { ExpenseFabModule } from '../../components/expenses/expense-fab/expense-fab.module';
+
 import { UpsertExpenseSharedPageModule } from  './upsert-expense/upsert-expense-shared.module';
 import { DeleteExpenseSharedPageModule } from  './delete-expense/delete-expense-shared.module';
 
@@ -32,6 +34,8 @@ const routes: Routes = [
     LoadingModule,
     UpsertExpenseSharedPageModule,
     DeleteExpenseSharedPageModule,
+    ExpenseFabModule,
+
     RouterModule.forChild(routes)
   ],
 

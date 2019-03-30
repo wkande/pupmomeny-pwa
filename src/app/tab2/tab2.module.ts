@@ -7,6 +7,7 @@ import { Tab2Page } from './tab2.page';
 
 import { ErrorModule } from '../components/error/error.module';
 import { LoadingModule } from '../components/loading/loading.module';
+
 import { UpsertExpenseSharedPageModule } from  '../tab1/expenses/upsert-expense/upsert-expense-shared.module';
 import { DeleteExpenseSharedPageModule } from  '../tab1/expenses/delete-expense/delete-expense-shared.module';
 
@@ -24,7 +25,6 @@ import { DeleteExpensePage } from '../tab1/expenses/delete-expense/delete-expens
     LoadingModule,
     UpsertExpenseSharedPageModule,
     DeleteExpenseSharedPageModule,
-    
     RouterModule.forChild([
       { path: '', component: Tab2Page }, 
       //{ path: '/delete-expense', component: DeleteExpensePage },

@@ -5,9 +5,9 @@
                 Cancel
             </ion-button>
         </ion-buttons>
-      <ion-title>Mode: {{title}}</ion-title>
+      <ion-title>{{title}}</ion-title>
       <ion-buttons slot="primary">
-          <ion-button (click)="apply($event)" [attr.disabled]="1 != 1">
+          <ion-button (click)="submit($event)" [attr.disabled]="1 != 1">
               Submit
           </ion-button>
       </ion-buttons>
@@ -18,50 +18,57 @@
 
 
 <ion-content padding>
-
-
-
-
-
     <ion-list>
 
-        <ion-label type="cssLabel">Category</ion-label>
-        <ion-item (click)="showCategories($event)" id='catPopoverBtn' #catPopoverBtn  style="cursor:pointer;">
-            <ion-button size="small" slot="start" shape="round" color="medium" >
-                <ion-icon name="list-box"></ion-icon>
-            </ion-button>
+        <!-- CAT -->
+
+        <ion-item id='catPopoverBtn' slot="start" (click)="showCategories($event)">
+            <div type="cssDiv" >
+                <div>Category</div>
+                <ion-icon style="font-size:300%;" name="list-box" color="primary"></ion-icon>
+            </div>
+            <span style="margin-left:20px;font-size:120%">{{category.name}}</span>
+        </ion-item>
+  
+  
+        
+        <!-- AMT -->
+        <ion-item>
+            <div type="cssDiv" id='catAmt' slot="start">
+                <div>Amount</div>
+                <ion-icon style="font-size:300%;" name="cash" color="medium"></ion-icon>
+            </div>
             
-        </ion-item>
-  
-  
-
-
-        <input type="number" id="numberInput" step="0.1" />
-  
-
-        2) <input type="number" pattern="\d*">
-
-<!-- iOS only > Cordova keyboard for decimals -->
-<!-- https://www.npmjs.com/package/cordova-plugin-decimal-key -->
-
-        <ion-item>
-          <ion-label position="stacked" style="font-size:120%;color:gray;">Vendor</ion-label>
-          <input type="text" #vendorInput placeholder="Enter/select vendor name">
+          <input type="number" #amtInput placeholder="Enter amount">
         </ion-item>
 
+
+        <!-- DATE -->
         <ion-item>
-          <ion-label position="stacked" style="font-size:120%;color:gray;">Amount</ion-label>
-          <input type="number" #amountInput>
+          <div type="cssDiv" id='catDate' slot="start">
+                <div>Date</div>
+                <ion-icon style="font-size:300%;" name="calendar" color="primary"></ion-icon>
+          </div>
+          <ion-datetime value="{{dateDefault}}" (ionChange)="dateChanged($event)" placeholder="Select Date"
+          display-format="MMMM-DD-YYYY" picker-format="MMMM-DD-YYYY"></ion-datetime>
         </ion-item>
 
+
+
+        <!-- VENDOR -->
         <ion-item>
-          <ion-label position="stacked" style="font-size:120%;color:gray;">Date</ion-label>
-          <input type="text" #dateInput placeholder="Enter date">
+            <div type="cssDiv" id='catPopoverBtn' slot="start" (click)="showCategories($event)">
+                <div>Vendor</div>
+                <ion-icon style="font-size:300%;" name="filing" color="primary"></ion-icon>
+                <div>(optional)</div>
+          </div>
+          <input type="text" #vendorInput placeholder="Enter/select vendor">
         </ion-item>
 
+
+        <!-- NOTE -->
         <ion-item>
-            <ion-icon slot="start" name="calendar"></ion-icon>
-            <ion-datetime display-format="MM/DD/YYYY" picker-format="MMMM-DD-YYYY"></ion-datetime>
+            <ion-textarea value="{{note}}" rows=5 placeholder="Enter a note here (optional)" spellcheck=true></ion-textarea>
           </ion-item>
       
       </ion-list>

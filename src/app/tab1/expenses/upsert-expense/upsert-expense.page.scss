@@ -27,10 +27,16 @@ ion-input {
     border: 2px solid lightgrey;
   }
 
-ion-label[type=cssLabel]{
-    color:dimgray;
-    
+
+div[type=cssDiv]{
+    text-align:center;
+    width:90px;
+    margin-top:4px;
+    color:dimgray;padding-right:5px;
+    border-right:1px solid gray;
+    cursor:pointer;
   }
+
 
   // Hide up down arrows ???
 // https://css-tricks.com/finger-friendly-numerical-inputs-with-inputmode/

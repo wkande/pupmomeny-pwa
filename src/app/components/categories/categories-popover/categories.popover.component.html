@@ -1,10 +1,12 @@
 
 
 <!-- List of Text Items -->
-<h4 style="text-align:center;color:dimgray;">Select a Category</h4>
-<ion-list style="cursor:pointer;" detail>
-  <ion-item *ngFor="let item of categories; index as i;">
-    <ion-label>{{item.name}}</ion-label>
-  </ion-item>
-</ion-list>
+<div style="background-color:gray;">
+  <h4 style="text-align:center;background-color:gray;color:white;height:35px;padding-top:10px;">Select a Category</h4>
+  <ion-list style="cursor:pointer;" detail>
+    <ion-item *ngFor="let item of categories; index as i;" (click)="selectedCategory($event, item.id, item.name, ['vendor', 'here'])">
+      <ion-label>{{item.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</div>
 

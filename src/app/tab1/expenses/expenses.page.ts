@@ -183,11 +183,14 @@ export class ExpensesPage implements OnInit {
     }
   }
 
+
+  /*
   startSearch(ev:any){
     this.skip = 0;
     this.searchExpenses(ev);
   }
 
+  
   async searchExpenses(ev:any){
     console.log('>>> SEARCH > searchExpenses', ev.detail.value)
     try{
@@ -207,19 +210,18 @@ export class ExpensesPage implements OnInit {
 
       var result = await this.http.get(BACKEND.url+'/expenses/context?q='+q+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
- console.log(result)
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
       
       
-        // Get total amt of all expenses
-        // floating point arithmetic is not always 100% accurate, use Decimals
-        /*this.total = new Decimal(0);
-        for(var i=0; i<this.expenses.length; i++){
-          this.total = Decimal.add(this.total, this.expenses[i].amt);
-        }
-        this.total = parseFloat(this.total.toString());
-        */
+      // Get total amt of all expenses
+      // floating point arithmetic is not always 100% accurate, use Decimals
+      this.total = new Decimal(0);
+      for(var i=0; i<this.expenses.length; i++){
+        this.total = Decimal.add(this.total, this.expenses[i].amt);
+      }
+      this.total = parseFloat(this.total.toString());
+        
       
     }
     catch(err){
@@ -230,26 +232,25 @@ export class ExpensesPage implements OnInit {
     finally{
       this.loading = false;
     }
-  }
+  }*/
 
 
-  async presentUpsertModal(expense:any, mode:string) {
+  
+  async presentUpsertModal(expense:any) {
     try{
-        this.error = null;
-        console.log('ExpensesPage:presentUpsertModal()', expense)
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expense: expense, mode:mode }
+          componentProps: { expenseParam: expense, categoryParam:this.category, mode:'edit' }
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
-        console.log('ExpensesPage:presentUpsertModal():dismissed: data',data);
 
         // Reload
         if(data != null){
-          this.filter = this.filterService.getFilter();
-          this.getExpenses();
+          // @TODO need to update list;
+          //
+          //
+          //
         }
     }
     catch(err){
@@ -269,8 +270,10 @@ export class ExpensesPage implements OnInit {
 
         // Reload
         if(data != null){
-          this.filter = this.filterService.getFilter();
-          this.getExpenses();
+          // @TODO need to delete from list;
+          //
+          //
+          //
         }
     }
     catch(err){

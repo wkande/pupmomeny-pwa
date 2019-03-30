@@ -83,11 +83,6 @@
 
 
 
-  <!-- USING a tab button to match the root tab bar -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-tab-button tab="tab1" (click)="presentUpsertModal(null, 'insert')">
-      <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
-    </ion-tab-button>
-  </ion-fab>
   
 </ion-content>
+<expense-fab-component [hidden]="error"></expense-fab-component>

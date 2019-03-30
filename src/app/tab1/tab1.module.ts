@@ -8,6 +8,7 @@ import { Tab1Page } from './tab1.page';
 // ErrorModule child modals use it as well, though they also must declare it.
 import { ErrorModule } from '../components/error/error.module';
 import { LoadingModule } from '../components/loading/loading.module';
+import { ExpenseFabModule } from '../components/expenses/expense-fab/expense-fab.module';
 
 
 import { UpsertCategoryPage } from './categories/upsert-category/upsert-category.page';
@@ -20,6 +21,7 @@ import { DeleteCategoryPage } from './categories/delete-category/delete-category
     FormsModule,
     ErrorModule,
     LoadingModule,
+    ExpenseFabModule,
     RouterModule.forChild([
       { path: '', component: Tab1Page }, 
       { path: '/upsert-category', component: UpsertCategoryPage },

@@ -73,6 +73,7 @@ export class Tab1Page {
 
   async getCategories(){
     try{
+      this.error = null;
       this.loading = true;
       this.total = 0;
       this.sumTotal = 0;
@@ -101,8 +102,8 @@ export class Tab1Page {
 
       this.total = parseFloat(this.total.toString());
       this.cache.categories = this.categories;
-      this.cache.dummy();
-      this.error = null;
+      console.log('this.cache.categories', this.cache.categories)
+      
     }
     catch(err){
       this.error = err;
