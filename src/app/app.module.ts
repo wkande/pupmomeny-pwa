@@ -28,6 +28,7 @@ import { UpdateEmailPage } from './tab3/update-email/update-email.page';
 
 
 
+
 @NgModule({
   declarations: [AppComponent, FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage, CategoriesPopoverComponent],
     

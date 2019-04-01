@@ -42,6 +42,7 @@ export class UpsertExpensePage implements OnInit {
   }
 
 
+
   ngOnInit() {
     console.log('UpsertExpensePage > ngOnInit', this.mode, this.expenseParam, this.categoryParam)
     //this.showCategories({srcElement:this.catPopoverBtn.el});
@@ -59,10 +60,14 @@ export class UpsertExpensePage implements OnInit {
       this.category = JSON.parse(JSON.stringify(this.categoryParam)); // Deep copy because the param is read only
 
       // Date
-      console.log(new Date(this.expenseParam.dttm))
-      this.dateDefault = this.expenseParam.dttm+'T00:00:00';//.toISOString();
+      // Set to noon of the date so all time zones can adjust of of noon to stay on the same day
+      this.dateDefault = new Date(this.expenseParam.dttm+'T12:00:00').toISOString();
       this.dateSelected = this.dateDefault;
-      console.log('this.date', this.dateDefault, this.dateSelected);
+      console.log('toISOString()', this.dateDefault);
+
+
+
+
 
       this.vendorInput.nativeElement.value = this.expenseParam.vendor;
       //this.vendor = this.expenseParam.vendor;
