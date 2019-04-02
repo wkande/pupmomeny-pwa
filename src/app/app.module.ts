@@ -15,6 +15,7 @@ import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { LoginPage } from './modals/login/login.page';
 import { FilterPage } from './modals/filter/filter.page';
 import { CategoriesPopoverComponent } from './components/categories/categories-popover/categories.popover.component';
+import { VendorsPopoverComponent } from './components/categories/vendors-popover/vendors.popover.component';
 
 // NO MODALS 
 // import { UpsertCategoryPage } from './tab1/upsert-category/upsert-category.page';
@@ -30,9 +31,9 @@ import { UpdateEmailPage } from './tab3/update-email/update-email.page';
 
 
 @NgModule({
-  declarations: [AppComponent, FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage, CategoriesPopoverComponent],
+  declarations: [AppComponent, FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage, CategoriesPopoverComponent, VendorsPopoverComponent],
     
-  entryComponents: [FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage, CategoriesPopoverComponent],
+  entryComponents: [FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage, CategoriesPopoverComponent, VendorsPopoverComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     HttpClientModule,

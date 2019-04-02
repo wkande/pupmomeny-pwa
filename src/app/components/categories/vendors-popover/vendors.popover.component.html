@@ -1,0 +1,68 @@
+
+
+
+<!-- List of Categories -->
+<div [hidden]="manage" style="background-color:gray;">
+    <h4 style="text-align:center;background-color:gray;color:white;height:35px;padding-top:10px;">Select a Vendor</h4>
+    <ion-list style="cursor:pointer;">
+
+        <ion-item *ngFor="let item of category.vendors; index as i;" (click)="selected($event, item)">
+          <ion-label>{{item}}</ion-label>
+        </ion-item>
+
+
+        <ion-item detail (click)="manageVendors($event)" color="primary" style="font-weight:bold;margin-top:30px;">
+            Manage Vendors
+        </ion-item>
+
+    </ion-list>
+
+</div>
+
+
+
+
+<!-- Manage Vendors -->
+<div [hidden]="!manage" style="background-color:gray;">
+
+    
+
+
+    <h4 style="text-align:center;background-color:gray;color:white;height:35px;padding-top:10px;">Manage Vendors</h4>
+
+
+    <ion-toolbar style="border-bottom:solid 1px gray;">
+        <ion-buttons slot="secondary">
+            <ion-button (click)="manageVendorsCancel($event)">
+                Cancel
+            </ion-button>
+        </ion-buttons>
+      <ion-buttons slot="primary">
+          <ion-button (click)="manageVendorsSave($event)">
+              Save
+          </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+
+
+    <ion-list style="cursor:pointer;">
+        <ion-item style="font-size:small;margin-top:2px;">
+            Each category has its own vendor list. This list is for {{category.name}}.
+        </ion-item>
+        <ion-item (click)="manageVendorsAddLine($event)" color="primary" style="font-weight:bold;margin-top:30px;">
+            Add Line
+            <ion-icon slot="end" name="add"></ion-icon>
+        </ion-item>
+
+
+        <ion-item *ngFor="let item of category.vendors; index as i;">
+            <div slot="start">{{i+1}}</div>
+            <ion-input value="{{item}}"></ion-input>
+            <ion-icon name="close" slot="end"></ion-icon>
+        </ion-item>
+
+
+        
+
+    </ion-list>
+</div>

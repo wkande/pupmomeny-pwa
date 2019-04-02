@@ -7,6 +7,7 @@ import { BACKEND } from '../../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 
+
 @Component({
   selector: 'app-upsert-category',
   templateUrl: './upsert-category.page.html',
@@ -60,7 +61,6 @@ export class UpsertCategoryPage implements OnInit {
           this.showTryAgainBtn = false;
 
           if(this.nameInput.nativeElement.value.length == 0){
-            this.error =  'Please enter a caname.';
             this.error = 'Please enter a category name.';
             return;
           }
@@ -75,7 +75,7 @@ export class UpsertCategoryPage implements OnInit {
               {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           else{
-            var result = await this.http.patch(BACKEND.url+'/categories/'+this.category.id, 
+            var result = await this.http.patch(BACKEND.url+'/categories/'+this.category.id+'/name', 
               {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           this.category = result['expense'];

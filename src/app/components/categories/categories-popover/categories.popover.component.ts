@@ -28,7 +28,7 @@ export class CategoriesPopoverComponent implements OnInit {
   ngOnInit() {
     console.log('>>>>>>>>>>>>>>>> CategoriesPopoverComponent.ngOnInit <<<<<<<<<<<<<<<<<')
     this.categories = this.cache.categories;
-    console.log('CategoriesPopoverComponent > ngOnInt > this.categories> ', this.categories);
+    console.log('CategoriesPopoverComponent > ngOnInt > this.categories > ', this.categories);
   }
 
 

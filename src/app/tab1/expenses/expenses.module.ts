@@ -14,8 +14,6 @@ import { UpsertExpenseSharedPageModule } from  './upsert-expense/upsert-expense-
 import { DeleteExpenseSharedPageModule } from  './delete-expense/delete-expense-shared.module';
 
 
-//import { UpsertCategoryPage } from './../upsert-category/upsert-category.page';
-
 import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../../services/auth.guard';
-import { ModalController, NavController, Events, ActionSheetController } from '@ionic/angular';
+import { ModalController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
@@ -46,8 +46,8 @@ export class ExpensesPage implements OnInit {
 
   constructor(private router:ActivatedRoute, private http: HttpClient, private authGuard:AuthGuard, 
     private modalController:ModalController,
-    private filterService:FilterService, private events: Events, private navController:NavController,
-    private utils:UtilsService, private actionSheetController:ActionSheetController) { 
+    private filterService:FilterService, private events: Events,
+    private utils:UtilsService) { 
 
       console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
     }
@@ -59,9 +59,25 @@ export class ExpensesPage implements OnInit {
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         this.filter = this.filterService.getFilter();
 
+        // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
         const params:any = this.router.params;
+        this.category = JSON.parse(JSON.stringify(params._value));
+        
+        // The vendors are in params._value, each as a key, not the array you would expect.
+        // Their key is a number, then come the text keys for things like id, name.
+        // This happens because the array got passed in [routerLink]="".
+        this.category.vendors = [];
+        for (var key in params._value) {
+          if (params._value.hasOwnProperty(key)) {
+              if(Number(key) > -1){ // The key is the number from the array
+                this.category.vendors.push(params._value[key]);
+                delete this.category[key]; // Remove the key outside the array
+              }
+          }
+        }
+        
+        console.log('ExpensesPage > ngOnInit >', this.category)
 
-        this.category = params._value;
         this.getExpenses();
 
         // This round about way keeps the event from firing itself more than 
@@ -70,10 +86,6 @@ export class ExpensesPage implements OnInit {
         // https://github.com/ionic-team/ionic/issues/13446
         this.eventHandler = this.loadEvent.bind( this );
         this.events.subscribe('filter-changed', this.eventHandler);
-
-      
-        // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-        console.log('ExpensesPage this.router.params', this.router.params);
       }
       catch(err){
         this.error = err;
@@ -143,7 +155,6 @@ export class ExpensesPage implements OnInit {
 
 
   async getExpenses(){
-    console.log('>>> GET > getExpenses')
     try{
       this.expenses = [];
       this.error = null;
@@ -152,11 +163,8 @@ export class ExpensesPage implements OnInit {
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
-      //console.log('--> getExpenses: HEADERS', headers);
 
-    
       let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      console.log('final q', q)
 
       var result = await this.http.get(BACKEND.url+'/categories/'+this.category.id+'/expenses?q='+q
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
@@ -175,7 +183,6 @@ export class ExpensesPage implements OnInit {
 
     }
     catch(err){
-      console.log("ERROR getExpenses", err)
       this.error = err;
     }
     finally{
@@ -184,57 +191,8 @@ export class ExpensesPage implements OnInit {
   }
 
 
-  /*
-  startSearch(ev:any){
-    this.skip = 0;
-    this.searchExpenses(ev);
-  }
 
   
-  async searchExpenses(ev:any){
-    console.log('>>> SEARCH > searchExpenses', ev.detail.value)
-    try{
-      this.searchEvent = ev;
-      this.expenses = [];
-      this.error = null;
-      this.loading = true;
-
-      let headers = new HttpHeaders();
-      headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
-      headers = headers.set('wallet',  JSON.stringify(this.wallet));
-      //console.log('--> searchExpenses: HEADERS', headers);
-
-      let q = ev.detail.value;
-      //let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      console.log('final q', q)
-
-      var result = await this.http.get(BACKEND.url+'/expenses/context?q='+q+'&skip='+this.skip, {headers: headers})
-        .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
-      this.totalCount = result['totalCount'];
-      this.expenses = result['expenses'];
-      
-      
-      // Get total amt of all expenses
-      // floating point arithmetic is not always 100% accurate, use Decimals
-      this.total = new Decimal(0);
-      for(var i=0; i<this.expenses.length; i++){
-        this.total = Decimal.add(this.total, this.expenses[i].amt);
-      }
-      this.total = parseFloat(this.total.toString());
-        
-      
-    }
-    catch(err){
-      this.loading = false;
-      console.log("ERROR searchExpenses", err)
-      this.error = err;
-    }
-    finally{
-      this.loading = false;
-    }
-  }*/
-
-
   
   async presentUpsertModal(expense:any) {
     try{

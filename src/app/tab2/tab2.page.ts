@@ -137,15 +137,18 @@ export class Tab2Page {
   async presentUpsertModal(expense:any, mode:string) {
     try{
         this.error = null;
-        console.log('ExpensesPage:presentUpsertModal()', expense)
+        
+        let category = {id:expense.c_id, name:expense.c_name};
+        //console.log('Tab2Page:presentUpsertModal()', expense, category);
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expense: expense, mode:mode }
+          componentProps: { expenseParam: expense, categoryParam:category, mode:mode }
+          // componentProps: { expenseParam: expense, categoryParam:this.category, mode:'edit' }
         });
         await modal.present();
         
         const { data } = await modal.onDidDismiss();
-        console.log('ExpensesPage:presentUpsertModal():dismissed: data',data);
+        console.log('Tab2Page:presentUpsertModal():dismissed: data',data);
 
         // Reload
         if(data != null){
@@ -160,10 +163,11 @@ export class Tab2Page {
 
   async presentDeleteModal(expense:any) {
     try{
-      let category = {id:expense.c_id, name:expense.c_name}
+        let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: DeleteExpensePage,
           componentProps: { expense: expense, category:category }
+          
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();

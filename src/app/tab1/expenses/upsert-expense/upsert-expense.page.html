@@ -18,6 +18,10 @@
 
 
 <ion-content padding>
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="submit($event)"></error-component>
+
+
+
     <ion-list>
 
         <!-- CAT -->
@@ -57,7 +61,7 @@
 
         <!-- VENDOR -->
         <ion-item>
-            <div type="cssDiv" id='catPopoverBtn' slot="start" (click)="showCategories($event)">
+            <div type="cssDiv" id='catPopoverBtn' slot="start" (click)="showVendors($event)">
                 <div>Vendor</div>
                 <ion-icon style="font-size:300%;" name="filing" color="primary"></ion-icon>
                 <div>(optional)</div>

@@ -129,7 +129,7 @@ export class Tab1Page {
   }
   
 
-  async presentUpsertCategoryModal(category:any, mode:string) {
+  async presentUpsertModal(category:any, mode:string) {
     try{
         this.error = null;
         console.log('Tab1Page:presentUpsertCategoryModal()', category)
@@ -152,32 +152,6 @@ export class Tab1Page {
     } 
   }
 
-  async presentUpsertExpenseModal(expense:any, mode:string) {
-    try{
-        /*this.error = null;
-        console.log('Tab1Page:presentUpsertExpenseModal()', expense)
-        const modal = await this.modalController.create({
-          component: UpsertExpensePage,
-          componentProps: { expense: expense, mode:mode }
-        });
-        await modal.present();
-        
-        const { data } = await modal.onDidDismiss();
-        console.log('ExpensesPage:presentUpsertModal():dismissed: data',data);
-
-        // Reload
-        if(data != null){
-          this.filter = this.filterService.getFilter();
-
-          // @TODO 
-          // Need to add the expense if it is in fact part of the displayed filter
-          // this.getExpenses();
-        }*/
-    }
-    catch(err){
-      this.error = err;
-    } 
-  }
 
 
   async presentDeleteModal(category:any) {

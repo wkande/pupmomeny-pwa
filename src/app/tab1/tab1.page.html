@@ -59,7 +59,7 @@
 
 
       <ion-item-sliding *ngFor="let item of categories; index as i;">
-        <ion-item [routerLink]="['/expenses', item.id, item.name]" detail>
+        <ion-item [routerLink]="['/expenses', item.id, item.name, item.vendors]" detail>
           <!--div slot="start" style="color:purple;font-size:small;">{{item.id}}</div-->
           <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
           <!-- https://angular.io/api/common/CurrencyPipe -->
@@ -73,7 +73,7 @@
       </ion-item-sliding>
 
       <div [hidden]="error || loading" style="text-align:center;margin-top:10px;">
-          <ion-button size="medium" fill="outline" (click)="presentUpsertCategoryModal(null, 'insert')">
+          <ion-button size="medium" fill="outline" (click)="presentUpsertModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add a Category
           </ion-button>
