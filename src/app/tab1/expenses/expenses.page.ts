@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../../services/auth.guard';
-import { ModalController, Events } from '@ionic/angular';
+import { ModalController, Events, NavController } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
@@ -36,19 +36,17 @@ export class ExpensesPage implements OnInit {
   skip:number = 0;
   totalCount:number = 0;
   error:any;
-  searchEvent:any;
-
   ready:boolean = false;
 
 
   eventHandler:any; // method to carry "this" into the event handler
 
 
-  constructor(private router:ActivatedRoute, private http: HttpClient, private authGuard:AuthGuard, 
-    private modalController:ModalController,
+  constructor(private routerActivated:ActivatedRoute, private router:Router,
+    private http: HttpClient, private authGuard:AuthGuard, 
+    private modalController:ModalController, private navCtrl:NavController,
     private filterService:FilterService, private events: Events,
     private utils:UtilsService) { 
-
       console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
     }
 
@@ -60,7 +58,7 @@ export class ExpensesPage implements OnInit {
         this.filter = this.filterService.getFilter();
 
         // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-        const params:any = this.router.params;
+        const params:any = this.routerActivated.params;
         this.category = JSON.parse(JSON.stringify(params._value));
         
         // The vendors are in params._value, each as a key, not the array you would expect.
@@ -76,7 +74,7 @@ export class ExpensesPage implements OnInit {
           }
         }
         
-        console.log('ExpensesPage > ngOnInit >', this.category)
+        console.log('ExpensesPage > ngOnInit category>', this.category)
 
         this.getExpenses();
 
@@ -141,6 +139,18 @@ export class ExpensesPage implements OnInit {
     this.getExpenses();
   }
 
+  /*navigateWithState(ev:any, exp:any, path:string) {
+    // https://netbasal.com/set-state-object-when-navigating-in-angular-7-2-b87c5b977bb
+    this.router.navigate(['/expense', 
+          { id: exp.id, vendor:exp.vendor, amt:exp.amt, dttm:exp.dttm, note:exp.note, 
+            c_id:this.category.id, c_name:this.category.name, rootTab:'/tabs/tab1'
+          }
+
+    ]);
+
+
+  }*/
+
 
 
   doRefresh(event) {
@@ -159,6 +169,7 @@ export class ExpensesPage implements OnInit {
       this.expenses = [];
       this.error = null;
       this.loading = true;
+      this.ready = false;
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -172,6 +183,7 @@ export class ExpensesPage implements OnInit {
  
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
+      console.log(this.expenses)
       
       // Get total amt of all expenses
       // floating point arithmetic is not always 100% accurate, use Decimals
@@ -180,7 +192,7 @@ export class ExpensesPage implements OnInit {
         this.total = Decimal.add(this.total, this.expenses[i].amt);
       }
       this.total = parseFloat(this.total.toString());
-
+      this.ready = true;
     }
     catch(err){
       this.error = err;

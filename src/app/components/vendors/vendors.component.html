@@ -1,0 +1,41 @@
+
+
+
+<!-- List of Vendors (PICK)-->
+<ion-list [hidden]="manage" style="cursor:pointer;">
+    <ion-item detail *ngFor="let item of category.vendors; index as i;" (click)="vendorSelected($event, item)">
+        <ion-label>{{item}}</ion-label>
+    </ion-item>
+</ion-list>
+
+
+<!-- List of Vendors (MANAGE) -->
+<ion-list [hidden]="!manage" style="cursor:pointer;">
+    <ion-item *ngFor="let item of vendorsManage; index as i;">
+        {{i}}<ion-input type="text" value="{{item}}" placeholder="Enter vendor name"></ion-input>
+        <ion-icon name="close" slot="end"></ion-icon>
+    </ion-item>
+</ion-list>
+
+
+<!-- FAB MANAGE -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="manage = manage != true">
+        <ion-icon name="create"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-list side="start">
+        <!-- Need thisa as a holder to convert above fab to a close button-->
+    </ion-fab-list>
+</ion-fab>
+
+
+<!-- FOOTER -->
+<ion-footer class="footer" [hidden]="!manage">
+    <ion-toolbar>
+            <ion-button color="primary" fill="outline" style="margin-right:20px;" (click)="manageVendorsAddLine($event)">Add Line</ion-button>
+            <ion-button color="primary">Save List</ion-button>
+    </ion-toolbar>
+</ion-footer>
+
+

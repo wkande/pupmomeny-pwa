@@ -132,10 +132,12 @@ export class Tab1Page {
   async presentUpsertModal(category:any, mode:string) {
     try{
         this.error = null;
-        console.log('Tab1Page:presentUpsertCategoryModal()', category)
+        console.log('Tab1Page > presentUpsertCategoryModal()', category)
         const modal = await this.modalController.create({
           component: UpsertCategoryPage,
-          componentProps: { category: category, mode:mode }
+          componentProps: { category: category, mode:mode },
+          showBackdrop:true,
+          backdropDismiss:false
         });
         await modal.present();
         

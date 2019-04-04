@@ -5,51 +5,52 @@
           <!-- https://github.com/ionic-team/ionic/issues/17421 -->
           <!-- POST ID: 442623641 commented -->
           <!-- Works with or without routerDirection="back" not sure why or if it is needed -->
-          <ion-back-button [hidden]="!routerLinkBack" defaultHref="" [routerLink]="routerLinkBack" routerDirection="back"></ion-back-button>
-          <ion-back-button [hidden]="routerLinkBack" defaultHref=""  routerDirection="back"></ion-back-button>
+          <ion-back-button [hidden]="!data.routerLinkBack" defaultHref="" [routerLink]="data.routerLinkBack" routerDirection="back"></ion-back-button>
+          <ion-back-button [hidden]="data.routerLinkBack" defaultHref=""  routerDirection="back"></ion-back-button>
 
         </ion-buttons>
       <ion-title>Expense</ion-title>
     </ion-toolbar>
   </ion-header>
 
-<ion-content padding>
-    <!--error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component-->
+<ion-content padding [hidden]="!data">
+    <error-component [error]="error"></error-component>
+
   <ion-list>
 
     <ion-item style="margin-top:30px;">
       <ion-label position="stacked" style="font-size:120%;color:gray;">Category</ion-label>
-      <div type="data">{{expense.catName}}</div>
+      <div type="data" style="border-left:solid 1px gray;">{{data.category.name}}</div>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" style="font-size:120%;color:gray;">Date</ion-label>
-      <div type="data">{{expense.dttm}}</div>
+      <div type="data" style="border-left:solid 1px gray;">{{data.expense.dttm}}</div>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" style="font-size:120%;color:gray;">Amount</ion-label>
-      <div type="data">{{expense.amt}}</div>
+      <div type="data" style="border-left:solid 1px gray;">{{data.expense.amt}}</div>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" style="font-size:120%;color:gray;">Vendor</ion-label>
-      <div type="data">{{expense.vendor}}</div>
+      <div type="data" style="border-left:solid 1px gray;">{{data.expense.vendor}}</div>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" style="font-size:120%;color:gray;">Note</ion-label>
-      <div type="data">{{expense.note}}</div>
+      <div type="data" style="border-left:solid 1px gray;">{{data.expense.note}}</div>
     </ion-item>
 
 
   </ion-list>
 
   <div style="text-align:center;margin-top:10px;">
-      <ion-button size="medium" (click)="presentExpenseUpsertModal(null, 'insert')">
+      <ion-button size="medium" (click)="presentUpsertModal($event)">
           Edit
       </ion-button>
-      <ion-button size="medium" color="danger" style="margin-left:15px;" (click)="presentExpenseDeleteModal($event)">
+      <ion-button size="medium" color="danger" style="margin-left:15px;" (click)="presentDeleteModal($event)">
           Delete
       </ion-button>
   </div>

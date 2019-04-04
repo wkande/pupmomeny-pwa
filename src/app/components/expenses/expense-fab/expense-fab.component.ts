@@ -22,7 +22,8 @@ export class ExpenseFabComponent implements OnInit {
         console.log('ExpenseFabComponent:presentUpsertModal()')
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expense: null, mode:"insert" }
+          componentProps: { expense: null, mode:"insert" },
+          backdropDismiss:false
         });
         await modal.present();
         

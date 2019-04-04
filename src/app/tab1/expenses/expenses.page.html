@@ -65,26 +65,30 @@
       </ion-button>
 
 
-      <ion-item-sliding [hidden]="!expenses" *ngFor="let item of expenses; index as i;">
+      <ion-item-sliding [hidden]="!ready" *ngFor="let item of expenses; index as i;">
         <!-- expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName -->
 
 
-        <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, '/tabs/tab1']" detail>
-          <!--ion-icon slot="start" class="icon" name="{{item.icon}}"></ion-icon-->
+        <!--ion-item 
+        [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, '/tabs/tab1']" 
+        detail
+        routerDirection="forward"-->
+
+        <ion-item routerLink="/expense" [queryParams] = "{data: {expense:item, category:category, rootTab:'/tabs/tab1'} | json }" detail routerDirection="forward">
+          <!--ion-item (click)="navigateWithState($event, item, '/tabs/tab1')" detail-->
           <span slot="start">{{i+skip+1}}</span>
 
-          <!-- tab1 -->
-          <ion-label [hidden]="isSearch" class="name">{{item.vendor}}
-            <br><span class="dttm">{{item.dttm}}</span>
+          <ion-label class="name">{{item.dttm}}
+            <br><span class="dttm">{{item.vendor}}</span>
             <br><span class="dttm">{{item.note}}</span> 
           </ion-label>
 
           <!-- tab2 SEARCH -->
-          <ion-label [hidden]="!isSearch" class="name">{{item.c_name}}
+          <!--ion-label [hidden]="!isSearch" class="name">{{item.c_name}}
             <br><span class="dttm">{{item.vendor}}</span>
             <br><span class="dttm">{{item.dttm}}</span>
             <br><span class="dttm">{{item.note}}</span> 
-          </ion-label>
+          </ion-label-->
 
           
           <!--  https://angular.io/api/common/CurrencyPipe -->
