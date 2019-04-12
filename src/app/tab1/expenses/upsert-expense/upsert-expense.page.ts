@@ -6,6 +6,7 @@ import { timeout } from 'rxjs/operators';
 import { BACKEND } from '../../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
+import { CacheService } from '../../../services/cache/cache.service';
 
 
 @Component({
@@ -29,7 +30,8 @@ export class UpsertExpensePage implements OnInit {
   // Data entry fields
   note:string
   categoryOrg:any; // The original category needed if the user changes the cateory_id
-  category:any; //= {id:null, name:null, vendors:null};
+  // cat must be initialized or the ngOnInt will cause HTML errors if ngOnInt failes
+  category:any = {id:null, name:null, vendors:null};
   amt:number;
   credit:boolean = false;
   vendor:string;
@@ -50,7 +52,7 @@ export class UpsertExpensePage implements OnInit {
 
   constructor(private modalController:ModalController, private http:HttpClient,
     private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService) { 
+    private utils:UtilsService, private cache:CacheService) { 
 
   }
 
@@ -58,19 +60,20 @@ export class UpsertExpensePage implements OnInit {
   ngOnInit() {
     try{
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
-
         // Insert
         if(this.mode === 'insert'){
           this.title = 'New Expense';
-          this.category = {id:null, name:null, vendors:null};
           let element: HTMLElement = document.getElementById('catPopoverBtn') as HTMLElement;
           element.click(); // Open the category popover list
         }
         // Edit
         else{
           this.categoryOrg = JSON.parse(JSON.stringify(this.categoryParam)); // Deep copy because the param is read only
-          this.title = "Edit Expense";
+          // The vendors in catgeory may-or-may-not be presented, get them from cache
+          this.categoryOrg.vendors = this.cache.getVendors(this.categoryOrg.id);
           this.category = JSON.parse(JSON.stringify(this.categoryOrg)); // Deep copy
+
+          this.title = "Edit Expense";
 
           // Date
           // Set to noon of the date so all time zones can adjust of of noon to stay on the same day
@@ -89,11 +92,12 @@ export class UpsertExpensePage implements OnInit {
           
           this.note = this.expenseParam.note;
         }
-
-        console.log('UpsertExpensePage > ngOnInit', this.mode, this.expenseParam, this.categoryParam, this.categoryOrg);
+        //console.log('UpsertExpensePage > ngOnInit', this.mode, this.expenseParam, this.categoryParam, this.categoryOrg);
         this.ready = true;
     }
     catch(err){
+      console.log('READY', this.ready)
+      console.log('ERROR', err)
       this.showTryAgainBtn = false;
       this.error = err;
     }
@@ -137,8 +141,6 @@ export class UpsertExpensePage implements OnInit {
         this.error = null;
         this.showTryAgainBtn = false;
 
-              //this.note = this.element.nativeElement.getElementsByTagName('textarea')[0].value;
-              //let vendor = this.vendorInput.nativeElement.value;
               console.log('NOTE', this.note)
               console.log('VENDOR', this.vendor)
               // Leading white space

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Events } from '@ionic/angular';
 import { UpsertExpensePage } from '../upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from '../delete-expense/delete-expense.page';
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-expense',
@@ -18,11 +18,12 @@ export class ExpensePage implements OnInit {
   wallet:any;
   error:any;
   data:any;
+  eventHandler_expenseDeleted:any; // method to carry "this" into the event handler
 
 
-  constructor(private router:ActivatedRoute, private modalController:ModalController) { 
+  constructor(private router:ActivatedRoute, private modalController:ModalController,
+    private events:Events, private _location:Location) { 
     //console.log('>>>>>>>>>>>>>>>> ExpensePage.constructor <<<<<<<<<<<<<<<<<')
-
   }
 
 
@@ -39,23 +40,41 @@ export class ExpensePage implements OnInit {
     
           // Set back button
           // We want to use the standard back button for/tabs/tab1
-          if(this.data.routerLinkBack == '/tabs/tab1') this.data.routerLinkBack = null;
+          if(this.data.rootTab == '/tabs/tab1') this.data.routerLinkBack = null;
+          else this.data.routerLinkBack = this.data.rootTab;
     
-    
-          // Set expense object
-          // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-          //this.expense = Object.assign({}, this.router.params['_value']); // deep copy
-          // If vendor or note was null they got received here as "null" strings.
-          // Neeed to convert back to null.
-          //if(this.expense.vendor === "null") this.expense.vendor = null;
-          //if(this.expense.note === "null") this.expense.note = null;
-    
+          this.eventHandler_expenseDeleted = this.expenseDeleted.bind( this );
+          this.events.subscribe('expense-deleted', this.eventHandler_expenseDeleted);
+  
           console.log('this.data > final', this.data);
       }
       catch(err){
         this.error = err;
       }
   }
+
+
+  ngOnDestroy(){
+    console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    this.events.unsubscribe('expense-deleted', this.eventHandler_expenseDeleted);
+  }
+
+
+  expenseDeleted(data){
+    try{
+      console.log('ExpensePage > expenseDeleted > subscribe > expense-deleted')
+      console.log(data, this.data)
+      if(data.id === this.data.expense.id){
+          console.log('CLOSE')
+          this._location.back();
+      }
+    }
+    catch(err){
+      console.log('loadEvent', err)
+      this.error = err;
+    }
+  }
+
 
 
   async presentUpsertModal(ev:any) {

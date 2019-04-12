@@ -29,7 +29,7 @@
 <!-- HEADER VENDOR PICKER -->
 <ion-header [hidden]="hideVendorPicker">
     <ion-toolbar>
-        <ion-title>Select a Vendor</ion-title>
+        <ion-title>Vendors List</ion-title>
       <ion-buttons slot="primary">
           <ion-icon name="close" (click)="hideVendors($event)"
           style="float:right;font-size:200%;margin-right:20px;margin-top:-7px;cursor:pointer;">
@@ -54,7 +54,7 @@
     </vendors-component>
 
 
-    <ion-list [hidden]="!hideCatPicker || !hideVendorPicker">
+    <ion-list [hidden]="!hideCatPicker || !hideVendorPicker || !ready">
 
         <!-- CAT -->
         <ion-item id='catPopoverBtn' slot="start" (click)="showCategories($event)">

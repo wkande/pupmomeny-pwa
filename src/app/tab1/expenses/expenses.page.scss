@@ -4,19 +4,26 @@
     margin-right:20px;
   }
   
-  .name{
-    color:grayscale($color: #667878);
-    font-weight:bold;
-  }
+.name{
+  color:grayscale($color: #667878);
+  font-weight:bold;
+}
 
-  .dttm{
-    color:grayscale($color: #667878);
-    font-weight:normal;
-  }
-  
-  .cnt{
-    color:gray;
-  
-    font-size:small;
-  }
+.dttm{
+  color:grayscale($color: #667878);
+  font-weight:normal;
+}
 
+.cnt{
+  color:gray;
+
+  font-size:small;
+}
+
+.dateDivider{
+  margin-top: 0px;
+  min-height: 20px!important;
+  color:dimgray;
+  background-color:#F0F0F0;
+  border-top:solid 1px lightgrey;
+}

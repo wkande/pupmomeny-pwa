@@ -16,6 +16,11 @@ export class FilterService {
   getFilter(){
     try{
       let filter = JSON.parse(localStorage.getItem('filter'));
+      // It is possible that the filter got removed from localstorage by the OS or browser
+      if(!filter){
+          filter =  {tag:'btnThisMonth', range:{start:null, end:null}, search:{toggle:false, text:null}};
+          localStorage.setItem("filter", JSON.stringify(filter));
+      }
 
       if(filter.tag == 'btnThisMonth') return(this.thisMonth(filter));
       else if(filter.tag == 'btnLastMonth') return(this.lastMonth(filter));

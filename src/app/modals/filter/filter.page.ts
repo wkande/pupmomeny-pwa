@@ -23,6 +23,11 @@ export class FilterPage implements OnInit {
 
   ngOnInit() {
     this.filter = JSON.parse(localStorage.getItem("filter"));
+    // It is always possible that the filter got removed from localstorage
+    if(!this.filter){
+        this.filter =  {tag:'btnThisMonth', range:{start:null, end:null}, search:{toggle:false, text:null}};
+        localStorage.setItem("filter", JSON.stringify(this.filter));
+    }
     if(this.filter.tag == 'btnDateRange') this.hideDateRange = false;
     console.log('FilterPage.onInit >', this.filter);
   }

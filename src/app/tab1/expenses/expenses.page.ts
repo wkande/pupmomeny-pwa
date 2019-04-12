@@ -37,9 +37,9 @@ export class ExpensesPage implements OnInit {
   totalCount:number = 0;
   error:any;
   ready:boolean = false;
-
-
-  eventHandler:any; // method to carry "this" into the event handler
+  // methods to carry "this" into the event handler
+  eventHandler_filterChanged:any; 
+  eventHandler_expenseDeleted:any;
 
 
   constructor(private routerActivated:ActivatedRoute, private router:Router,
@@ -55,7 +55,7 @@ export class ExpensesPage implements OnInit {
       try{
         console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
-        this.filter = this.filterService.getFilter();
+        
 
         // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
         const params:any = this.routerActivated.params;
@@ -82,8 +82,11 @@ export class ExpensesPage implements OnInit {
         // once when the view is destroyed. Because the removal of the event cannot be done
         // with a promise. And without it will remove it for all views.
         // https://github.com/ionic-team/ionic/issues/13446
-        this.eventHandler = this.loadEvent.bind( this );
-        this.events.subscribe('filter-changed', this.eventHandler);
+        this.eventHandler_filterChanged = this.loadEvent.bind( this );
+        this.events.subscribe('filter-changed', this.eventHandler_filterChanged);
+        
+        this.eventHandler_expenseDeleted = this.expenseDeleted.bind( this );
+        this.events.subscribe('expense-deleted', this.eventHandler_expenseDeleted);
       }
       catch(err){
         this.error = err;
@@ -93,21 +96,31 @@ export class ExpensesPage implements OnInit {
   
   ngOnDestroy(){
     console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
-    this.events.unsubscribe('filter-changed', this.eventHandler);
+    this.events.unsubscribe('filter-changed', this.eventHandler_filterChanged);
+    this.events.unsubscribe('expense-deleted', this.eventHandler_expenseDeleted);
   }
 
   
   loadEvent(){
     try{
       console.log('ExpensesPage > loadEvent > subscribe > fired > filter-changed')
-      console.log(this)
-      this.filter = this.filterService.getFilter();
       this.skip = 0;
       this.getExpenses();
     }
     catch(err){
       console.log('loadEvent', err)
       this.error = err;
+    }
+  }
+
+
+  expenseDeleted(data:any){
+    console.log('ExpensesPage DELETED', data)
+    for (var i=0;i<this.expenses.length; i++){
+        if(data.id === this.expenses[i].id){
+          var removed = this.expenses.splice(i,1);
+          console.log(removed)
+        }
     }
   }
 
@@ -139,19 +152,6 @@ export class ExpensesPage implements OnInit {
     this.getExpenses();
   }
 
-  /*navigateWithState(ev:any, exp:any, path:string) {
-    // https://netbasal.com/set-state-object-when-navigating-in-angular-7-2-b87c5b977bb
-    this.router.navigate(['/expense', 
-          { id: exp.id, vendor:exp.vendor, amt:exp.amt, dttm:exp.dttm, note:exp.note, 
-            c_id:this.category.id, c_name:this.category.name, rootTab:'/tabs/tab1'
-          }
-
-    ]);
-
-
-  }*/
-
-
 
   doRefresh(event) {
     console.log('Begin refresh async operation');
@@ -171,6 +171,9 @@ export class ExpensesPage implements OnInit {
       this.loading = true;
       this.ready = false;
 
+      this.filter = this.filterService.getFilter();
+        console.log('ExpensesPage.ngOnInit > ',this.filter)
+
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
@@ -183,13 +186,20 @@ export class ExpensesPage implements OnInit {
  
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
-      console.log(this.expenses)
+
+      console.log('ExpensesPage.getExpenses >',this.expenses)
       
-      // Get total amt of all expenses
+      // Get total amt of all expenses and set the date divider
       // floating point arithmetic is not always 100% accurate, use Decimals
       this.total = new Decimal(0);
       for(var i=0; i<this.expenses.length; i++){
+        // Total
         this.total = Decimal.add(this.total, this.expenses[i].amt);
+
+        // Date divider
+        if(i === 0) this.expenses[i].d = this.expenses[i].dttm;
+        else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
+        else this.expenses[i].d = this.expenses[i].dttm;
       }
       this.total = parseFloat(this.total.toString());
       this.ready = true;

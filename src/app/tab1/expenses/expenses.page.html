@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
+  <ion-toolbar color="tertiary">
       <ion-buttons slot="start">
           <ion-back-button defaultHref="" routerDirection="back"></ion-back-button>
       </ion-buttons>
@@ -31,27 +31,27 @@
 
       
 
-      <!-- CATEGORY LIST SUMMARY -->
+      <!-- LIST SUMMARY -->
       <div>
-        <ion-item-divider style="border-bottom:1px solid lightgrey;">
-            <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
-                style="margin-left:-5px;font-size:120%;color:black;">
-              {{filter.tag}}
-            </div>
-            <ion-label slot="start" style="color:dimgray;margin-right:24px;">
-                <span [hidden]="loading" class="cnt"> &nbsp;({{totalCount}})</span>
-            </ion-label>
-            <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">{{total | number : '1.2-2'}}</ion-label>
-        </ion-item-divider>
-        
-        <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
-            *ngIf="filter.range.startDisplay">
-          {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
-        </div>
-        <div style="background-color:#9370DB;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
-            *ngIf="filter.search.toggle">
-          Search: {{filter.search.text}}
-        </div>
+          <ion-item-divider style="border-bottom:1px solid lightgrey;">
+              <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
+                  style="margin-left:-5px;font-size:120%;color:black;">
+                {{filter.tag}}
+              </div>
+              <ion-label slot="start" style="color:dimgray;margin-right:24px;">
+                  <span [hidden]="loading" class="cnt"> &nbsp;({{totalCount}})</span>
+              </ion-label>
+              <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;" [hidden]="loading">{{total | number : '1.2-2'}}</ion-label>
+          </ion-item-divider>
+          <!-- DATE RANGE -->
+          <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+              *ngIf="filter.range.startDisplay">
+              {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
+          </div>
+          <!--div style="background-color:#7044ff;text-align:center;color:white;border-top:solid 1px white;padding:4px 2px 4px 2px;" 
+              *ngIf="filter.search.toggle">
+            Text Search: {{filter.search.text}}
+          </div-->
       </div>
 
 
@@ -64,42 +64,31 @@
         <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
       </ion-button>
 
+      <div [hidden]="!ready" *ngFor="let item of expenses; index as i;">
+          <ion-item-divider class="dateDivider" [hidden]="!item.d">
+              {{item.d}}
+          </ion-item-divider>
+                <ion-item-sliding >
+            
+                  <ion-item routerLink="/expense" [queryParams] = "{data: {expense:item, category:category, rootTab:'/tabs/tab1'} | json }" detail routerDirection="forward">
+                    <span slot="start" style="font-size:90%;color:gray;">{{i+skip+1}}</span>
 
-      <ion-item-sliding [hidden]="!ready" *ngFor="let item of expenses; index as i;">
-        <!-- expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName -->
+                    <ion-label class="name">{{item.vendor}}
+                      <br [hidden]="item.note" style="height:140px;">
+                      <br><span class="dttm">{{item.note}}</span> 
+                    </ion-label>
+                    
+                    <!--  https://angular.io/api/common/CurrencyPipe -->
+                    <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
+                    <ion-label class="amt">{{item.amt | number : '1.2-2'}}</ion-label>
+                  </ion-item>
+                  <ion-item-options side="start">
+                    <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
+                    <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
+                  </ion-item-options>
 
-
-        <!--ion-item 
-        [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, category.id, category.name, '/tabs/tab1']" 
-        detail
-        routerDirection="forward"-->
-
-        <ion-item routerLink="/expense" [queryParams] = "{data: {expense:item, category:category, rootTab:'/tabs/tab1'} | json }" detail routerDirection="forward">
-          <!--ion-item (click)="navigateWithState($event, item, '/tabs/tab1')" detail-->
-          <span slot="start">{{i+skip+1}}</span>
-
-          <ion-label class="name">{{item.dttm}}
-            <br><span class="dttm">{{item.vendor}}</span>
-            <br><span class="dttm">{{item.note}}</span> 
-          </ion-label>
-
-          <!-- tab2 SEARCH -->
-          <!--ion-label [hidden]="!isSearch" class="name">{{item.c_name}}
-            <br><span class="dttm">{{item.vendor}}</span>
-            <br><span class="dttm">{{item.dttm}}</span>
-            <br><span class="dttm">{{item.note}}</span> 
-          </ion-label-->
-
-          
-          <!--  https://angular.io/api/common/CurrencyPipe -->
-          <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
-          <ion-label class="amt">{{item.amt | number : '1.2-2'}}</ion-label>
-        </ion-item>
-        <ion-item-options side="start">
-          <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
-          <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
+                </ion-item-sliding>
+      </div>
 
       <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || loading">
         <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>

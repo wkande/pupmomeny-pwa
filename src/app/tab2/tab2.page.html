@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
+    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;">
       <ion-searchbar mode="md" style="background-color:gray;font-size:200%;" (ionChange)="startSearch($event)" debounce="800">
       </ion-searchbar>
       <!-- SEARCH SUMMARY -->
@@ -38,7 +38,11 @@
   
   
         <ion-item-sliding [hidden]="!expenses" *ngFor="let item of expenses; index as i;">
-            <ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, item.c_id, item.c_name, '/tabs/tab2']" detail>
+
+            <ion-item routerLink="/expense" 
+                      [queryParams] = "{data: {expense:item, category:{id:item.c_id, name:item.c_name}, rootTab:'/tabs/tab2'} | json }" 
+                      detail routerDirection="forward">
+            <!--ion-item [routerLink]="['/expense', item.id, item.vendor, item.amt, item.dttm, item.note, item.c_id, item.c_name, '/tabs/tab2']" detail-->
             <!--ion-item (click)="click($event, item)" detail-->
                 <span slot="start">{{i+skip+1}}</span>
 

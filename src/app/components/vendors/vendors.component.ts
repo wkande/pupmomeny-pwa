@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'vendors-component',
@@ -28,28 +28,26 @@ export class VendorsComponent implements OnInit {
   @Input() manage:boolean = false;
   @Output() selected: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() { 
+
+  constructor(private alert:AlertController) { 
     console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
 
   ngOnInit() {
     console.log('>>>>>>>>>>>>>>>> VendorsComponent.ngOnInit <<<<<<<<<<<<<<<<<')
-    console.log('VendorsComponent > ngOnInt > this.categories > ', this.category);
-    if(this.category.id)
-      this.vendorsManage = Array.from(this.category.vendors); // Deep copy
+    console.log('VendorsComponent > ngOnInt > this.category > ', this.category);
+    //if(this.category.id)
+      //this.vendorsManage = Array.from(this.category.vendors); // Deep copy
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
     console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
-    if(changes.category.currentValue.id){
+    if(changes.category.currentValue && changes.category.currentValue.id){
       console.log('ngOnChanges', changes.category.currentValue);
-      //console.log('this.error', this.error)
-      //this.getErrorMessage(this.error);
       this.vendorsManage = changes.category['vendors'];
     }
-
   }
 
 
@@ -60,7 +58,8 @@ export class VendorsComponent implements OnInit {
 
 
   manageVendors(ev:any){
-    this.manage = true;
+    this.vendorsManage = JSON.parse(JSON.stringify(this.category.vendors))
+    this.manage = true; //this.manage != true;
   }
 
 
@@ -69,18 +68,48 @@ export class VendorsComponent implements OnInit {
   }
 
 
+  manageVendorRemove(ev:any, i:number){
+    this.vendorsManage.splice(i, 1);
+  }
+
   manageVendorsSave(ev:any){
+    console.log('SAVE', this.vendorsManage)
+    this.category.vendors = this.vendorsManage;
     this.manage = false;
   }
 
 
-  manageVendorsAddLine(ev:any){
-    this.vendorsManage.unshift("New");
-    console.log(this.category.vendors)
-    let inputs = document.getElementsByTagName('ion-input');
-    for (let i = 0; i < inputs.length; ++i) {
-        console.log(i, inputs[i].value);
-    }
+  async presentAlertPrompt() {
+    const alert = await this.alert.create({
+      header: 'Prompt!',
+      inputs: [
+        {
+          name: 'vendor',
+          type: 'text',
+          placeholder: 'Enter vendor name'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            console.log(data)
+            this.vendorsManage.unshift(data.vendor);
+            console.log('Confirm Ok');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+    console.log('AFTER AWAIT', alert.inputs)
   }
 
 }

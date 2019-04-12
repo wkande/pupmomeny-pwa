@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import {UpsertExpensePage } from './upsert-expense.page';
+import { UpsertExpensePage } from './upsert-expense.page';
 import { IonicModule } from '@ionic/angular';
 import { ErrorModule } from '../../../components/error/error.module';
 import { CategoriesComponentModule } from '../../../components/categories/categories.module';

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UtilsService } from '../../../services/utils/utils.service';
-import { ModalController, AlertController, LoadingController} from '@ionic/angular';
+import { ModalController, AlertController, LoadingController, Events} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class DeleteExpensePage implements OnInit {
 
   constructor(private utilsService:UtilsService, private modalController:ModalController,
     private http:HttpClient, private authGuard:AuthGuard, private alertController:AlertController,
-    private loadingController:LoadingController) { }
+    private loadingController:LoadingController, private events:Events) { }
 
 
   ngOnInit() {
@@ -43,6 +43,7 @@ export class DeleteExpensePage implements OnInit {
         this.error = err;
       }
   }
+
 
 
   cancel(){
@@ -63,6 +64,7 @@ export class DeleteExpensePage implements OnInit {
 
         var result = await this.http.delete(BACKEND.url+'/categories/'+this.category.id+'/expenses/'+this.expense.id, {headers: headers} )
           .pipe(timeout(5000), delay(this.utilsService.delayTimer)).toPromise();
+        this.events.publish('filter-changed', {id:this.expense.id});
         this.modalController.dismiss({status:"OK"});
     }
     catch(err){

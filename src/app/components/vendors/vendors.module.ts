@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import {CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { VendorsComponent } from './vendors.component';
 import { IonicModule } from '@ionic/angular';
 
@@ -11,7 +12,7 @@ import { IonicModule } from '@ionic/angular';
   declarations: [
     VendorsComponent
   ],
-  imports:[IonicModule, CommonModule],
+  imports:[IonicModule, CommonModule, FormsModule],
   exports: [VendorsComponent]
 })
 

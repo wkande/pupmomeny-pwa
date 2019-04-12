@@ -85,10 +85,10 @@ export class Tab1Page {
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
       let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      //console.log('Tab1Page.getExpenses >  q', q, BACKEND.url)
+      //console.log('Tab1Page.getExpenses >  q', q)
 
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
-      .pipe(timeout(5000), delay (this.utils.delayTimer))
+      .pipe(timeout(15000), delay (this.utils.delayTimer))
       .toPromise();
       console.log(result)
       this.categories = result['categories'];
@@ -102,7 +102,6 @@ export class Tab1Page {
 
       this.total = parseFloat(this.total.toString());
       this.cache.categories = this.categories;
-      console.log('this.cache.categories', this.cache.categories)
       
     }
     catch(err){
