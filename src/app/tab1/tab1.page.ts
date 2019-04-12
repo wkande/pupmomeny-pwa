@@ -50,8 +50,16 @@ export class Tab1Page {
 
       this.events.subscribe('filter-changed', (data) => {
           try{
-            this.error = null;
-            console.log('Tab1Page > ngOnInit > subscribe > fired > categories-list-changed');
+            console.log('Tab1Page > ngOnInit > subscribe > fired > filter-changed');
+            this.getCategories();
+          }
+          catch(err){
+            this.error = err;
+          }
+      });
+      this.events.subscribe('dml', (data) => {
+          try{
+            console.log('Tab1Page > ngOnInit > subscribe > fired > dml');
             this.getCategories();
           }
           catch(err){
@@ -73,6 +81,7 @@ export class Tab1Page {
 
   async getCategories(){
     try{
+      console.log('>>> TAB1 > getCategories')
       this.error = null;
       this.loading = true;
       this.total = 0;
@@ -90,7 +99,7 @@ export class Tab1Page {
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
       .pipe(timeout(15000), delay (this.utils.delayTimer))
       .toPromise();
-      console.log(result)
+      //console.log(result)
       this.categories = result['categories'];
       
       // floating point arithmetic is not always 100% accurate, use Decimals
@@ -139,14 +148,7 @@ export class Tab1Page {
           backdropDismiss:false
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
-        //console.log('Tab1Page:presentUpsertModal():dismissed: data',data);
-
-        // Reload
-        if(data != null){
-          this.getCategories();
-        }
     }
     catch(err){
       this.error = err;
@@ -164,14 +166,8 @@ export class Tab1Page {
           componentProps: { category: category, categories:this.categories }
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
         console.log('Tab1Page:presentDeleteModal():dismissed');
-
-        // Reload
-        if(data != null){
-          this.getCategories();
-        }
     }
     catch(err){
       this.error = err;

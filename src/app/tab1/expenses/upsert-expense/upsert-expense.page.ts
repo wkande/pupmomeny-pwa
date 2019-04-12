@@ -1,5 +1,5 @@
 import { Component, OnInit, Input} from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
@@ -52,7 +52,7 @@ export class UpsertExpensePage implements OnInit {
 
   constructor(private modalController:ModalController, private http:HttpClient,
     private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService, private cache:CacheService) { 
+    private utils:UtilsService, private cache:CacheService, private events:Events) { 
 
   }
 
@@ -96,8 +96,6 @@ export class UpsertExpensePage implements OnInit {
         this.ready = true;
     }
     catch(err){
-      console.log('READY', this.ready)
-      console.log('ERROR', err)
       this.showTryAgainBtn = false;
       this.error = err;
     }
@@ -141,15 +139,15 @@ export class UpsertExpensePage implements OnInit {
         this.error = null;
         this.showTryAgainBtn = false;
 
-              console.log('NOTE', this.note)
-              console.log('VENDOR', this.vendor)
+              //console.log('NOTE', this.note)
+              //console.log('VENDOR', this.vendor)
               // Leading white space
               if(this.note) this.note.trim(); 
               if(this.vendor) this.vendor.trim(); 
               if(this.vendor && this.vendor.length === 0 )this.vendor = null;
               if(this.note && this.note.length === 0 )this.note = null;
-              console.log('NOTE', this.note)
-              console.log('VENDOR', this.vendor)
+              //console.log('NOTE', this.note)
+              //console.log('VENDOR', this.vendor)
 
 
               /********** DATA VALIDATION ***********/
@@ -159,11 +157,11 @@ export class UpsertExpensePage implements OnInit {
                   this.error = 'Please select a category.';
                   return;
               }
-              console.log('CATEGORY', this.category.id, this.category.name)
+              //console.log('CATEGORY', this.category.id, this.category.name)
               
               
               // AMT
-              console.log('AMT', this.amt)
+              //console.log('AMT', this.amt)
               if(!this.amt || this.amt == 0){
                   this.error = 'Invalid amount. Please enter a positive number.';
                   return;
@@ -172,14 +170,14 @@ export class UpsertExpensePage implements OnInit {
                   this.error = 'Negative numbers are not allowed. If this is a credit please use the credit toggle and a positive number.';
                   return;
               }
-              console.log('AMT', this.amt)
+              //console.log('AMT', this.amt)
 
               // DATE
               if(!this.dateSelected){
                 this.error = 'Please select a date.';
                 return;
               }
-              console.log('DATE', this.dateSelected.split('T')[0], typeof this.dateSelected)
+              //console.log('DATE', this.dateSelected.split('T')[0], typeof this.dateSelected)
               
 
           /********** DML **************/
@@ -192,7 +190,7 @@ export class UpsertExpensePage implements OnInit {
 
           // Convert amt for credit
           let amt = ((this.credit) ? -Math.abs(this.amt) : this.amt);
-          console.log('converted amount >', amt)
+          //console.log('converted amount >', amt)
 
           if(this.mode == 'insert'){
             let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt}
@@ -201,12 +199,16 @@ export class UpsertExpensePage implements OnInit {
           }
           else{
             let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt, cat_id:this.category.id};
-            console.log(body, this.categoryOrg)
+            //console.log(body, this.categoryOrg)
             var result = await this.http.put(BACKEND.url+'/categories/'+this.categoryOrg.id+'/expenses/'+this.expenseParam.id, 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
-          this.category = result['expense'];
-          this.modalController.dismiss({category:this.category, mode:this.mode});
+          console.log('UPSERT EXPENSE >>>', result)
+          // Why are we doing this below
+          // this.category = result['expense'];
+
+          this.events.publish('dml', {expense:result['expense'], mode:'delete'});
+          this.modalController.dismiss({status:"OK"});
       }
       catch(err){
           this.showTryAgainBtn = true;

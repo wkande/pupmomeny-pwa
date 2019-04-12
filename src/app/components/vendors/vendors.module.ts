@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VendorsComponent } from './vendors.component';
 import { IonicModule } from '@ionic/angular';
+import { ErrorModule } from '../../components/error/error.module';
+
 
 // Example usage for ionic components
 // https://www.youtube.com/watch?v=za5NaFavux4
@@ -12,7 +14,7 @@ import { IonicModule } from '@ionic/angular';
   declarations: [
     VendorsComponent
   ],
-  imports:[IonicModule, CommonModule, FormsModule],
+  imports:[IonicModule, CommonModule, FormsModule, ErrorModule],
   exports: [VendorsComponent]
 })
 

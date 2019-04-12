@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../services/auth.guard';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UtilsService } from '../services/utils/utils.service';
 import { Decimal } from 'decimal.js';
@@ -9,7 +9,7 @@ import { UpsertExpensePage } from '../tab1/expenses/upsert-expense/upsert-expens
 import { DeleteExpensePage } from '../tab1/expenses/delete-expense/delete-expense.page';
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
-import { ExpensePage } from '../tab1/expenses/expense/expense.page';
+//import { ExpensePage } from '../tab1/expenses/expense/expense.page';
 
 @Component({
   selector: 'app-tab2',
@@ -40,7 +40,7 @@ export class Tab2Page {
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, 
     private modalController:ModalController,
-    private utils:UtilsService, private navCtrl:NavController) { 
+    private utils:UtilsService, private navCtrl:NavController, private events:Events) { 
       console.log('>>>>>>>>>>>>>>>> Tab2Page.constructor <<<<<<<<<<<<<<<<<')
   }
 
@@ -53,6 +53,15 @@ export class Tab2Page {
       catch(err){
         this.error = err;
       }
+      this.events.subscribe('dml', (data) => {
+        try{
+          console.log('Tab2Page > ngOnInit > subscribe > fired > dml');
+          this.searchExpenses(this.searchEvent);
+        }
+        catch(err){
+          this.error = err;
+        }
+    });
   }
 
 
@@ -73,13 +82,13 @@ export class Tab2Page {
   }
 
 
-  doRefresh(event) {
+  doRefresh(ev:any) {
     console.log('Begin refresh async operation');
     this.searchExpenses(this.searchEvent);
 
     setTimeout(() => {
       console.log('Async operation has ended');
-      event.target.complete();
+      ev.target.complete();
     }, 200);
   }
 
@@ -90,7 +99,7 @@ export class Tab2Page {
   }
 
   async searchExpenses(ev:any){
-    console.log('>>> SEARCH > searchExpenses', ev.detail.value)
+    console.log('>>> TAB2 > searchExpenses', ev.detail.value)
     try{
       this.searchEvent = ev;
       this.expenses = [];
@@ -102,30 +111,16 @@ export class Tab2Page {
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
       let q = this.utils.formatQ(ev.detail.value);
-      //let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      console.log('final q', q)
+      //console.log('final q', q)
 
       var result = await this.http.get(BACKEND.url+'/expenses/context?q='+q+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
- console.log(result)
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
-      
-      
-      /*if(!this.isSearch){
-        // Get total amt of all expenses
-        // floating point arithmetic is not always 100% accurate, use Decimals
-        this.total = new Decimal(0);
-        for(var i=0; i<this.expenses.length; i++){
-          this.total = Decimal.add(this.total, this.expenses[i].amt);
-        }
-        this.total = parseFloat(this.total.toString());
-      }*/
       
     }
     catch(err){
       this.loading = false;
-      console.log("ERROR searchExpenses", err)
       this.error = err;
     }
     finally{
@@ -137,23 +132,13 @@ export class Tab2Page {
   async presentUpsertModal(expense:any, mode:string) {
     try{
         this.error = null;
-        
         let category = {id:expense.c_id, name:expense.c_name};
-        //console.log('Tab2Page:presentUpsertModal()', expense, category);
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
           componentProps: { expenseParam: expense, categoryParam:category, mode:mode }
-          // componentProps: { expenseParam: expense, categoryParam:this.category, mode:'edit' }
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
-        console.log('Tab2Page:presentUpsertModal():dismissed: data',data);
-
-        // Reload
-        if(data != null){
-          this.searchExpenses(this.searchEvent);
-        }
     }
     catch(err){
       this.error = err;
@@ -163,29 +148,19 @@ export class Tab2Page {
 
   async presentDeleteModal(expense:any) {
     try{
+        this.error = null;
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: DeleteExpensePage,
           componentProps: { expense: expense, category:category }
-          
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
-
-        // Reload
-        if(data != null){
-          this.searchExpenses(this.searchEvent);
-        }
     }
     catch(err){
       this.error = err;
     } 
   }
 
-
-  /*click(ev:any, exp:any){
-    console.log(exp)
-    this.navCtrl.navigateForward(['/expense/12', exp]);
-  }*/
 
 }

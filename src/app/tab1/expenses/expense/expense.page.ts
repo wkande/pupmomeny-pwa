@@ -44,7 +44,7 @@ export class ExpensePage implements OnInit {
           else this.data.routerLinkBack = this.data.rootTab;
     
           this.eventHandler_expenseDeleted = this.expenseDeleted.bind( this );
-          this.events.subscribe('expense-deleted', this.eventHandler_expenseDeleted);
+          this.events.subscribe('dml', this.eventHandler_expenseDeleted);
   
           console.log('this.data > final', this.data);
       }
@@ -56,13 +56,13 @@ export class ExpensePage implements OnInit {
 
   ngOnDestroy(){
     console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
-    this.events.unsubscribe('expense-deleted', this.eventHandler_expenseDeleted);
+    this.events.unsubscribe('dml', this.eventHandler_expenseDeleted);
   }
 
 
   expenseDeleted(data){
     try{
-      console.log('ExpensePage > expenseDeleted > subscribe > expense-deleted')
+      console.log('ExpensePage > expenseDeleted > subscribe > dml')
       console.log(data, this.data)
       if(data.id === this.data.expense.id){
           console.log('CLOSE')

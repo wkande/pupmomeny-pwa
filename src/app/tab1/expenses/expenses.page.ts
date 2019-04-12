@@ -85,8 +85,8 @@ export class ExpensesPage implements OnInit {
         this.eventHandler_filterChanged = this.loadEvent.bind( this );
         this.events.subscribe('filter-changed', this.eventHandler_filterChanged);
         
-        this.eventHandler_expenseDeleted = this.expenseDeleted.bind( this );
-        this.events.subscribe('expense-deleted', this.eventHandler_expenseDeleted);
+        this.eventHandler_expenseDeleted = this.loadEvent.bind( this );
+        this.events.subscribe('dml', this.eventHandler_expenseDeleted);
       }
       catch(err){
         this.error = err;
@@ -97,13 +97,13 @@ export class ExpensesPage implements OnInit {
   ngOnDestroy(){
     console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
     this.events.unsubscribe('filter-changed', this.eventHandler_filterChanged);
-    this.events.unsubscribe('expense-deleted', this.eventHandler_expenseDeleted);
+    this.events.unsubscribe('dml', this.eventHandler_expenseDeleted);
   }
 
   
   loadEvent(){
     try{
-      console.log('ExpensesPage > loadEvent > subscribe > fired > filter-changed')
+      console.log('ExpensesPage > loadEvent > subscribe > fired')
       this.skip = 0;
       this.getExpenses();
     }
@@ -114,15 +114,10 @@ export class ExpensesPage implements OnInit {
   }
 
 
-  expenseDeleted(data:any){
-    console.log('ExpensesPage DELETED', data)
-    for (var i=0;i<this.expenses.length; i++){
-        if(data.id === this.expenses[i].id){
-          var removed = this.expenses.splice(i,1);
-          console.log(removed)
-        }
-    }
-  }
+  /*expenseDML(data:any){
+    console.log('ExpensesPage DML event fired >', data)
+    this.getExpenses();
+  }*/
 
 
   tryAgain(ev:any){
@@ -166,13 +161,14 @@ export class ExpensesPage implements OnInit {
 
   async getExpenses(){
     try{
+      console.log('----------> ExpensesPage > getExpenses()')
       this.expenses = [];
       this.error = null;
       this.loading = true;
       this.ready = false;
 
       this.filter = this.filterService.getFilter();
-        console.log('ExpensesPage.ngOnInit > ',this.filter)
+        console.log('Filter >', this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -187,7 +183,7 @@ export class ExpensesPage implements OnInit {
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
 
-      console.log('ExpensesPage.getExpenses >',this.expenses)
+      console.log('Data >',this.expenses)
       
       // Get total amt of all expenses and set the date divider
       // floating point arithmetic is not always 100% accurate, use Decimals

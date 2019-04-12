@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { UtilsService } from '../../../services/utils/utils.service';
-import { ModalController, AlertController, LoadingController} from '@ionic/angular';
+import { ModalController, AlertController, LoadingController, Events} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
@@ -34,7 +34,7 @@ export class DeleteCategoryPage implements OnInit {
 
   constructor(private utilsService:UtilsService, private modalController:ModalController,
     private http:HttpClient, private authGuard:AuthGuard, private alertController:AlertController,
-    private loadingController:LoadingController) { }
+    private loadingController:LoadingController, private events:Events) { }
 
 
   ngOnInit() {
@@ -111,6 +111,7 @@ export class DeleteCategoryPage implements OnInit {
 
         //console.log(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} )
         var result = await this.http.delete(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} ).pipe(timeout(5000)).toPromise();
+        this.events.publish('dml', {category:this.category, mode:"delete"});
         this.modalController.dismiss({status:"OK"});
     }
     catch(err){

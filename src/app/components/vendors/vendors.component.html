@@ -1,9 +1,11 @@
+<error-component [error]="error" [showButton]="true" (tryAgainSelected)="manageVendorsSave($event)"></error-component>
+
 <!-- List of Vendors (PICK)-->
 <div style="text-align:center;">
-        <ion-label color="primary" [hidden]="manage">Select a Vendor</ion-label>
+        <ion-label [hidden]="manage" style="color:dimgray">Select a Vendor</ion-label>
     </div>
 <ion-list [hidden]="manage" style="cursor:pointer;">
-    <ion-item detail *ngFor="let item of category.vendors; index as i;" (click)="vendorSelected($event, item)">
+    <ion-item detail *ngFor="let item of category.vendors;" (click)="vendorSelected($event, item)">
         <ion-label>{{item}}</ion-label>
     </ion-item>
 </ion-list>
@@ -13,8 +15,8 @@
 <div style="text-align:center;">
     <ion-label color="primary" [hidden]="!manage">Manage Vendors List</ion-label>
 </div>
-<ion-list [hidden]="!manage" style="cursor:pointer;">
-    <ion-item *ngFor="let item of vendorsManage; index as i;">
+<ion-list id="manageForm" [hidden]="!manage" style="cursor:pointer;">
+    <ion-item *ngFor="let item of vendorsManage; index as i;trackBy:trackByID">
         <!-- Need to bind to the array row and not the item to get array refresh when a row is added. -->
         <input type="text" [(ngModel)]="item" placeholder="Enter vendor name">
         <ion-icon name="close" slot="end" (click)="manageVendorRemove($event, i)"></ion-icon>
@@ -24,7 +26,7 @@
 
 <!-- FAB MANAGE -->
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" [hidden]="manage">
-    <ion-fab-button (click)="manageVendors($event);">
+    <ion-fab-button (click)="setManageVendors($event);">
         <ion-icon name="create"></ion-icon>
     </ion-fab-button>
 </ion-fab>
@@ -33,9 +35,16 @@
 <!-- FOOTER -->
 <ion-footer class="footer" [hidden]="!manage">
     <ion-toolbar>
-            <ion-button color="primary" fill="outline" style="margin-right:20px;" (click)="presentAlertPrompt($event)">Add Line</ion-button>
+            <ion-button color="primary" fill="outline" style="margin-right:20px;" (click)="manageVendorsAdd($event)">Add Line</ion-button>
             <ion-button color="primary"fill="outline" style="margin-right:20px;" (click)="manageVendorsCancel($event)">Cancel</ion-button>
             <ion-button color="primary"(click)="manageVendorsSave($event)">Save</ion-button>
+    </ion-toolbar>
+</ion-footer>
+
+<!-- FOOTER -->
+<ion-footer class="footer" color="primary" [hidden]="manage" (click)="setManageVendors($event);">
+    <ion-toolbar color="primary" style="font-size:150%;">
+        Manage List
     </ion-toolbar>
 </ion-footer>
 

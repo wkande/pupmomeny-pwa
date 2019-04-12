@@ -64,7 +64,7 @@ export class DeleteExpensePage implements OnInit {
 
         var result = await this.http.delete(BACKEND.url+'/categories/'+this.category.id+'/expenses/'+this.expense.id, {headers: headers} )
           .pipe(timeout(5000), delay(this.utilsService.delayTimer)).toPromise();
-        this.events.publish('filter-changed', {id:this.expense.id});
+        this.events.publish('dml', {expense:this.expense, mode:'delete'});
         this.modalController.dismiss({status:"OK"});
     }
     catch(err){

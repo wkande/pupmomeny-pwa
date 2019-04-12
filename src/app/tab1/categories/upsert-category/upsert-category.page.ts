@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { ModalController, LoadingController} from '@ionic/angular';
+import { ModalController, LoadingController, Events} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class UpsertCategoryPage implements OnInit {
 
   constructor(private modalController:ModalController,
     private http:HttpClient, private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService) { 
+    private utils:UtilsService, private events:Events) { 
   }
 
 
@@ -79,7 +79,8 @@ export class UpsertCategoryPage implements OnInit {
               {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           this.category = result['expense'];
-          this.modalController.dismiss({category:this.category, mode:this.mode});
+          this.events.publish('dml', {category:this.category, mode:this.mode});
+          this.modalController.dismiss( {status:"OK"});
       }
       catch(err){
         this.showTryAgainBtn = true;
