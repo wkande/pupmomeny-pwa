@@ -1,5 +1,6 @@
 <ion-tabs>
-  <div style="background-color:#7044ff;text-align:center;color:white;">{{wallet.name}} - {{wallet.owner_name}}</div>
+  <!-- If the wallet is missing hide wallet name, queries will guide user to correct the problem -->
+  <div *ngIf="wallet" style="background-color:#7044ff;text-align:center;color:white;">{{wallet.name}} - {{wallet.owner_name}}</div>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="tab1">
       <ion-icon name="cart"></ion-icon>
@@ -20,10 +21,6 @@
     </ion-tab-button>
   </ion-tab-bar>
   
-  <!--ion-tab-button tab="tab4">
-      <ion-icon name="add-circle" style="color:#9370DB;font-size:500%;"></ion-icon>
-    </ion-tab-button-->
-
 </ion-tabs>
 
 <!-- fab placed to the top end -->

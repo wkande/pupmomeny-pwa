@@ -3,7 +3,7 @@
 <ion-content>
 
         <br><br>
-        <ion-segment (ionChange)="segmentChanged($event)">
+        <ion-segment (ionChange)="segmentChanged($event)" [hidden]="segment=='percision'">
                 <ion-segment-button value="login" checked>
                   <ion-label>Login</ion-label>
                 </ion-segment-button>
@@ -13,13 +13,13 @@
               </ion-segment>
               
     
-    <div [hidden]="!error" style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
+    <div [hidden]="!error" padding style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
     <div [hidden]="!errorSupport" padding style="text-align:center;color:dimgray;margin-top:5px;">
         Please make sure your internet connection is working. If this issue persists please email supportme@pupmoney.com.
     </div>
       
 
-  <ion-list [hidden]="segment=='terms'" padding lines="none" style="max-width:400px;margin:0 auto;">
+  <ion-list [hidden]="segment!='login'" padding lines="none" style="max-width:400px;margin:0 auto;">
       <ion-item style="margin:0 auto;">
           <img style="margin:0 auto;width:50%;" src="/assets/puppy-512.png">
       </ion-item>
@@ -59,7 +59,7 @@
             <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="tertiary" (click)="back();">
                     <ion-icon slot="start" name="arrow-round-back"></ion-icon> Back
             </ion-button>
-            <ion-button style="margin:0 auto;margin-top:20px;" [disabled]="!terms"  expand="block" size="medium" color="primary" (click)="submit();">
+            <ion-button style="margin:0 auto;margin-top:20px;" [disabled]="!terms"  expand="block" size="medium" color="primary" (click)="login();">
                 Login
             </ion-button>
         </ion-item>
@@ -73,12 +73,62 @@
   </ion-list>
 
 
+<!-- PERCISON -->
+<div [hidden]="segment!='percision'" style="color:dimgray;" padding>
+    <p>
+        Welcome to PupMoney. To get started we have created a "Default Wallet" for your expenses. You can add more wallets later as well.
+    </p>
+    <p>
+        Please tell us how you want to view the numbers (currency) in your default wallet. You can change this later in the Settings tab.
+    </p>
 
+
+    <ion-list>
+            <ion-radio-group mode="md" [(ngModel)]="percisionValue">
+          
+              <ion-item>
+                <ion-label>1,234</ion-label>
+                <ion-radio slot="start" value="1.0-0"></ion-radio>
+                <span slot="end">(Yen - no decimals)</span>
+              </ion-item>
+          
+              <ion-item>
+                <ion-label>1,234.1</ion-label>
+                <ion-radio slot="start" value="1.1-1"></ion-radio>
+                <span slot="end">(one decimal)</span>
+              </ion-item>
+          
+              <ion-item>
+                <ion-label>1,234.12</ion-label>
+                <ion-radio slot="start" value="1.2-2">USD</ion-radio>
+                <span slot="end">(US Dollars, Euros - two decimals)</span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1,234.123</ion-label>
+                <ion-radio slot="start" value="1.3-3"></ion-radio>
+                <span slot="end">(three decimals)</span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1,234.1234</ion-label>
+                <ion-radio slot="start" value="1.4-4"></ion-radio>
+                <span slot="end">(four decimals)</span>
+            </ion-item>
+
+            </ion-radio-group>
+          </ion-list>
+
+        <ion-button style="margin:0 auto;margin-top:20px;"  expand="block" size="medium" color="primary" (click)="setPercision($event);">
+            Submit
+        </ion-button>
+
+</div>
 
 
 
   <!-- TERMS -->
-  <div [hidden]="segment=='login'" style="color:dimgray;" [innerHTML]="termsHTML" padding></div>
+  <div [hidden]="segment!='terms'" style="color:dimgray;" [innerHTML]="termsHTML" padding></div>
 
 </ion-content>
 

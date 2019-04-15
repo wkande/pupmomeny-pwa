@@ -80,16 +80,15 @@
 
   <ion-item detail>
       <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
-      <div style="color:dimgray;font-size:small;" slot="end">{{user.sub_expires | date }}</div>
+      <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
   </ion-item>
 
   <ion-item detail>
       <ion-label style="color:dimgray;font-size:120%;">Currency Format </ion-label>
-      <div style="color:dimgray;font-size:small;" slot="end">3,457.00</div>
+      <div style="color:dimgray;font-size:medium;" slot="end">{{currencyDisplay | number:wallet.currency.percision}}</div>
   </ion-item>
 
   <!-- TERMS -->
-  
   <ion-item detail [routerLink]="['/term']">
       <ion-label style="color:dimgray;font-size:120%;">Terms of Service</ion-label>
   </ion-item>

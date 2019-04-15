@@ -33,6 +33,7 @@ export class Tab1Page {
   filter:any;
   loading:boolean = true;
   presentLoader:boolean = true;
+  precision:String = '1.2-2';
 
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, private modalController:ModalController,
@@ -97,9 +98,9 @@ export class Tab1Page {
       //console.log('Tab1Page.getExpenses >  q', q)
 
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
-      .pipe(timeout(15000), delay (this.utils.delayTimer))
+      .pipe(timeout(7000), delay (this.utils.delayTimer))
       .toPromise();
-      //console.log(result)
+      console.log(result)
       this.categories = result['categories'];
       
       // floating point arithmetic is not always 100% accurate, use Decimals

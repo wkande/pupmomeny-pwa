@@ -21,7 +21,6 @@ export class AuthGuard implements CanActivate {
     if(this.user){
       this.activated = true;
     }
-    //console.log('AuthGuard.constructor(): user', this.user)
   }
 
 
@@ -33,7 +32,6 @@ export class AuthGuard implements CanActivate {
     });
     await modal.present();
     
-
     const { data } = await modal.onDidDismiss();
     //console.log('AuthGuard:presentLoginModal():dismissed: data',data);
     this.navController.navigateRoot('');
@@ -44,6 +42,7 @@ export class AuthGuard implements CanActivate {
   getUser(){
     return this.user;
   }
+
 
   /**
    * Will activate or deactivate a user. 
@@ -61,31 +60,17 @@ export class AuthGuard implements CanActivate {
       window.location.reload();
     }
     else{
-      // Rule change.
-      // When the user logs in they must start with the default wallet.
-      // This helps keep the wallet info in localstroage up to date.
-
-
+      // Set the wallet to the user's default wallet.
+      let walletFoundFLag:boolean = false;
+      for (var i=0; i< user['wallets'].length; i++){
+          if(user['wallets'][i].default_wallet == 1){
+            localStorage.setItem( "wallet", JSON.stringify(user['wallets'][i]));
+            walletFoundFLag = true;
+          }
+      }
+      if(!walletFoundFLag) throw "No default wallet found. Please report this issue to supportme@pupmoney.com.";
+      // Only set user if there is a default wallet
       localStorage.setItem( "user", JSON.stringify(user));
-      // If the wallet is null then set the wallet to the first one in the wallet array which is the user's default wallet
-      //if(!localStorage.getItem( "wallet")){
-      localStorage.setItem( "wallet", JSON.stringify(user['wallets'][0]));
-      /*}
-      else{
-        let wallet = JSON.parse(localStorage.getItem( "wallet"));
-        let flag = false;
-        for (var i=0; i< user['wallets'].length; i++){
-            if(user['wallets'][i].id == wallet.id){
-              flag = true
-              //console.log("THE WALLET IS STILL USABLE")
-            }
-        }
-        // The wallet in the storage is no longer allowed set wallet to the default
-        if(!flag){
-            localStorage.setItem( "wallet", JSON.stringify(user['wallets'][0]));
-        }
-      }*/
-
       this.user = user;
     }
   }

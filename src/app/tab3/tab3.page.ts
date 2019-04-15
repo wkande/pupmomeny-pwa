@@ -19,6 +19,7 @@ export class Tab3Page {
   user = {email:null, name:null, sub_expires:null, wallets:null};
   wallet = {name:null};
   errorDisplay:any;
+  currencyDisplay:number = 1234.1234;
 
 
   constructor(private authGuard:AuthGuard, private modalController:ModalController,

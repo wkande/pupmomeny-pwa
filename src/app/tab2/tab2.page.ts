@@ -114,7 +114,7 @@ export class Tab2Page {
       //console.log('final q', q)
 
       var result = await this.http.get(BACKEND.url+'/expenses/context?q='+q+'&skip='+this.skip, {headers: headers})
-        .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+        .pipe(timeout(7000), delay (this.utils.delayTimer)).toPromise();
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
       

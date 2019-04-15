@@ -1,10 +1,10 @@
 import { Component, OnInit, Input  } from '@angular/core';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { AuthGuard } from '../../services/auth.guard';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
 import { BACKEND } from '../../../environments/environment';
-import { UtilsService } from '../../services/utils/utils.service'
+import { UtilsService } from '../../services/utils/utils.service';
 
 
 @Component({
@@ -19,6 +19,7 @@ export class LoginPage implements OnInit {
   email:string = null;
   code:string = null;
   codeReady:boolean = false;
+  percisionValue:string;
 
   error:any = null;
   errorSupport:boolean = false;
@@ -28,6 +29,8 @@ export class LoginPage implements OnInit {
   segment:string = 'login';
   termsHTML:any;
   loadController:any;
+
+  defaultWallet:any;
 
   constructor(private modalController: ModalController, private authGuard:AuthGuard,
     private http: HttpClient, private utils:UtilsService, private loadingController:LoadingController) {
@@ -57,16 +60,13 @@ export class LoginPage implements OnInit {
     this.errorSupport = false;
     
     if(this.isValidMailFormat() == true){
-        console.log('next', this.email, BACKEND.url);
         try{
           await this.presentLoading('Sending code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
-
           var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).toPromise();
           this.code = result['data'].code;
           this.codeReady = true;
         }
         catch(err){
-          console.log("login next > ERROR:", err);
           if(err.status == 0){
             this.error = this.connectionTimeoutMsg;
             this.errorSupport = true;
@@ -86,18 +86,26 @@ export class LoginPage implements OnInit {
   }
 
 
-  async submit() {
+  async login() {
     console.log('next', this.email, this.code, BACKEND);
     this.error = null;
+    let user:any;
         try{
           await this.presentLoading('Submitting code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
-
           var result = await this.http.post(BACKEND.url+'/me', {email:this.email, code:this.code}).pipe(timeout(5000)).toPromise();
-          this.authGuard.activate(true, result['user']);
-          this.modalController.dismiss({path:this.path});
+          user = result['user'];
+          this.authGuard.activate(true, user);
+
+          // New Account, give the user a chance to change the percision for the default wallet
+          if(user.newAccount){
+            this.defaultWallet = JSON.parse(localStorage.getItem('wallet'));
+            this.percisionValue = this.defaultWallet.currency.percision;
+            this.segment = "percision";
+          }
+          else this.modalController.dismiss({path:this.path});
+
         }
         catch(err){
-          console.log("Login submit > ERROR:", err.status)
           if(err.status == 0){
             this.error = this.connectionTimeoutMsg;
             this.errorSupport = true;
@@ -116,6 +124,35 @@ export class LoginPage implements OnInit {
   };
 
 
+  async setPercision(ev:any){
+    this.error = null;
+    try{
+      // Only need to send if the percision has changed
+      if(this.defaultWallet.currency.percision != this.percisionValue){
+        let headers = new HttpHeaders();
+        headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
+        headers = headers.set('wallet',  JSON.stringify(this.defaultWallet));
+
+        await this.presentLoading('Submitting decimal formatting, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
+        var result = await this.http.patch(BACKEND.url+'/wallets/'+this.defaultWallet.id+'/currency', 
+            {currency:{"percision":this.percisionValue}}, {headers: headers}).pipe(timeout(5000)).toPromise();
+      }
+          
+      this.defaultWallet.currency.percision = this.percisionValue;
+      localStorage.setItem('wallet', JSON.stringify(this.defaultWallet));
+      this.modalController.dismiss({path:this.path});
+    }
+    catch(err){
+        this.error = this.utils.getErrorMessage(err);
+        this.errorSupport = true;
+    }
+    finally{
+      this.loadController.dismiss();
+    }
+
+  }
+
+
   async presentLoading(msg:string) {
     this.loadController = await this.loadingController.create({
       message: msg,
@@ -127,8 +164,8 @@ export class LoginPage implements OnInit {
     //console.log('Loading dismissed!');
   }
 
-  segmentChanged(ev){
-    console.log(ev.detail.value)
+
+  segmentChanged(ev:any){
     this.segment = ev.detail.value;
   }
 

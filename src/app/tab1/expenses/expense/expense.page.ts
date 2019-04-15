@@ -18,7 +18,7 @@ export class ExpensePage implements OnInit {
   wallet:any;
   error:any;
   data:any;
-  eventHandler_expenseDeleted:any; // method to carry "this" into the event handler
+  eventHandler_expenseDML:any; // method to carry "this" into the event handler
 
 
   constructor(private router:ActivatedRoute, private modalController:ModalController,
@@ -43,8 +43,8 @@ export class ExpensePage implements OnInit {
           if(this.data.rootTab == '/tabs/tab1') this.data.routerLinkBack = null;
           else this.data.routerLinkBack = this.data.rootTab;
     
-          this.eventHandler_expenseDeleted = this.expenseDeleted.bind( this );
-          this.events.subscribe('dml', this.eventHandler_expenseDeleted);
+          this.eventHandler_expenseDML = this.expenseHandlerDML.bind( this );
+          this.events.subscribe('dml', this.eventHandler_expenseDML);
   
           console.log('this.data > final', this.data);
       }
@@ -56,18 +56,29 @@ export class ExpensePage implements OnInit {
 
   ngOnDestroy(){
     console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
-    this.events.unsubscribe('dml', this.eventHandler_expenseDeleted);
+    this.events.unsubscribe('dml', this.eventHandler_expenseDML);
   }
 
 
-  expenseDeleted(data){
+  /**
+   * Event received when an expense is edited or deleted.
+   * This event also carries a change to a category but will never get to this view.
+   * @param data 
+   */
+  expenseHandlerDML(data:any){
     try{
-      console.log('ExpensePage > expenseDeleted > subscribe > dml')
+      console.log('ExpensePage > expenseHandlerDML > subscribe > dml')
       console.log(data, this.data)
-      if(data.id === this.data.expense.id){
+
+      if(data.expense){ // There must be an expesne object in te data
+        if(data.mode === 'delete'){
           console.log('CLOSE')
           this._location.back();
-      }
+        }
+        else if (data.mode === 'edit' && this.data.expense.id === data.expense.id){
+            this.data.expense = data.expense;
+        }
+      } 
     }
     catch(err){
       console.log('loadEvent', err)

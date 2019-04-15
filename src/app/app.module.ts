@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms'; // Needs to be imported so ngModel binds two-way
 
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { DecimalPipe } from '@angular/common';
 
 import { LoginPage } from './modals/login/login.page';
 import { FilterPage } from './modals/filter/filter.page';
@@ -39,6 +40,7 @@ import { UpdateEmailPage } from './tab3/update-email/update-email.page';
     HttpClientModule,
     StatusBar,
     SplashScreen,
+    DecimalPipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

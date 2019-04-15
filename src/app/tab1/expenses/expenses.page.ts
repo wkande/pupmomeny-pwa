@@ -161,7 +161,7 @@ export class ExpensesPage implements OnInit {
 
   async getExpenses(){
     try{
-      console.log('----------> ExpensesPage > getExpenses()')
+      console.log('>>> ExpensesPage > getExpenses()')
       this.expenses = [];
       this.error = null;
       this.loading = true;
@@ -183,7 +183,7 @@ export class ExpensesPage implements OnInit {
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
 
-      console.log('Data >',this.expenses)
+      //console.log('Data >',this.expenses)
       
       // Get total amt of all expenses and set the date divider
       // floating point arithmetic is not always 100% accurate, use Decimals

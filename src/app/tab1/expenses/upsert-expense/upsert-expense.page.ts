@@ -7,6 +7,7 @@ import { BACKEND } from '../../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
+import { DecimalPipe } from '@angular/common';
 
 
 @Component({
@@ -43,6 +44,7 @@ export class UpsertExpensePage implements OnInit {
   ready:boolean = false;
   loading:any;
 
+
   // Component hide flags
   hideCatPicker:boolean = true;
   hideVendorPicker:boolean = true;
@@ -52,7 +54,8 @@ export class UpsertExpensePage implements OnInit {
 
   constructor(private modalController:ModalController, private http:HttpClient,
     private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService, private cache:CacheService, private events:Events) { 
+    private utils:UtilsService, private cache:CacheService, private events:Events,
+    private decimalPipe: DecimalPipe) { 
 
   }
 
@@ -90,6 +93,10 @@ export class UpsertExpensePage implements OnInit {
             this.amt = this.expenseParam.amt;
           }
           
+          let amt = this.decimalPipe.transform(this.expenseParam.amt, '1.2-2'); // $12,345.0000
+          //this.amt = " "+a;
+          console.log(amt, typeof amt, this.expenseParam.amt)
+          //this.amt = parseFloat(a);
           this.note = this.expenseParam.note;
         }
         //console.log('UpsertExpensePage > ngOnInit', this.mode, this.expenseParam, this.categoryParam, this.categoryOrg);
@@ -170,7 +177,16 @@ export class UpsertExpensePage implements OnInit {
                   this.error = 'Negative numbers are not allowed. If this is a credit please use the credit toggle and a positive number.';
                   return;
               }
-              //console.log('AMT', this.amt)
+              // Check the percision if there is a decimal point at all
+              let x = this.amt.toString();
+              let p = this.wallet.currency.percision.split('-')[1];
+              console.log('x - p', x, p)
+              if(x.indexOf('.') != -1 && x.split(".")[1].length > p){
+                if(p == 0)this.error = `No decimals are allowed for this wallet's settings.`;
+                else this.error = `Only `+p+` decimals are allowed for this wallet's settings.`;
+                return;
+              }
+              console.log('AMT', this.amt, x, this.wallet.currency.percision, p)
 
               // DATE
               if(!this.dateSelected){
@@ -203,11 +219,17 @@ export class UpsertExpensePage implements OnInit {
             var result = await this.http.put(BACKEND.url+'/categories/'+this.categoryOrg.id+'/expenses/'+this.expenseParam.id, 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
-          console.log('UPSERT EXPENSE >>>', result)
-          // Why are we doing this below
-          // this.category = result['expense'];
+          let expense = result['expense'];
 
-          this.events.publish('dml', {expense:result['expense'], mode:'delete'});
+          // Trim the date
+          expense.dttm = expense.dttm.split('T')[0];
+          
+          // The amt comes back as a string padded to 4 decimal point
+          //parseFloat(expense.amt).toFixed(this.percision);
+
+          console.log('UPSERT EXPENSE COMPLETED >>>', expense);
+
+          this.events.publish('dml', {expense:expense, mode:this.mode});
           this.modalController.dismiss({status:"OK"});
       }
       catch(err){
