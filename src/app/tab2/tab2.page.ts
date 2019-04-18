@@ -9,7 +9,7 @@ import { UpsertExpensePage } from '../tab1/expenses/upsert-expense/upsert-expens
 import { DeleteExpensePage } from '../tab1/expenses/delete-expense/delete-expense.page';
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
-//import { ExpensePage } from '../tab1/expenses/expense/expense.page';
+import * as currency from 'currency.js';
 
 @Component({
   selector: 'app-tab2',
@@ -24,8 +24,9 @@ export class Tab2Page {
   wallet:object;
   expenses:any;
   loading:boolean = false;
+  showButtons:boolean = false;
 
-  total:any;
+  //total:any;
   num:string = "2";
   skip:number = 0;
   totalCount:number = 0;
@@ -104,7 +105,10 @@ export class Tab2Page {
       this.searchEvent = ev;
       this.expenses = [];
       this.error = null;
+      this.ready = false;
       this.loading = true;
+      this.showButtons = false;
+      //this.totalCount = 0;
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -117,14 +121,24 @@ export class Tab2Page {
         .pipe(timeout(7000), delay (this.utils.delayTimer)).toPromise();
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
-      
+      for(let i=0; i<this.expenses.length; i++){
+          this.expenses[i].amtDisplay =  currency(this.expenses[i].amt, this.wallet['currency']).format(true);
+      }
+      console.log(this.expenses)
     }
     catch(err){
-      this.loading = false;
       this.error = err;
     }
     finally{
+      this.ready = true;
       this.loading = false;
+      let self = this;
+      // Prevents buttons causing screen flicker
+      await setTimeout(function(){
+        self.showButtons = true;
+      }, 200);
+
+      
     }
   }
 

@@ -41,7 +41,7 @@
               <ion-label slot="start" style="color:dimgray;margin-right:24px;">
                   <span [hidden]="loading" class="cnt"> &nbsp;({{totalCount}})</span>
               </ion-label>
-              <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;" [hidden]="loading">{{total | number:wallet.currency.percision}}</ion-label>
+              <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;" [hidden]="loading">{{total}}</ion-label>
           </ion-item-divider>
           <!-- DATE RANGE -->
           <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
@@ -80,7 +80,7 @@
                     
                     <!-- https://angular.io/api/common/CurrencyPipe -->
                     <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
-                    <ion-label class="amt">{{item.amt | number:wallet.currency.percision}}</ion-label>
+                    <ion-label class="amt">{{item.amtDisplay}}</ion-label>
                   </ion-item>
                   <ion-item-options side="start">
                     <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>

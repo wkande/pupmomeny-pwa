@@ -8,7 +8,7 @@ import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
 import { DecimalPipe } from '@angular/common';
-
+import * as currency from 'currency.js';
 
 @Component({
   selector: 'app-upsert-expense',
@@ -30,6 +30,7 @@ export class UpsertExpensePage implements OnInit {
 
   // Data entry fields
   note:string
+  amtDisplay:string;
   categoryOrg:any; // The original category needed if the user changes the cateory_id
   // cat must be initialized or the ngOnInt will cause HTML errors if ngOnInt failes
   category:any = {id:null, name:null, vendors:null};
@@ -92,14 +93,11 @@ export class UpsertExpensePage implements OnInit {
           else{
             this.amt = this.expenseParam.amt;
           }
-          
-          let amt = this.decimalPipe.transform(this.expenseParam.amt, '1.2-2'); // $12,345.0000
-          //this.amt = " "+a;
-          console.log(amt, typeof amt, this.expenseParam.amt)
-          //this.amt = parseFloat(a);
+
+          this.amtDisplay = currency(this.amt, this.wallet.currency).format(true);
           this.note = this.expenseParam.note;
         }
-        //console.log('UpsertExpensePage > ngOnInit', this.mode, this.expenseParam, this.categoryParam, this.categoryOrg);
+
         this.ready = true;
     }
     catch(err){
@@ -139,8 +137,41 @@ export class UpsertExpensePage implements OnInit {
     this.dateSelected = ev.detail.value;
   }
 
+  chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",".", "Backspace"];
+  onKeyPress(ev:any){
+    console.log(ev.key, this.chars.includes(ev.key), this.wallet.currency.precision)
+    if(ev.key == "." && this.amtDisplay.split(".").length === 2) {
+      console.log('ARRAY TO LONG');
+      return false;
+    }
+    else if(this.amtDisplay.split(".").length === 2 && this.amtDisplay.split(".")[1].length > (this.wallet.currency.precision-1)){
+      console.log('PERCISION TO MAX', this.amtDisplay.split(".")[1].length);
+      return false;
+    }
+    //this.amtDisplay += ","
+    return this.chars.includes(ev.key);
+  }
+
 
   async submit(ev:any){
+    let amount = this.amtDisplay.replace(/,/g, "<>");
+    amount = amount.replace(/,/g, "<>");
+    amount = amount.replace(/\./g, "");
+    amount = amount.replace(/<>/g, ".");
+    console.log(1, parseFloat(amount))
+
+    let pattern = 'POSTGRES'
+    let c = {symbol:"", separator:",", decimal:".", precision: 4};
+    const POSTGRES = value => currency(value, c);
+    const POSTGRES2 = value => currency(value);
+
+    console.log(2, POSTGRES(this.amtDisplay).format(true))
+          this.amt = parseFloat(POSTGRES(this.amtDisplay).format(true));
+
+          console.log(3, currency(1234.5600, c).format(true))
+
+    console.log(this.amtDisplay, this.amt)
+    return;
       try{
         console.log('===> SUBMIT', this.mode);
         this.error = null;

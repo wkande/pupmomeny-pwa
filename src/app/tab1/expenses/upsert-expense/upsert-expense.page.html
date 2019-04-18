@@ -73,9 +73,7 @@
               <div style="height:80px;">Amount</div>
               <!--ion-icon style="font-size:300%;" name="cash" color="medium"></ion-icon-->
           </div>
-            
-          <input type="number" [(ngModel)]="amt" placeholder="Enter amount">
-
+          <input type="text" [(ngModel)]="amtDisplay" placeholder="Enter amount" (keypress)="onKeyPress($event)">
           <div slot="end" style="color:dimgray;font-weight:bold;">
             <span style="margin-left:15px;">Credit</span>
               <br>

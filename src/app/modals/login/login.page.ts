@@ -19,7 +19,19 @@ export class LoginPage implements OnInit {
   email:string = null;
   code:string = null;
   codeReady:boolean = false;
-  percisionValue:string;
+  curId:string;
+  currencies = [
+    {"curId":0, "symbol":"", "separator":",", "decimal":".", "precision": 0},
+    {"curId":1, "symbol":"", "separator":",", "decimal":".", "precision": 1},
+    {"curId":2, "symbol":"", "separator":",", "decimal":".", "precision": 2},
+    {"curId":3, "symbol":"", "separator":",", "decimal":".", "precision": 3},
+    {"curId":4, "symbol":"", "separator":",", "decimal":".", "precision": 4},
+    {"curId":5, "symbol":"", "separator":".", "decimal":",", "precision": 0},
+    {"curId":6, "symbol":"", "separator":".", "decimal":",", "precision": 1},
+    {"curId":7, "symbol":"", "separator":".", "decimal":",", "precision": 2},
+    {"curId":8, "symbol":"", "separator":".", "decimal":",", "precision": 3},
+    {"curId":9, "symbol":"", "separator":".", "decimal":",", "precision": 4},
+  ];
 
   error:any = null;
   errorSupport:boolean = false;
@@ -99,7 +111,9 @@ export class LoginPage implements OnInit {
           // New Account, give the user a chance to change the percision for the default wallet
           if(user.newAccount){
             this.defaultWallet = JSON.parse(localStorage.getItem('wallet'));
-            this.percisionValue = this.defaultWallet.currency.percision;
+            this.curId = this.defaultWallet.currency.curId.toString();
+            console.log(42, localStorage.getItem('wallet'))
+            console.log(43, typeof this.curId, this.curId, this.defaultWallet.currency)
             this.segment = "percision";
           }
           else this.modalController.dismiss({path:this.path});
@@ -124,21 +138,24 @@ export class LoginPage implements OnInit {
   };
 
 
-  async setPercision(ev:any){
+  async setCurrency(ev:any){
     this.error = null;
     try{
       // Only need to send if the percision has changed
-      if(this.defaultWallet.currency.percision != this.percisionValue){
+      let currencyBody = this.currencies[this.curId]
+      console.log(44, currencyBody, this.defaultWallet.currency)
+      if(this.defaultWallet.currency.curId != this.curId){
         let headers = new HttpHeaders();
         headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
         headers = headers.set('wallet',  JSON.stringify(this.defaultWallet));
 
-        await this.presentLoading('Submitting decimal formatting, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
+        await this.presentLoading('Submitting currency formatting, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
         var result = await this.http.patch(BACKEND.url+'/wallets/'+this.defaultWallet.id+'/currency', 
-            {currency:{"percision":this.percisionValue}}, {headers: headers}).pipe(timeout(5000)).toPromise();
+            {currency:currencyBody}, {headers: headers}).pipe(timeout(5000)).toPromise();
       }
           
-      this.defaultWallet.currency.percision = this.percisionValue;
+      this.defaultWallet.currency = currencyBody;
+      console.log(45, currencyBody, this.defaultWallet.currency)
       localStorage.setItem('wallet', JSON.stringify(this.defaultWallet));
       this.modalController.dismiss({path:this.path});
     }

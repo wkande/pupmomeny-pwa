@@ -12,6 +12,7 @@ import { UpsertCategoryPage } from './categories/upsert-category/upsert-category
 import { DeleteCategoryPage } from './categories/delete-category/delete-category.page';
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
+import * as currency from 'currency.js';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class Tab1Page {
   dttmStart:string;
   dttmEnd:string;
   total:any = 0;
-  sumTotal = 0; // Number of trasnactions
+  cntTotal = 0; // Number of trasnactions
   num:string = "2";
   filter:any;
   loading:boolean = true;
@@ -47,6 +48,7 @@ export class Tab1Page {
     try{
       console.log('>>>>>>>>>>>>>>>> Tab1Page.ngOnInit <<<<<<<<<<<<<<<<<')
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
+      console.log('WALLET', this.wallet)
       this.getCategories(); 
 
       this.events.subscribe('filter-changed', (data) => {
@@ -86,7 +88,7 @@ export class Tab1Page {
       this.error = null;
       this.loading = true;
       this.total = 0;
-      this.sumTotal = 0;
+      this.cntTotal = 0;
       this.categories = [];
       this.filter = this.filterService.getFilter();
       
@@ -95,22 +97,22 @@ export class Tab1Page {
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
       let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
-      //console.log('Tab1Page.getExpenses >  q', q)
-
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
       .pipe(timeout(7000), delay (this.utils.delayTimer))
       .toPromise();
       console.log(result)
       this.categories = result['categories'];
       
-      // floating point arithmetic is not always 100% accurate, use Decimals
-      this.total = new Decimal(0);
-      for(var i=0; i<this.categories.length; i++){
-        this.sumTotal += this.categories[i].sum.cnt;
-        this.total = Decimal.add(this.total, this.categories[i].sum.amt);
-      }
 
-      this.total = parseFloat(this.total.toString());
+      for(var i=0; i<this.categories.length; i++){
+        this.cntTotal += this.categories[i].sum.cnt;
+        //this.total = Decimal.add(this.total, this.categories[i].sum.amt);
+        this.total = currency(this.total).add( (this.categories[i].sum.amt) );
+        this.categories[i].amtDisplay = currency(this.categories[i].sum.amt, this.wallet['currency']).format(true);
+      }
+      console.log(this.total, this.categories)
+      //this.total = parseFloat(this.total.toString());
+      this.total = currency(this.total, this.wallet['currency']).format(true);
       this.cache.categories = this.categories;
       
     }

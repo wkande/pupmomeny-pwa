@@ -4,6 +4,8 @@ import { ModalController, Events } from '@ionic/angular';
 import { UpsertExpensePage } from '../upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from '../delete-expense/delete-expense.page';
 import { Location } from '@angular/common';
+import * as currency from 'currency.js';
+
 
 @Component({
   selector: 'app-expense',
@@ -36,7 +38,8 @@ export class ExpensePage implements OnInit {
 
           console.log('ExpensePage >>>', JSON.parse(this.router.queryParams['_value'].data));
 
-          this.data = JSON.parse(this.router.queryParams['_value'].data)
+          this.data = JSON.parse(this.router.queryParams['_value'].data);
+          this.data.expense.amtDisplay = currency(this.data.expense.amt, this.wallet['currency']).format(true);
     
           // Set back button
           // We want to use the standard back button for/tabs/tab1

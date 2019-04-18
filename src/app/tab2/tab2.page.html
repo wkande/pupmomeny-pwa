@@ -32,7 +32,7 @@
         <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
   
   
-        <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || loading">
+        <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || !showButtons">
           <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
         </ion-button>
   
@@ -54,7 +54,7 @@
                 
                 <!-- https://angular.io/api/common/CurrencyPipe -->
                 <!-- https://stackoverflow.com/questions/38477970/what-are-the-parameters-for-the-number-pipe-angular-2 -->
-                <ion-label class="amt">{{item.amt | number:wallet.currency.percision}}</ion-label>
+                <ion-label class="amt">{{item.amtDisplay}}</ion-label>
             </ion-item>
             <ion-item-options side="start">
                 <ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option>
@@ -62,7 +62,7 @@
             </ion-item-options>
         </ion-item-sliding>
   
-        <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || loading">
+        <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || !showButtons">
           <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
         </ion-button>
     </ion-list>

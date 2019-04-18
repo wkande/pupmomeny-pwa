@@ -12,6 +12,7 @@ import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 import { BACKEND } from '../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
+import * as currency from 'currency.js';
 
 
 @Component({
@@ -31,10 +32,11 @@ export class ExpensesPage implements OnInit {
   dttmStart:string;
   dttmEnd:string;
   total:any;
+
   num:string = "2";
   filter:any;
   skip:number = 0;
-  totalCount:number = 0;
+  totalCount:string;
   error:any;
   ready:boolean = false;
   // methods to carry "this" into the event handler
@@ -166,6 +168,7 @@ export class ExpensesPage implements OnInit {
       this.error = null;
       this.loading = true;
       this.ready = false;
+      this.total = 0;
 
       this.filter = this.filterService.getFilter();
         console.log('Filter >', this.filter)
@@ -180,24 +183,26 @@ export class ExpensesPage implements OnInit {
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
  
-      this.totalCount = result['totalCount'];
+      this.totalCount = currency(result['totalCount'], this.wallet['currency']).format(true);
       this.expenses = result['expenses'];
-
+      console.log(this.expenses)
       //console.log('Data >',this.expenses)
       
       // Get total amt of all expenses and set the date divider
-      // floating point arithmetic is not always 100% accurate, use Decimals
-      this.total = new Decimal(0);
       for(var i=0; i<this.expenses.length; i++){
         // Total
-        this.total = Decimal.add(this.total, this.expenses[i].amt);
+        //this.total = Decimal.add(this.total, this.expenses[i].amt);
+        this.total = currency(this.total).add( (this.expenses[i].amt) );
+        this.expenses[i].amtDisplay = currency(this.expenses[i].amt, this.wallet['currency']).format(true);
+
 
         // Date divider
         if(i === 0) this.expenses[i].d = this.expenses[i].dttm;
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
         else this.expenses[i].d = this.expenses[i].dttm;
       }
-      this.total = parseFloat(this.total.toString());
+      this.total = currency(this.total, this.wallet['currency']).format(true);
+      //this.total = parseFloat(this.total.toString());
       this.ready = true;
     }
     catch(err){
