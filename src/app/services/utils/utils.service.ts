@@ -11,19 +11,15 @@ export class UtilsService {
 
 
   delayTimer:number = 0;
+  currentView:string;
 
 
   constructor() { 
-    
-    //console.log('------------> UtilsService.constructor');
     if(BACKEND.name === 'Dev') this.delayTimer = 0;
   }
 
 
   getErrorMessage(err){
-
-    console.log('--> OOPS', err);
-
     let message = '';
 
     if(err.status === 0) message += 'There seems to be a connection issue, please try again. ';

@@ -83,10 +83,6 @@
       <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
   </ion-item>
 
-  <ion-item detail>
-      <ion-label style="color:dimgray;font-size:120%;">Currency Format </ion-label>
-      <div style="color:dimgray;font-size:medium;" slot="end">{{currencyDisplay | number:wallet.currency.percision}}</div>
-  </ion-item>
 
   <!-- TERMS -->
   <ion-item detail [routerLink]="['/term']">

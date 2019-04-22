@@ -39,6 +39,7 @@ export class Tab1Page {
   presentLoader:boolean = true;
   segment:string ="categories";
   skip:number = 0;
+  redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
 
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, private modalController:ModalController,
@@ -51,14 +52,19 @@ export class Tab1Page {
   ngOnInit(){
     try{
       //console.log('>>>>>>>>>>>>>>>> Tab1Page.ngOnInit <<<<<<<<<<<<<<<<<')
+
+      
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
-      //console.log('WALLET', this.wallet)
+
       this.getCategories(); 
 
       this.events.subscribe('filter-changed', (data) => {
           try{
             console.log('Tab1Page > ngOnInit > subscribe > fired > filter-changed');
-            this.tryAgain(null);
+            if(this.utils.currentView === 'Tab1Page')
+                this.tryAgain(null);
+            else
+                this.redrawNeeded = true;
           }
           catch(err){
             this.error = err;
@@ -77,6 +83,16 @@ export class Tab1Page {
     catch(err){
       this.error = err;
     }
+  }
+
+
+  ionViewDidEnter(){
+      this.utils.currentView = 'Tab1Page';
+      console.log('---> Tab4Page.ionViewDidEnter')
+      if(this.redrawNeeded === true) {
+        this.redrawNeeded = false;
+        this.tryAgain(null);
+      }
   }
 
 
@@ -204,7 +220,7 @@ export class Tab1Page {
   }
   
 
-  async presentUpsertModal____OLD______(category:any, mode:string) {
+  /*async presentUpsertModal____OLD______(category:any, mode:string) {
     try{
         this.error = null;
         console.log('Tab1Page > presentUpsertCategoryModal()', category)
@@ -220,7 +236,7 @@ export class Tab1Page {
     catch(err){
       this.error = err;
     } 
-  }
+  }*/
 
 
   async presentUpsertModal(expense:any) {
@@ -233,25 +249,6 @@ export class Tab1Page {
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
-    }
-    catch(err){
-      this.error = err;
-    } 
-  }
-
-
-
-  async presentDeleteModal(category:any) {
-    try{
-        this.error = null;
-        console.log('Tab1Page:presentDeleteModal()', category)
-        const modal = await this.modalController.create({
-          component: DeleteCategoryPage,
-          componentProps: { category: category, categories:this.categories }
-        });
-        await modal.present();
-        const { data } = await modal.onDidDismiss();
-        console.log('Tab1Page:presentDeleteModal():dismissed');
     }
     catch(err){
       this.error = err;
