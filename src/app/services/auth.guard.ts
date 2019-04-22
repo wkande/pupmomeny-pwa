@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
 
 
   constructor(private modalController: ModalController, private navController:NavController, private events:Events){
-    console.log('------------> AuthGuard.constructor');
+    //console.log('------------> AuthGuard.constructor');
     this.user = JSON.parse(localStorage.getItem( "user"));
     if(this.user){
       this.activated = true;
@@ -63,7 +63,7 @@ export class AuthGuard implements CanActivate {
       // Set the wallet to the user's default wallet.
       let walletFoundFLag:boolean = false;
       for (var i=0; i< user['wallets'].length; i++){
-          if(user['wallets'][i].default_wallet == 1){
+          if(user['wallets'][i].default_wallet == 1 && user['id'] == user['wallets'][i].owner_id){
             localStorage.setItem( "wallet", JSON.stringify(user['wallets'][i]));
             walletFoundFLag = true;
           }
@@ -77,7 +77,7 @@ export class AuthGuard implements CanActivate {
 
 
   /**
-   * Only gets called by the tabs router when a path get executed.
+   * Only gets called by the tabs router when a path gets executed.
    * Logout simply reloads the webview which in turns fires the tab router again.
    * 
    * @param next

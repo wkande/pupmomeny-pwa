@@ -44,28 +44,28 @@ export class VendorsComponent implements OnInit {
 
   constructor(private http:HttpClient, private authGuard:AuthGuard, private loadingController:LoadingController,
     private utils:UtilsService) { 
-    console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
 
   ngOnInit() {
-    console.log('>>>>>>>>>>>>>>>> VendorsComponent.ngOnInit <<<<<<<<<<<<<<<<<')
-    console.log('VendorsComponent > ngOnInt > this.category > ', this.category);
+    //console.log('>>>>>>>>>>>>>>>> VendorsComponent.ngOnInit <<<<<<<<<<<<<<<<<')
+    //console.log('VendorsComponent > ngOnInt > this.category > ', this.category);
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
+    //console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
     if(changes.category.currentValue && changes.category.currentValue.id){
-      console.log('ngOnChanges', changes.category.currentValue);
+      //console.log('ngOnChanges', changes.category.currentValue);
       this.vendorsManage = changes.category['vendors'];
     }
   }
 
 
   vendorSelected(ev:any, name:string){
-    console.log('Vendor selected', name);
+    //console.log('Vendor selected', name);
     this.selected.emit({name:name});
   }
 

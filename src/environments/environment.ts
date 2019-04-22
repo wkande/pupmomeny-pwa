@@ -12,15 +12,18 @@ const dev = {
   url:"http://192.168.0.14:3000"
 }
 
+
 const stage = {
   name:"Stage",
   url:"https://pupmoney-backend-stage.herokuapp.com"
 }
 
+
 const prod = {
   name:"Prod",
-  url:"?"
+  url:"https://pupmoney-backend.herokuapp.com"
 }
+
 
 export const BACKEND = dev;
 

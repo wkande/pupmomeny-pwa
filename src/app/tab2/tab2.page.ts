@@ -143,13 +143,30 @@ export class Tab2Page {
   }
 
 
-  async presentUpsertModal(expense:any, mode:string) {
+  async presentUpsertModalOLD________(expense:any, mode:string) {
     try{
         this.error = null;
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
           componentProps: { expenseParam: expense, categoryParam:category, mode:mode }
+        });
+        await modal.present();
+        const { data } = await modal.onDidDismiss();
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
+
+  
+  async presentUpsertModal(expense:any) {
+    try{
+      this.error = null;
+        let category = {id:expense.c_id, name:expense.c_name};
+        const modal = await this.modalController.create({
+          component: UpsertExpensePage,
+          componentProps: { expenseParam: expense, categoryParam:category, mode:'edit' }
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();

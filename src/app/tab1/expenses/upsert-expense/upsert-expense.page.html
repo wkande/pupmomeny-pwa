@@ -8,7 +8,7 @@
     <ion-title>{{title}}</ion-title>
     <ion-buttons slot="primary">
         <ion-button (click)="submit($event)" [attr.disabled]="1 != 1">
-            Submit
+            Save
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -73,7 +73,7 @@
               <div style="height:80px;">Amount</div>
               <!--ion-icon style="font-size:300%;" name="cash" color="medium"></ion-icon-->
           </div>
-          <input type="text" [(ngModel)]="amtDisplay" placeholder="Enter amount" (keypress)="onKeyPress($event)">
+          <input type="number" #inputAmt [(ngModel)]="amt" placeholder="Enter amount" (keypress)="onKeyPress($event)">
           <div slot="end" style="color:dimgray;font-weight:bold;">
             <span style="margin-left:15px;">Credit</span>
               <br>

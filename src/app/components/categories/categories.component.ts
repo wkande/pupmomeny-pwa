@@ -26,19 +26,19 @@ export class CategoriesComponent implements OnInit {
 
 
   constructor(private cache:CacheService) { 
-    console.log('>>>>>>>>>>>>>>>> CategoriesComponent.constructor <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> CategoriesComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
   
   ngOnInit() {
-    console.log('>>>>>>>>>>>>>>>> CategoriesComponent.ngOnInit <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> CategoriesComponent.ngOnInit <<<<<<<<<<<<<<<<<')
     this.categories = this.cache.categories;
     //console.log('CategoriesComponent > ngOnInt > this.categories > ', this.categories);
   }
 
 
   selectedCategory(ev:any, id:number, name:string, vendors:any){
-    console.log(ev, id, name)
+    //console.log(ev, id, name)
     this.selected.emit({id:id, name:name, vendors:vendors});
   }
 

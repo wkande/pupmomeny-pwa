@@ -2,17 +2,13 @@
   <!-- background-color:#76A923; -->
   <ion-toolbar color="tertiary">
 
-
-    <ion-segment  color="light" style="font-size:200%;"><!-- (ionChange)="segmentChanged($event)" -->
+    <ion-segment [(ngModel)]="segment" color="light" style="font-size:200%;" (ionChange)="tryAgain($event)"><!--  -->
       <ion-segment-button value="categories" checked>
         <ion-label>By Categories</ion-label>
       </ion-segment-button>
       <ion-segment-button value="list">
         <ion-label>List</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="recent">
-          <ion-label>Recent</ion-label>
-        </ion-segment-button>
     </ion-segment>
 
     <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
@@ -37,8 +33,9 @@
 
  
 
-  <!-- LIST -->
-  <ion-list>
+  <!-- BY CATEGORIES ------------------------------ -->
+  <!-- BY CATEGORIES ------------------------------ -->
+  <ion-list [hidden]="segment != 'categories'">
  
       <!-- LIST SUMMARY -->
       <div>
@@ -96,6 +93,73 @@
 
 
 
+  <!-- BY EXPENSES ------------------------------ -->
+  <!-- BY EXPENSES ------------------------------ -->
+  <ion-list [hidden]="segment != 'list'">
+
+          <!-- LIST SUMMARY -->
+          <div>
+              <ion-item-divider style="border-bottom:1px solid lightgrey;">
+                  <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
+                      style="margin-left:-5px;font-size:120%;color:black;">
+                    {{filter.tag}}
+                  </div>
+                  <ion-label slot="start" style="color:dimgray;margin-right:24px;">
+                      <span [hidden]="loading" class="cnt"> &nbsp;({{cntTotal}})</span>
+                  </ion-label>
+                  <!--ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;" [hidden]="loading">{{total}}</ion-label-->
+              </ion-item-divider>
+              <!-- DATE RANGE -->
+              <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+                  *ngIf="filter.range.startDisplay">
+                  {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
+              </div>
+          </div>
+    
+    
+          <!-- LOADING  & ERROR-->
+          <loading-component [loading]="loading"></loading-component>
+          <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+    
+    
+          <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || loading">
+            <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
+          </ion-button>
+    
+          <div [hidden]="!ready" *ngFor="let item of expenses; index as i;">
+              <ion-item-divider class="dateDivider" [hidden]="!item.d">
+                  {{item.d}}
+              </ion-item-divider>
+                    <ion-item-sliding>
+                
+                      <!--ion-item routerLink="/expense" [queryParams] = "{data: {expense:item, category:item.category, rootTab:'/tabs/tab1'} | json }" 
+                        detail routerDirection="forward"-->
+                      <ion-item class="pointer" (click)="presentUpsertModal(item)" detail>
+                        
+                        <span slot="start" style="font-size:90%;color:gray;">{{i+skip+1}}</span>
+                        <ion-label><span class="name">{{item.c_name}}</span>
+                          <br><span class="dttm">{{item.vendor}}</span>
+                          <br [hidden]="item.note" style="height:140px;">
+                          <br><span class="dttm">{{item.note}}</span> 
+                        </ion-label>
+                        
+                        <ion-label class="amt">{{item.amtDisplay}}</ion-label>
+                      </ion-item>
+                      <ion-item-options side="start">
+                        <!--ion-item-option style="width:75px;" (click)="presentUpsertModal(item, 'edit')">Edit</ion-item-option-->
+                        <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
+                      </ion-item-options>
+    
+                    </ion-item-sliding>
+          </div>
+    
+          <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= totalCount || loading">
+            <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
+          </ion-button>
+      </ion-list>
+
+
   
 </ion-content>
+
 <expense-fab-component [hidden]="error"></expense-fab-component>

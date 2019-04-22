@@ -18,7 +18,7 @@
 
   <ion-list>
 
-    <ion-item style="margin-top:30px;">
+    <ion-item>
       <ion-label position="stacked" style="font-size:120%;color:gray;">Category</ion-label>
       <div type="data" style="border-left:solid 1px gray;">{{data.category.name}}</div>
     </ion-item>
@@ -46,13 +46,17 @@
 
   </ion-list>
 
-  <div style="text-align:center;margin-top:10px;">
-      <ion-button size="medium" (click)="presentUpsertModal($event)">
-          Edit
-      </ion-button>
-      <ion-button size="medium" color="danger" style="margin-left:15px;" (click)="presentDeleteModal($event)">
-          Delete
-      </ion-button>
-  </div>
-
 </ion-content>
+
+
+<ion-footer style="text-align:center;margin-top:10px;">
+    <ion-toolbar>
+        <ion-button style="width:90px" size="medium" (click)="presentUpsertModal($event)">
+            Edit
+        </ion-button>
+        <ion-button style="width:90px;margin-left:15px;" size="medium" color="danger"
+        (click)="presentDeleteModal($event)">
+            Delete
+        </ion-button>
+    </ion-toolbar>
+  </ion-footer>

@@ -58,7 +58,7 @@ export class ExpensePage implements OnInit {
 
 
   ngOnDestroy(){
-    console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> ExpensePage.ngOnDestroy <<<<<<<<<<<<<<<<<')
     this.events.unsubscribe('dml', this.eventHandler_expenseDML);
   }
 
@@ -75,16 +75,17 @@ export class ExpensePage implements OnInit {
 
       if(data.expense){ // There must be an expesne object in te data
         if(data.mode === 'delete'){
-          console.log('CLOSE')
           this._location.back();
         }
         else if (data.mode === 'edit' && this.data.expense.id === data.expense.id){
+          console.log('+++++++++++++++++++')
             this.data.expense = data.expense;
+            console.log('<--->', this.data.expense.amt, this.wallet['currency'])
+            this.data.expense.amtDisplay = currency(this.data.expense.amt, this.wallet['currency']).format(true);
         }
       } 
     }
     catch(err){
-      console.log('loadEvent', err)
       this.error = err;
     }
   }

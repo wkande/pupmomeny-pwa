@@ -15,8 +15,8 @@ export class UtilsService {
 
   constructor() { 
     
-    console.log('------------> UtilsService.constructor');
-    if(BACKEND.name === 'Dev') this.delayTimer = 500
+    //console.log('------------> UtilsService.constructor');
+    if(BACKEND.name === 'Dev') this.delayTimer = 0;
   }
 
 

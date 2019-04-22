@@ -49,13 +49,13 @@ export class ExpensesPage implements OnInit {
     private modalController:ModalController, private navCtrl:NavController,
     private filterService:FilterService, private events: Events,
     private utils:UtilsService) { 
-      console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
+      //console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
     }
 
     
   ngOnInit() {
       try{
-        console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
+        //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         
 
@@ -76,7 +76,7 @@ export class ExpensesPage implements OnInit {
           }
         }
         
-        console.log('ExpensesPage > ngOnInit category>', this.category)
+        //console.log('ExpensesPage > ngOnInit category>', this.category)
 
         this.getExpenses();
 
@@ -97,7 +97,7 @@ export class ExpensesPage implements OnInit {
 
   
   ngOnDestroy(){
-    console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
     this.events.unsubscribe('filter-changed', this.eventHandler_filterChanged);
     this.events.unsubscribe('dml', this.eventHandler_expenseDeleted);
   }
@@ -105,21 +105,15 @@ export class ExpensesPage implements OnInit {
   
   loadEvent(){
     try{
-      console.log('ExpensesPage > loadEvent > subscribe > fired')
+      //console.log('ExpensesPage > loadEvent > subscribe > fired')
       this.skip = 0;
       this.getExpenses();
     }
     catch(err){
-      console.log('loadEvent', err)
+      //console.log('loadEvent', err)
       this.error = err;
     }
   }
-
-
-  /*expenseDML(data:any){
-    console.log('ExpensesPage DML event fired >', data)
-    this.getExpenses();
-  }*/
 
 
   tryAgain(ev:any){
@@ -134,7 +128,7 @@ export class ExpensesPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    console.log('ExpensesPage:presentFilterModal():dismissed');
+    //console.log('ExpensesPage:presentFilterModal():dismissed');
   }
 
 
@@ -163,7 +157,7 @@ export class ExpensesPage implements OnInit {
 
   async getExpenses(){
     try{
-      console.log('>>> ExpensesPage > getExpenses()')
+      //console.log('>>> ExpensesPage > getExpenses()')
       this.expenses = [];
       this.error = null;
       this.loading = true;
@@ -171,7 +165,7 @@ export class ExpensesPage implements OnInit {
       this.total = 0;
 
       this.filter = this.filterService.getFilter();
-        console.log('Filter >', this.filter)
+      //console.log('Filter >', this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -183,7 +177,7 @@ export class ExpensesPage implements OnInit {
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
  
-      this.totalCount = currency(result['totalCount'], this.wallet['currency']).format(true);
+      this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
       console.log(this.expenses)
       //console.log('Data >',this.expenses)
@@ -217,7 +211,7 @@ export class ExpensesPage implements OnInit {
 
   
   
-  async presentUpsertModal(expense:any) {
+  async presentUpsertModal___OLD___(expense:any) {
     try{
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
@@ -225,14 +219,23 @@ export class ExpensesPage implements OnInit {
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
 
-        // Reload
-        if(data != null){
-          // @TODO need to update list;
-          //
-          //
-          //
-        }
+
+  async presentUpsertModal(expense:any) {
+    try{
+      this.error = null;
+        let category = {id:expense.c_id, name:expense.c_name};
+        const modal = await this.modalController.create({
+          component: UpsertExpensePage,
+          componentProps: { expenseParam: expense, categoryParam:category }
+        });
+        await modal.present();
+        const { data } = await modal.onDidDismiss();
     }
     catch(err){
       this.error = err;
@@ -249,13 +252,6 @@ export class ExpensesPage implements OnInit {
         await modal.present();
         const { data } = await modal.onDidDismiss();
 
-        // Reload
-        if(data != null){
-          // @TODO need to delete from list;
-          //
-          //
-          //
-        }
     }
     catch(err){
       this.error = err;

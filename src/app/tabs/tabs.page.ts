@@ -15,9 +15,9 @@ export class TabsPage {
   wallet:any;
 
   constructor(){
-    console.log(this.backend.name)
+    //console.log(this.backend.name)
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
-    console.log(this.wallet)
+    //console.log(this.wallet)
   }
 
 

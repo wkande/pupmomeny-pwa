@@ -23,10 +23,10 @@
       <ion-list [hidden]="!ready">
           <!-- MESSAGES -->
           <ion-item>
-              <div style="font-size:large;">{{category.name}}</div>
+              <div style="font-size:x-large;font-weight:bold;">{{category.name}}</div>
           </ion-item>
           <ion-item padding>
-              <div style="font-size:medium;color:gray;">Are you sure you want to delete this category? 
+              <div style="font-size:medium;color:gray;"> 
                 <span [hidden]="transactionCnt == 0">Proceed by selecting a  
                 <b>Delete Option</b> shown below.</span></div>
           </ion-item>
@@ -45,14 +45,14 @@
               <ion-radio-group [(ngModel)]="radioSelection" (ionChange)="radioChanged($event)">
                 <ion-item style="color:gray;border:1px solid gray;border-radius:3px;padding:5px 5px 5px 5px;">
                     <div>This category has <span style="font-weight:bold;">{{transactionCnt}}</span>
-                      expense entries associated with it. Selecting this option will also delete the expense items.</div>
+                      expense entries associated with it. Selecting this option will also delete the expense entries.</div>
                     <ion-radio slot="start" mode="md" value="delete"></ion-radio>
                 </ion-item>
             
     
 
                 <ion-item style="color:gray;border:1px solid gray;border-radius:3px;padding:5px 5px 5px 5px;margin-top:10px;">
-                    <div>With this option you can move the <span style="font-weight:bold;">{{transactionCnt}}</span> expense items to another
+                    <div>With this option you can move the <span style="font-weight:bold;">{{transactionCnt}}</span> expense entries to another
                         category prior to deleting this category.</div>
                     <ion-radio slot="start" mode="md" value="move"></ion-radio>
                 </ion-item>

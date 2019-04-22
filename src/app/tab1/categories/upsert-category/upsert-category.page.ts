@@ -38,8 +38,8 @@ export class UpsertCategoryPage implements OnInit {
   ngOnInit() {
       try{
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
-        console.log('UpsertCategoryPage ngOnInit', this.mode);
-        this.title = ((this.category == null) ? 'Add Category' : this.category.name);
+        //console.log('UpsertCategoryPage ngOnInit', this.mode);
+        this.title = ((this.category == null) ? 'Add Category' : 'Edit Category');
         if(this.mode == 'edit') this.nameInput.nativeElement.value = this.category.name;
         this.ready = true;
       }

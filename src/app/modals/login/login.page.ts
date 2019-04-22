@@ -73,7 +73,7 @@ export class LoginPage implements OnInit {
     
     if(this.isValidMailFormat() == true){
         try{
-          await this.presentLoading('Sending code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
+          await this.presentLoading('Sending a code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
           var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).toPromise();
           this.code = result['data'].code;
           this.codeReady = true;
@@ -107,6 +107,7 @@ export class LoginPage implements OnInit {
           var result = await this.http.post(BACKEND.url+'/me', {email:this.email, code:this.code}).pipe(timeout(5000)).toPromise();
           user = result['user'];
           this.authGuard.activate(true, user);
+          console.log('LOGIN >', user)
 
           // New Account, give the user a chance to change the percision for the default wallet
           if(user.newAccount){

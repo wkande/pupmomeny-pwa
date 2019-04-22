@@ -1,4 +1,4 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
 import { ModalController, LoadingController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
@@ -25,12 +25,14 @@ export class UpsertExpensePage implements OnInit {
   @Input("categoryParam") categoryParam:any;
   @Input("mode") mode:string;
 
+  @ViewChild('inputAmt') inputAmt:ElementRef;
+
   
   title:string;
 
   // Data entry fields
   note:string
-  amtDisplay:string;
+  //amtDisplay:string;
   categoryOrg:any; // The original category needed if the user changes the cateory_id
   // cat must be initialized or the ngOnInt will cause HTML errors if ngOnInt failes
   category:any = {id:null, name:null, vendors:null};
@@ -72,6 +74,7 @@ export class UpsertExpensePage implements OnInit {
         }
         // Edit
         else{
+          console.log('>>>>>>>', this.expenseParam, this.categoryParam)
           this.categoryOrg = JSON.parse(JSON.stringify(this.categoryParam)); // Deep copy because the param is read only
           // The vendors in catgeory may-or-may-not be presented, get them from cache
           this.categoryOrg.vendors = this.cache.getVendors(this.categoryOrg.id);
@@ -88,13 +91,20 @@ export class UpsertExpensePage implements OnInit {
           this.vendor = this.expenseParam.vendor;
           if(this.expenseParam.amt < 0){
             this.credit = true;
-            this.amt = Math.abs(this.expenseParam.amt); // Make a postive number
+            // Make a postive number
+            this.expenseParam.amt = Math.abs(this.expenseParam.amt);
+            this.amt = this.amt; 
+            console.log('CREDIT', this.amt)
           }
           else{
             this.amt = this.expenseParam.amt;
           }
+          console.log(typeof this.expenseParam.amt)
+          
+          //@ts-ignore
+          this.amt = currency(this.expenseParam.amt, this.wallet['currency']).format(true);
 
-          this.amtDisplay = currency(this.amt, this.wallet.currency).format(true);
+          //this.amtDisplay = currency(this.amt, this.wallet.currency).format(true);
           this.note = this.expenseParam.note;
         }
 
@@ -108,7 +118,7 @@ export class UpsertExpensePage implements OnInit {
 
 
   cancel(){
-    this.modalController.dismiss(null)
+    this.modalController.dismiss(null);
   } 
 
 
@@ -134,98 +144,73 @@ export class UpsertExpensePage implements OnInit {
 
 
   dateChanged(ev:any){
+    this.error = null;
     this.dateSelected = ev.detail.value;
   }
 
-  chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",".", "Backspace"];
+  chars = [];
   onKeyPress(ev:any){
-    console.log(ev.key, this.chars.includes(ev.key), this.wallet.currency.precision)
-    if(ev.key == "." && this.amtDisplay.split(".").length === 2) {
-      console.log('ARRAY TO LONG');
-      return false;
-    }
-    else if(this.amtDisplay.split(".").length === 2 && this.amtDisplay.split(".")[1].length > (this.wallet.currency.precision-1)){
-      console.log('PERCISION TO MAX', this.amtDisplay.split(".")[1].length);
-      return false;
-    }
-    //this.amtDisplay += ","
+    if(this.chars.length === 0)
+      this.chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", this.wallet.currency.decimal];
     return this.chars.includes(ev.key);
   }
 
 
+  /**
+   * Submit the form.
+   * @param ev 
+   */
   async submit(ev:any){
-    let amount = this.amtDisplay.replace(/,/g, "<>");
-    amount = amount.replace(/,/g, "<>");
-    amount = amount.replace(/\./g, "");
-    amount = amount.replace(/<>/g, ".");
-    console.log(1, parseFloat(amount))
 
-    let pattern = 'POSTGRES'
-    let c = {symbol:"", separator:",", decimal:".", precision: 4};
-    const POSTGRES = value => currency(value, c);
-    const POSTGRES2 = value => currency(value);
-
-    console.log(2, POSTGRES(this.amtDisplay).format(true))
-          this.amt = parseFloat(POSTGRES(this.amtDisplay).format(true));
-
-          console.log(3, currency(1234.5600, c).format(true))
-
-    console.log(this.amtDisplay, this.amt)
-    return;
       try{
         console.log('===> SUBMIT', this.mode);
         this.error = null;
         this.showTryAgainBtn = false;
 
-              //console.log('NOTE', this.note)
-              //console.log('VENDOR', this.vendor)
+        /********** VALIDATE **************/
+
               // Leading white space
               if(this.note) this.note.trim(); 
               if(this.vendor) this.vendor.trim(); 
               if(this.vendor && this.vendor.length === 0 )this.vendor = null;
               if(this.note && this.note.length === 0 )this.note = null;
-              //console.log('NOTE', this.note)
-              //console.log('VENDOR', this.vendor)
-
-
-              /********** DATA VALIDATION ***********/
 
               // CATEGORY
               if(!this.category.id){
                   this.error = 'Please select a category.';
                   return;
               }
-              //console.log('CATEGORY', this.category.id, this.category.name)
-              
               
               // AMT
-              //console.log('AMT', this.amt)
+              console.log(this.amt)
               if(!this.amt || this.amt == 0){
-                  this.error = 'Invalid amount. Please enter a positive number.';
-                  return;
+                this.error = 'Invalid amount. Please enter a positive number.';
+                return;
               }
-              else if (this.amt < 0){
+              else if(isNaN( parseFloat(this.amt.toString())) ){
+                this.error = "Amount is not a valid number.";
+                return;
+              }
+              
+              else if (this.amt < 0){ // This should never fire but ya never know
                   this.error = 'Negative numbers are not allowed. If this is a credit please use the credit toggle and a positive number.';
                   return;
               }
-              // Check the percision if there is a decimal point at all
-              let x = this.amt.toString();
-              let p = this.wallet.currency.percision.split('-')[1];
-              console.log('x - p', x, p)
-              if(x.indexOf('.') != -1 && x.split(".")[1].length > p){
-                if(p == 0)this.error = `No decimals are allowed for this wallet's settings.`;
-                else this.error = `Only `+p+` decimals are allowed for this wallet's settings.`;
-                return;
+              
+              else if(this.amt.toString().indexOf('.') > -1){
+                  if(this.amt.toString().split('.')[1].length > this.wallet.currency.precision){
+                    this.error = "Your preferences only allow "+this.wallet.currency.precision+" decimals points.";
+                    return;
+                  }
               }
-              console.log('AMT', this.amt, x, this.wallet.currency.percision, p)
+              
 
               // DATE
               if(!this.dateSelected){
                 this.error = 'Please select a date.';
                 return;
               }
-              //console.log('DATE', this.dateSelected.split('T')[0], typeof this.dateSelected)
-              
+
 
           /********** DML **************/
 
@@ -237,7 +222,6 @@ export class UpsertExpensePage implements OnInit {
 
           // Convert amt for credit
           let amt = ((this.credit) ? -Math.abs(this.amt) : this.amt);
-          //console.log('converted amount >', amt)
 
           if(this.mode == 'insert'){
             let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt}
@@ -246,7 +230,6 @@ export class UpsertExpensePage implements OnInit {
           }
           else{
             let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt, cat_id:this.category.id};
-            //console.log(body, this.categoryOrg)
             var result = await this.http.put(BACKEND.url+'/categories/'+this.categoryOrg.id+'/expenses/'+this.expenseParam.id, 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
@@ -255,10 +238,7 @@ export class UpsertExpensePage implements OnInit {
           // Trim the date
           expense.dttm = expense.dttm.split('T')[0];
           
-          // The amt comes back as a string padded to 4 decimal point
-          //parseFloat(expense.amt).toFixed(this.percision);
-
-          console.log('UPSERT EXPENSE COMPLETED >>>', expense);
+          console.log('UPSERT >>>', expense);
 
           this.events.publish('dml', {expense:expense, mode:this.mode});
           this.modalController.dismiss({status:"OK"});
@@ -288,6 +268,7 @@ export class UpsertExpensePage implements OnInit {
 
 
   categorySelected(ev:any){
+    this.error = null;
     console.log('categorySelected > ev', ev);
     this.category = {id:ev.id, name:ev.name, vendors:ev.vendors};
     this.hideCatPicker = true;
@@ -295,6 +276,7 @@ export class UpsertExpensePage implements OnInit {
 
 
   vendorSelected(ev:any){
+    this.error = null;
     console.log('vendorSelected > ev', ev);
     this.vendor = ev.name
     //this.vendorInput.nativeElement.value = ev.name;
