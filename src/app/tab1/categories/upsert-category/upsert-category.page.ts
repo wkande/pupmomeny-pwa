@@ -79,7 +79,7 @@ export class UpsertCategoryPage implements OnInit {
               {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           this.category = result['expense'];
-          this.events.publish('dml', {category:this.category, mode:this.mode});
+          this.events.publish('redraw', {category:this.category, mode:this.mode});
           this.modalController.dismiss( {status:"OK"});
       }
       catch(err){

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../services/auth.guard';
-import { ModalController, Events } from '@ionic/angular';
+import { ModalController, Events, NavController } from '@ionic/angular';
 import { FilterPage } from '../modals/filter/filter.page';
 import { FilterService } from '../services/filter.service';
 import { UtilsService } from '../services/utils/utils.service';
@@ -44,41 +44,37 @@ export class Tab1Page {
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, private modalController:ModalController,
     private filterService:FilterService, private events: Events, 
-    private utils:UtilsService, private cache:CacheService) {
+    private utils:UtilsService, private cache:CacheService, private navCtrl:NavController) {
       //console.log('>>>>>>>>>>>>>>>> Tab1Page.constructor <<<<<<<<<<<<<<<<<')
   }
 
 
-  ngOnInit(){
+  async ngOnInit(){
     try{
       //console.log('>>>>>>>>>>>>>>>> Tab1Page.ngOnInit <<<<<<<<<<<<<<<<<')
-
-      
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
-
       this.getCategories(); 
-
-      this.events.subscribe('filter-changed', (data) => {
+      this.events.subscribe('redraw', (data) => {
           try{
-            console.log('Tab1Page > ngOnInit > subscribe > fired > filter-changed');
-            if(this.utils.currentView === 'Tab1Page')
-                this.tryAgain(null);
-            else
-                this.redrawNeeded = true;
+            console.log('Tab1Page > subscribe > fired > redraw');
+            if(this.utils.currentView === 'Tab1Page') this.tryAgain(null);
+            else this.redrawNeeded = true;
           }
           catch(err){
             this.error = err;
           }
       });
-      this.events.subscribe('dml', (data) => {
-          try{
-            //console.log('Tab1Page > ngOnInit > subscribe > fired > dml');
-            this.tryAgain(null);
-          }
-          catch(err){
-            this.error = err;
-          }
-      });
+      // A message will come from the expenses (child) page that Tab1Page can redraw as ExpensesPage close
+      this.events.subscribe('tab1page-redraw-if-needed', (data) => {
+        try{
+          console.log('Tab1Page > subscribe > fired > tab1page-redraw-if-needed');
+          this.utils.currentView = 'Tab1Page';
+          if(this.redrawNeeded = true) this.tryAgain(null);
+        }
+        catch(err){
+          this.error = err;
+        }
+    });
     }
     catch(err){
       this.error = err;
@@ -88,7 +84,7 @@ export class Tab1Page {
 
   ionViewDidEnter(){
       this.utils.currentView = 'Tab1Page';
-      console.log('---> Tab4Page.ionViewDidEnter')
+      console.log('---> Tab1Page.ionViewDidEnter')
       if(this.redrawNeeded === true) {
         this.redrawNeeded = false;
         this.tryAgain(null);
@@ -220,26 +216,7 @@ export class Tab1Page {
   }
   
 
-  /*async presentUpsertModal____OLD______(category:any, mode:string) {
-    try{
-        this.error = null;
-        console.log('Tab1Page > presentUpsertCategoryModal()', category)
-        const modal = await this.modalController.create({
-          component: UpsertCategoryPage,
-          componentProps: { category: category, mode:mode },
-          showBackdrop:true,
-          backdropDismiss:false
-        });
-        await modal.present();
-        const { data } = await modal.onDidDismiss();
-    }
-    catch(err){
-      this.error = err;
-    } 
-  }*/
-
-
-  async presentUpsertModal(expense:any) {
+  async presentUpsertExpenseModal(expense:any) {
     try{
       this.error = null;
         let category = {id:expense.c_id, name:expense.c_name};
@@ -256,6 +233,56 @@ export class Tab1Page {
   }
 
 
+  async presentUpsertCategoryModal(category:any, mode:string) {
+    try{
+        this.error = null;
+        console.log('Tab1Page > presentUpsertCategoryModal()', category)
+        const modal = await this.modalController.create({
+          component: UpsertCategoryPage,
+          componentProps: { category: category, mode:mode },
+          showBackdrop:true,
+          backdropDismiss:false
+        });
+        await modal.present();
+        
+        const { data } = await modal.onDidDismiss();
+        //console.log('Tab1Page:presentUpsertModal():dismissed: data',data);
+
+        // Reload
+        if(data != null){
+          this.getCategories();
+        }
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
+
+
+  async presentDeleteCategoryModal(category:any) {
+    try{
+        this.error = null;
+        console.log('Tab1Page:presentDeleteModal()', category)
+        const modal = await this.modalController.create({
+          component: DeleteCategoryPage,
+          componentProps: { category: category, categories:this.categories }
+        });
+        await modal.present();
+        
+        const { data } = await modal.onDidDismiss();
+        console.log('Tab1Page:presentDeleteModal():dismissed');
+
+        // Reload
+        if(data != null){
+          this.getCategories();
+        }
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
+
+
   doRefresh(event:any) {
     console.log('Begin refresh async operation');
     this.getCategories();
@@ -264,6 +291,11 @@ export class Tab1Page {
       console.log('Async operation has ended');
       event.target.complete();
     }, 200);
+  }
+
+
+  itemSelected(ev:any, item:any){
+    this.navCtrl.navigateForward('/expenses/'+item.id+'/'+item.name+'/'+item.vendors);
   }
 
 

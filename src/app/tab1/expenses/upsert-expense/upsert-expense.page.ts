@@ -240,7 +240,7 @@ export class UpsertExpensePage implements OnInit {
           
           console.log('UPSERT >>>', expense);
 
-          this.events.publish('dml', {expense:expense, mode:this.mode});
+          this.events.publish('redraw', {expense:expense, mode:this.mode});
           this.modalController.dismiss({status:"OK"});
       }
       catch(err){

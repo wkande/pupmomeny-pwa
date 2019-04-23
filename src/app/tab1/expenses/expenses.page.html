@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="tertiary">
       <ion-buttons slot="start">
-          <ion-back-button defaultHref="" routerDirection="back"></ion-back-button>
+          <ion-back-button defaultHref="" (click)=goBack($event)></ion-back-button>
       </ion-buttons>
     <ion-title>{{category.name}}</ion-title>
 
@@ -29,10 +29,8 @@
   <!-- LIST -->
   <ion-list>
 
-      
-
       <!-- LIST SUMMARY -->
-      <div>
+      <div *ngIf="filter">
           <ion-item-divider style="border-bottom:1px solid lightgrey;">
               <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
                   style="margin-left:-5px;font-size:120%;color:black;">

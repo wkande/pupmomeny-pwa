@@ -56,13 +56,11 @@ export class Tab4Page {
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         await this.initChart()
         this.getCategories();
-        this.events.subscribe('filter-changed', (data) => {
+        this.events.subscribe('redraw', (data) => {
             try{
-              console.log('Tab4Page > ngOnInit > subscribe > fired > filter-changed', this.utils.currentView);
-              if(this.utils.currentView === 'Tab4Page')
-                this.tryAgain(null);
-            else
-                this.redrawNeeded = true;
+              console.log('Tab4Page > subscribe > fired > redraw');
+              if(this.utils.currentView === 'Tab4Page') this.tryAgain(null);
+              else this.redrawNeeded = true;
             }
             catch(err){
               this.error = err;

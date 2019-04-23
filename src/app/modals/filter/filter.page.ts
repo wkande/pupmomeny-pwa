@@ -50,7 +50,7 @@ export class FilterPage implements OnInit {
             localStorage.setItem("filter", JSON.stringify(this.filter));
 
             // Send app wide event notice
-            this.events.publish('filter-changed', this.filter);
+            this.events.publish('redraw', this.filter);
 
             this.modalController.dismiss();
         }

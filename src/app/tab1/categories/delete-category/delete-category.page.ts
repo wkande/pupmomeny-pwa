@@ -111,7 +111,7 @@ export class DeleteCategoryPage implements OnInit {
 
         //console.log(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} )
         var result = await this.http.delete(BACKEND.url+'/categories/'+this.category.id+transferID, {headers: headers} ).pipe(timeout(5000)).toPromise();
-        this.events.publish('dml', {category:this.category, mode:"delete"});
+        this.events.publish('redraw', {category:this.category, mode:"delete"});
         this.modalController.dismiss({status:"OK"});
     }
     catch(err){

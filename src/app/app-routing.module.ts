@@ -5,7 +5,11 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'filter', loadChildren: './modals/filter/filter.module#FilterPageModule' },
-  { path: 'expenses/:id/:name', loadChildren: './tab1/expenses/expenses.module#ExpensesPageModule' },
+
+  { path: 'expenses', loadChildren: './tab1/expenses/expenses.module#ExpensesPageModule' },
+
+
+  { path: 'expenses/:id/:name/:vendors', loadChildren: './tab1/expenses/expenses.module#ExpensesPageModule' },
   //{ path: 'expense/:id/:vendor/:amt/:dttm/:note/:catId/:catName/:rootTab', loadChildren: './tab1/expenses/expense/expense.module#ExpensePageModule' },
   { path: 'expense', loadChildren: './tab1/expenses/expense/expense.module#ExpensePageModule' },
 

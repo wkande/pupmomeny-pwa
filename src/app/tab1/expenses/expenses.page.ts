@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../../services/auth.guard';
-import { ModalController, Events, NavController } from '@ionic/angular';
+import { ModalController, Events, NavController, Platform } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
@@ -24,7 +24,6 @@ import * as currency from 'currency.js';
 
 export class ExpensesPage implements OnInit {
 
-
   category:any = {}; // Will be null when the view is in search mode
   wallet:object;
   expenses:any;
@@ -40,77 +39,73 @@ export class ExpensesPage implements OnInit {
   error:any;
   ready:boolean = false;
   // methods to carry "this" into the event handler
-  eventHandler_filterChanged:any; 
-  eventHandler_expenseDeleted:any;
+  eventHandler_redraw:any; 
+  //eventHandler_expenseDeleted:any;
+  redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
 
 
   constructor(private routerActivated:ActivatedRoute, private router:Router,
     private http: HttpClient, private authGuard:AuthGuard, 
     private modalController:ModalController, private navCtrl:NavController,
     private filterService:FilterService, private events: Events,
-    private utils:UtilsService) { 
+    private utils:UtilsService, private platform:Platform) { 
       //console.log('>>>>>>>>>>>>>>>> ExpensesPage.constructor <<<<<<<<<<<<<<<<<')
     }
 
     
   ngOnInit() {
       try{
-        //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
+        console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         
+        this.category.id = this.routerActivated.snapshot.paramMap.get('id');
+        this.category.name = this.routerActivated.snapshot.paramMap.get('name');
+        if(this.routerActivated.snapshot.paramMap.get('vendors').length != 0)
+          this.category.vendors = this.routerActivated.snapshot.paramMap.get('vendors').split(',');
+        else
+          this.category.vendors = [];
 
-        // https://scotch.io/tutorials/handling-route-parameters-in-angular-v2
-        const params:any = this.routerActivated.params;
-        this.category = JSON.parse(JSON.stringify(params._value));
-        
-        // The vendors are in params._value, each as a key, not the array you would expect.
-        // Their key is a number, then come the text keys for things like id, name.
-        // This happens because the array got passed in [routerLink]="".
-        this.category.vendors = [];
-        for (var key in params._value) {
-          if (params._value.hasOwnProperty(key)) {
-              if(Number(key) > -1){ // The key is the number from the array
-                this.category.vendors.push(params._value[key]);
-                delete this.category[key]; // Remove the key outside the array
-              }
-          }
-        }
-        
-        //console.log('ExpensesPage > ngOnInit category>', this.category)
-
+        console.log(this.category);
         this.getExpenses();
 
         // This round about way keeps the event from firing itself more than 
         // once when the view is destroyed. Because the removal of the event cannot be done
         // with a promise. And without it will remove it for all views.
         // https://github.com/ionic-team/ionic/issues/13446
-        this.eventHandler_filterChanged = this.loadEvent.bind( this );
-        this.events.subscribe('filter-changed', this.eventHandler_filterChanged);
-        
-        this.eventHandler_expenseDeleted = this.loadEvent.bind( this );
-        this.events.subscribe('dml', this.eventHandler_expenseDeleted);
+        this.eventHandler_redraw = this.redrawEvent.bind( this );
+        this.events.subscribe('redraw', this.eventHandler_redraw);
       }
       catch(err){
+        console.log(err);
         this.error = err;
       }
   }
 
+
+  ionViewDidEnter(){
+    this.utils.currentView = 'ExpensesPage';
+    console.log('---> ExpensesPage.ionViewDidEnter')
+    if(this.redrawNeeded === true) {
+        this.redrawNeeded = false;
+        this.tryAgain(null);
+    }
+  }
   
+
   ngOnDestroy(){
-    //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
-    this.events.unsubscribe('filter-changed', this.eventHandler_filterChanged);
-    this.events.unsubscribe('dml', this.eventHandler_expenseDeleted);
+    console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    this.events.unsubscribe('redraw', this.eventHandler_redraw);
   }
 
   
-  loadEvent(){
+  redrawEvent(){
     try{
-      //console.log('ExpensesPage > loadEvent > subscribe > fired')
+      console.log('ExpensesPage > subscribe > fired > redraw')
       this.skip = 0;
-      this.getExpenses();
+      if(this.utils.currentView === 'ExpensesPage') this.tryAgain(null);
+      else this.redrawNeeded = true;
     }
     catch(err){
-      //console.log('loadEvent', err)
       this.error = err;
     }
   }
@@ -128,7 +123,6 @@ export class ExpensesPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    //console.log('ExpensesPage:presentFilterModal():dismissed');
   }
 
 
@@ -141,6 +135,14 @@ export class ExpensesPage implements OnInit {
   getLess(){
     this.skip = this.skip-50;
     this.getExpenses();
+  }
+
+  goBack(en:any){
+    // Tab1Page will no fire ionViewDidEnter() because when a root tab page opens a child
+    // and the child closes, root tab pages ignore ionViewDidEnter().
+    // Send an event to Tab1Page so it can redraw if needed.
+    console.log('goBack');
+    this.events.publish('tab1page-redraw-if-needed', {});
   }
 
 
@@ -157,7 +159,7 @@ export class ExpensesPage implements OnInit {
 
   async getExpenses(){
     try{
-      //console.log('>>> ExpensesPage > getExpenses()')
+      console.log('>>> ExpensesPage > getExpenses()')
       this.expenses = [];
       this.error = null;
       this.loading = true;
@@ -165,7 +167,7 @@ export class ExpensesPage implements OnInit {
       this.total = 0;
 
       this.filter = this.filterService.getFilter();
-      //console.log('Filter >', this.filter)
+      console.log('Filter >', this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -200,29 +202,12 @@ export class ExpensesPage implements OnInit {
       this.ready = true;
     }
     catch(err){
+      console.log(err)
       this.error = err;
     }
     finally{
       this.loading = false;
     }
-  }
-
-
-
-  
-  
-  async presentUpsertModal___OLD___(expense:any) {
-    try{
-        const modal = await this.modalController.create({
-          component: UpsertExpensePage,
-          componentProps: { expenseParam: expense, categoryParam:this.category, mode:'edit' }
-        });
-        await modal.present();
-        const { data } = await modal.onDidDismiss();
-    }
-    catch(err){
-      this.error = err;
-    } 
   }
 
 

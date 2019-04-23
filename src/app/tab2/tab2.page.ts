@@ -34,9 +34,7 @@ export class Tab2Page {
   searchEvent:any;
 
   ready:boolean = false;
-
-
-  eventHandler:any; // method to carry "this" into the event handler
+  redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
 
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, 
@@ -50,23 +48,39 @@ export class Tab2Page {
       try{
         console.log('>>>>>>>>>>>>>>>> Tab2Page.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
+
+        this.events.subscribe('redraw', (data) => {
+          try{
+            console.log('Tab2Page > subscribe > fired > redraw', data);
+            // If this was a filter change do not fire.
+            if(data.tag && data.range) return;
+            else if(this.utils.currentView === 'Tab2Page') this.tryAgain(null);
+            else this.redrawNeeded = true;
+            //this.searchExpenses(this.searchEvent);
+          }
+          catch(err){
+            this.error = err;
+          }
+        });
       }
       catch(err){
         this.error = err;
       }
-      this.events.subscribe('dml', (data) => {
-        try{
-          console.log('Tab2Page > ngOnInit > subscribe > fired > dml');
-          this.searchExpenses(this.searchEvent);
-        }
-        catch(err){
-          this.error = err;
-        }
-    });
+  }
+
+
+  ionViewDidEnter(){
+    this.utils.currentView = 'Tab2Page';
+    console.log('---> Tab2Page.ionViewDidEnter')
+    if(this.redrawNeeded === true) {
+        this.redrawNeeded = false;
+        this.tryAgain(null);
+    }
   }
 
 
   tryAgain(ev:any){
+    if(!this.searchEvent) return;
     this.searchExpenses(this.searchEvent);
   }
 
@@ -99,7 +113,9 @@ export class Tab2Page {
     this.searchExpenses(ev);
   }
 
+
   async searchExpenses(ev:any){
+    
     console.log('>>> TAB2 > searchExpenses', ev.detail.value)
     try{
       this.searchEvent = ev;
