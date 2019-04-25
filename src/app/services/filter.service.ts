@@ -54,9 +54,7 @@ export class FilterService {
       quarter = 3;
     else if (month < 13)
       quarter = 4;
-
     return quarter;
-    
   }
 
 
@@ -155,9 +153,9 @@ export class FilterService {
 
 
   private dateRange(filter:any){
-    let now = new Date(filter.start)
+    //let now = new Date(filter.start)
 
-    let arrStart = filter.range.start.split("-");
+    /*let arrStart = filter.range.start.split("-");
     let arrEnd = filter.range.end.split("-");
 
     let arr = ['01','02','03','04','05','06','07','08','09','10','11','12'];
@@ -169,7 +167,13 @@ export class FilterService {
     }
     let startDisplay = arrStart[1]+' '+arrStart[2]+', '+arrStart[0];
     let endDisplay = arrEnd[1]+' '+arrEnd[2]+', '+arrEnd[0];
-    //console.log('dateRange', startDisplay, endDisplay)
+    console.log('dateRange', startDisplay, endDisplay)
+    */
+    // With Moment
+    filter.range.start = moment(filter.range.start).format("YYYY-MM-DD");
+    filter.range.end = moment(filter.range.end).format("YYYY-MM-DD");
+    let startDisplay = moment(filter.range.start).format("MMM DD, YYYY");
+    let endDisplay = moment(filter.range.end).format("MMM DD, YYYY");
 
     return {tag:'Date Range', 
             range:{start:filter.range.start, end:filter.range.end, startDisplay:startDisplay, endDisplay:endDisplay}, 

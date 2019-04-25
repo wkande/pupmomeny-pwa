@@ -7,12 +7,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
 import { UtilsService } from '../../services/utils/utils.service';
-import { Decimal } from 'decimal.js';
+//import { Decimal } from 'decimal.js';
 import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 import { BACKEND } from '../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import * as currency from 'currency.js';
+import * as moment from 'moment';
 
 
 @Component({
@@ -40,7 +41,6 @@ export class ExpensesPage implements OnInit {
   ready:boolean = false;
   // methods to carry "this" into the event handler
   eventHandler_redraw:any; 
-  //eventHandler_expenseDeleted:any;
   redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
 
 
@@ -60,19 +60,13 @@ export class ExpensesPage implements OnInit {
         
         this.category.id = this.routerActivated.snapshot.paramMap.get('id');
         this.category.name = this.routerActivated.snapshot.paramMap.get('name');
-        if(this.routerActivated.snapshot.paramMap.get('vendors').length != 0)
-          this.category.vendors = this.routerActivated.snapshot.paramMap.get('vendors').split(',');
-        else
-          this.category.vendors = [];
-
-        console.log(this.category);
         this.getExpenses();
 
         // This round about way keeps the event from firing itself more than 
         // once when the view is destroyed. Because the removal of the event cannot be done
         // with a promise. And without it will remove it for all views.
         // https://github.com/ionic-team/ionic/issues/13446
-        this.eventHandler_redraw = this.redrawEvent.bind( this );
+        this.eventHandler_redraw = this.redrawEventHandler.bind( this );
         this.events.subscribe('redraw', this.eventHandler_redraw);
       }
       catch(err){
@@ -85,7 +79,7 @@ export class ExpensesPage implements OnInit {
   ionViewDidEnter(){
     this.utils.currentView = 'ExpensesPage';
     console.log('---> ExpensesPage.ionViewDidEnter')
-    if(this.redrawNeeded === true) {
+    if(this.redrawNeeded) {
         this.redrawNeeded = false;
         this.tryAgain(null);
     }
@@ -98,7 +92,7 @@ export class ExpensesPage implements OnInit {
   }
 
   
-  redrawEvent(){
+  redrawEventHandler(){
     try{
       console.log('ExpensesPage > subscribe > fired > redraw')
       this.skip = 0;
@@ -121,7 +115,6 @@ export class ExpensesPage implements OnInit {
       component: FilterPage
     });
     await modal.present();
-
     const { data } = await modal.onDidDismiss();
   }
 
@@ -141,7 +134,7 @@ export class ExpensesPage implements OnInit {
     // Tab1Page will no fire ionViewDidEnter() because when a root tab page opens a child
     // and the child closes, root tab pages ignore ionViewDidEnter().
     // Send an event to Tab1Page so it can redraw if needed.
-    console.log('goBack');
+    // The ion-back-btn will cause the return to parent
     this.events.publish('tab1page-redraw-if-needed', {});
   }
 
@@ -173,7 +166,7 @@ export class ExpensesPage implements OnInit {
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
-      let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
+      let q = ''; //this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
 
       var result = await this.http.get(BACKEND.url+'/categories/'+this.category.id+'/expenses?q='+q
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
@@ -193,9 +186,9 @@ export class ExpensesPage implements OnInit {
 
 
         // Date divider
-        if(i === 0) this.expenses[i].d = this.expenses[i].dttm;
+        if(i === 0) this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
-        else this.expenses[i].d = this.expenses[i].dttm;
+        else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
       this.total = currency(this.total, this.wallet['currency']).format(true);
       //this.total = parseFloat(this.total.toString());
@@ -236,7 +229,6 @@ export class ExpensesPage implements OnInit {
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
-
     }
     catch(err){
       this.error = err;

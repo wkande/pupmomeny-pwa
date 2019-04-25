@@ -14,6 +14,7 @@ import { DeleteCategoryPage } from './categories/delete-category/delete-category
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import * as currency from 'currency.js';
+import * as moment from 'moment';
 
 
 @Component({
@@ -57,8 +58,11 @@ export class Tab1Page {
       this.events.subscribe('redraw', (data) => {
           try{
             console.log('Tab1Page > subscribe > fired > redraw');
-            if(this.utils.currentView === 'Tab1Page') this.tryAgain(null);
-            else this.redrawNeeded = true;
+            this.redrawNeeded = true;
+            if(this.utils.currentView === 'Tab1Page') {
+              this.redrawNeeded = false;
+              this.tryAgain(null);
+            }
           }
           catch(err){
             this.error = err;
@@ -67,9 +71,8 @@ export class Tab1Page {
       // A message will come from the expenses (child) page that Tab1Page can redraw as ExpensesPage close
       this.events.subscribe('tab1page-redraw-if-needed', (data) => {
         try{
-          console.log('Tab1Page > subscribe > fired > tab1page-redraw-if-needed');
-          this.utils.currentView = 'Tab1Page';
-          if(this.redrawNeeded = true) this.tryAgain(null);
+          console.log('Tab1Page > subscribe > fired > tab1page-redraw-if-needed', this.redrawNeeded);
+          this.ionViewDidEnter();
         }
         catch(err){
           this.error = err;
@@ -85,7 +88,7 @@ export class Tab1Page {
   ionViewDidEnter(){
       this.utils.currentView = 'Tab1Page';
       console.log('---> Tab1Page.ionViewDidEnter')
-      if(this.redrawNeeded === true) {
+      if(this.redrawNeeded) {
         this.redrawNeeded = false;
         this.tryAgain(null);
       }
@@ -106,13 +109,14 @@ export class Tab1Page {
 
   async getCategories(){
     try{
-      //console.log('>>> TAB1 > getCategories')
+      console.log('>>> TAB1 > getCategories')
       this.error = null;
       this.loading = true;
       this.total = 0;
       this.cntTotal = 0;
       this.categories = [];
       this.filter = this.filterService.getFilter();
+      console.log(this.filter)
       
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -149,7 +153,7 @@ export class Tab1Page {
 
   async getExpenses(){
     try{
-      //console.log('>>> TAB1 > getExpenses')
+      console.log('>>> TAB1 > getExpenses')
       this.expenses = [];
       this.error = null;
       this.loading = true;
@@ -157,13 +161,13 @@ export class Tab1Page {
       this.total = 0;
 
       this.filter = this.filterService.getFilter();
-      //console.log('Filter >', this.filter)
+      console.log(this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
-      let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
+      let q = ''; //this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
 
       var result = await this.http.get(BACKEND.url+'/expenses?q='+q
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
@@ -171,8 +175,6 @@ export class Tab1Page {
  
       this.cntTotal = result['totalCount'];
       this.expenses = result['expenses'];
-      //console.log(result)
-      //console.log('Data >',this.expenses)
       
       // Get total amt of all expenses and set the date divider
       for(var i=0; i<this.expenses.length; i++){
@@ -184,9 +186,9 @@ export class Tab1Page {
 
 
         // Date divider
-        if(i === 0) this.expenses[i].d = this.expenses[i].dttm;
+        if(i === 0) this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
-        else this.expenses[i].d = this.expenses[i].dttm;
+        else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
       this.total = currency(this.total, this.wallet['currency']).format(true);
       //this.total = parseFloat(this.total.toString());
@@ -295,7 +297,7 @@ export class Tab1Page {
 
 
   itemSelected(ev:any, item:any){
-    this.navCtrl.navigateForward('/expenses/'+item.id+'/'+item.name+'/'+item.vendors);
+    this.navCtrl.navigateForward('/expenses/'+item.id+'/'+item.name);
   }
 
 

@@ -10,6 +10,7 @@ import { DeleteExpensePage } from '../tab1/expenses/delete-expense/delete-expens
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import * as currency from 'currency.js';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-tab2',
@@ -54,9 +55,13 @@ export class Tab2Page {
             console.log('Tab2Page > subscribe > fired > redraw', data);
             // If this was a filter change do not fire.
             if(data.tag && data.range) return;
-            else if(this.utils.currentView === 'Tab2Page') this.tryAgain(null);
-            else this.redrawNeeded = true;
-            //this.searchExpenses(this.searchEvent);
+            else if(this.utils.currentView === 'Tab2Page') {
+              this.redrawNeeded = false;
+              this.tryAgain(null);
+            }
+            else{
+              this.redrawNeeded = true;
+            }
           }
           catch(err){
             this.error = err;
@@ -71,8 +76,8 @@ export class Tab2Page {
 
   ionViewDidEnter(){
     this.utils.currentView = 'Tab2Page';
-    console.log('---> Tab2Page.ionViewDidEnter')
-    if(this.redrawNeeded === true) {
+    console.log('---> Tab2Page.ionViewDidEnter', this.redrawNeeded)
+    if(this.redrawNeeded) {
         this.redrawNeeded = false;
         this.tryAgain(null);
     }
@@ -116,7 +121,7 @@ export class Tab2Page {
 
   async searchExpenses(ev:any){
     
-    console.log('>>> TAB2 > searchExpenses', ev.detail.value)
+    console.log('>>> TAB2 > searchExpenses', ev.detail.value);
     try{
       this.searchEvent = ev;
       this.expenses = [];
@@ -124,7 +129,8 @@ export class Tab2Page {
       this.ready = false;
       this.loading = true;
       this.showButtons = false;
-      //this.totalCount = 0;
+      this.totalCount = 0;
+      if(!ev.detail.value || ev.detail.value === "") return;
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -137,8 +143,14 @@ export class Tab2Page {
         .pipe(timeout(7000), delay (this.utils.delayTimer)).toPromise();
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
+
       for(let i=0; i<this.expenses.length; i++){
           this.expenses[i].amtDisplay =  currency(this.expenses[i].amt, this.wallet['currency']).format(true);
+
+        // Date divider
+        if(i === 0) this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
+        else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
+        else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
       console.log(this.expenses)
     }

@@ -74,7 +74,7 @@ export class LoginPage implements OnInit {
     if(this.isValidMailFormat() == true){
         try{
           await this.presentLoading('Sending a code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
-          var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).toPromise();
+          var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).pipe(timeout(5000)).toPromise();
           this.code = result['data'].code;
           this.codeReady = true;
         }

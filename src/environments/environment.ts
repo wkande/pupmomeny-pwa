@@ -25,7 +25,7 @@ const prod = {
 }
 
 
-export const BACKEND = stage;
+export const BACKEND = dev;
 
 
 /*

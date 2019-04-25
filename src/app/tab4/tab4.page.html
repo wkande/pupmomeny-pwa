@@ -1,12 +1,18 @@
 <ion-header>
     <!-- #9370DB -->
-    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;">
-      <ion-title>
-        Charts
-      </ion-title>
-      <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
+    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;padding-bottom:7px;">
+        <ion-segment [(ngModel)]="segment" color="light" (ionChange)="tryAgain($event)"><!--  -->
+          <ion-segment-button value="monthly" checked>
+            <ion-label>Monthly</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="yearly">
+            <ion-label>Yearly</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      <!--ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
           <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
-        </ion-button>
+        </ion-button-->
+  
     </ion-toolbar>
   </ion-header>
 
@@ -24,12 +30,28 @@
     </ion-refresher>
   
   
-    <loading-component [loading]="loading"></loading-component>
-    <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
-
+    
     <!-- LIST SUMMARY -->
     <div>
-        <ion-item-divider style="border-bottom:1px solid lightgrey;">
+
+      <ion-button expand="full" fill="clear" size="large">
+          <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-right:5px;" (click)="dttmBack($event)">
+              <ion-icon name="arrow-round-back"></ion-icon>
+          </ion-button>
+          <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:120%;">
+              <span [hidden]="segment == 'yearly'">{{period.monthly.display}}</span><span [hidden]="segment == 'monthly'">{{period.yearly.display}}</span>
+          </ion-button>
+          <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-left:5px;" (click)="dttmForward($event)">
+              <ion-icon name="arrow-round-forward"></ion-icon>
+          </ion-button>
+      </ion-button>
+
+      <loading-component [loading]="loading"></loading-component>
+      <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+
+
+
+        <!--ion-item-divider style="border-bottom:1px solid lightgrey;">
             <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
                 style="margin-left:-5px;font-size:120%;color:black;">
               {{filter.tag}}
@@ -45,14 +67,27 @@
         <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
             *ngIf="filter.range.startDisplay">
           {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
-        </div>
+        </div-->
     </div>
 
 
-  
-
     <canvas style="margin-top:20px;" id="myChart" width="400" height="400"></canvas>
 
-    
+  
+    <ion-list style="padding-left:10px;padding-right:10px;">
+      <ion-item style="border-bottom:1px solid gray;font-weight:bold;">
+          <span slot="start">Transactions: {{cntTotal}}</span> <span slot="end">{{amtTotal}}</span>
+          <div slot="end" class="amt" style="width:70px;color:dimgray;"></div>
+      </ion-item>
+            <ion-item *ngFor="let item of categories; index as i;">
+
+
+              <!--div slot="start" style="color:purple;font-size:small;">{{item.id}}</div-->
+              <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
+              <div slot="end" class="amt">{{item.amtDisplay}}</div>
+              <div slot="end" class="amt" style="width:70px;color:dimgray;">{{item.sum.percent}}</div>
+            </ion-item>
+    </ion-list>
+      
 
   </ion-content>

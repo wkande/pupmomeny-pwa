@@ -47,7 +47,7 @@
       <ion-label style="color:black;">
           Wallets
       </ion-label>
-      <ion-button slot="end" color="primary" fill="outline">Set Current</ion-button>
+      <ion-button [hidden]="user.wallets.length === 1" slot="end" color="primary" fill="outline">Switch Wallets</ion-button>
       <ion-button slot="end" color="primary" fill="outline">Add</ion-button>
   </ion-item-divider>
 
