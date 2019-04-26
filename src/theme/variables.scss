@@ -4,7 +4,12 @@
 /** Ionic CSS Variables **/
 :root {
 
-
+  ion-back-button{
+    --color:white;
+  }
+  ion-toolbar {
+    --background: #9370DB;
+  }
 
   /** primary **/
   --ion-color-primary: #3880ff;
@@ -13,6 +18,10 @@
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #3171e0;
   --ion-color-primary-tint: #4c8dff;
+
+
+  --ion-color-pup: #9370DB;
+ 
 
   /** secondary **/
   --ion-color-secondary: #0cd1e8;

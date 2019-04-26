@@ -1,12 +1,11 @@
 <ion-header>
-    <!-- #9370DB -->
-    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;padding-bottom:7px;">
-        <ion-segment [(ngModel)]="segment" color="light" (ionChange)="tryAgain($event)"><!--  -->
+    <ion-toolbar style="padding-bottom:4px;">
+        <ion-segment [(ngModel)]="segment" color="light" style="margin-top:5px;" (ionChange)="tryAgain($event)">
           <ion-segment-button value="monthly" checked>
-            <ion-label>Monthly</ion-label>
+            <ion-label class="segment-font-size">Monthly</ion-label>
           </ion-segment-button>
           <ion-segment-button value="yearly">
-            <ion-label>Yearly</ion-label>
+            <ion-label class="segment-font-size">Yearly</ion-label>
           </ion-segment-button>
         </ion-segment>
       <!--ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
@@ -20,14 +19,14 @@
   
   
     <!-- REFRESHER -->
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <!--ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
         pullingIcon="arrow-dropdown"
         pullingText="Pull to refresh"
         refreshingSpinner=""
         refreshingText="">
       </ion-refresher-content>
-    </ion-refresher>
+    </ion-refresher-->
   
   
     
@@ -48,34 +47,14 @@
 
       <loading-component [loading]="loading"></loading-component>
       <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
-
-
-
-        <!--ion-item-divider style="border-bottom:1px solid lightgrey;">
-            <div slot="start" fill="clear" (click)="presentFilterModal($event)" 
-                style="margin-left:-5px;font-size:120%;color:black;">
-              {{filter.tag}}
-            </div>
-            <ion-label slot="start" style="color:dimgray;margin-right:24px;">
-                <span [hidden]="loading" class="cnt"> &nbsp;({{cntTotal}})</span>
-            </ion-label>
-            <ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;">
-                <span [hidden]="loading">{{amtTotal}}</span>
-            </ion-label>
-        </ion-item-divider>
-
-        <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
-            *ngIf="filter.range.startDisplay">
-          {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
-        </div-->
     </div>
 
 
-    <canvas style="margin-top:20px;" id="myChart" width="400" height="400"></canvas>
+    <canvas style="margin-top:20px;" id="myChart" width="400" height="400" [hidden]="!ready"></canvas>
 
   
-    <ion-list style="padding-left:10px;padding-right:10px;">
-      <ion-item style="border-bottom:1px solid gray;font-weight:bold;">
+    <ion-list style="padding-left:10px;padding-right:10px;margin-top:30px;" [hidden]="!ready">
+      <ion-item style="border-bottom:1px solid gray;border-top:1px solid gray;font-weight:bold;">
           <span slot="start">Transactions: {{cntTotal}}</span> <span slot="end">{{amtTotal}}</span>
           <div slot="end" class="amt" style="width:70px;color:dimgray;"></div>
       </ion-item>

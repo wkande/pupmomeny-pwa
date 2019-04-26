@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -9,9 +10,7 @@ export class CacheService {
   categories:[];
 
 
-  constructor() {
-    //console.log('------------> CacheService.constructor');
-  }
+  constructor() {}
 
 
   getVendors(id:number){
@@ -23,4 +22,5 @@ export class CacheService {
     throw 'Invalid ID passed to getVendors in cache.';
   }
 
+  
 }

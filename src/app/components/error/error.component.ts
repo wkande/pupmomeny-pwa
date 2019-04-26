@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core'; 
 import { UtilsService } from '../../services/utils/utils.service';
+import { AuthGuard } from '../../services/auth.guard';
 
 
 @Component({
@@ -28,8 +29,10 @@ export class ErrorComponent implements OnInit {
   @Output() tryAgainSelected: EventEmitter<any> = new EventEmitter<any>();
   message:any;
 
+  showLoginBtn:boolean = false;
 
-  constructor(private utils:UtilsService) { }
+
+  constructor(private utils:UtilsService, private authGuard:AuthGuard) { }
 
 
   ngOnInit() {
@@ -37,12 +40,16 @@ export class ErrorComponent implements OnInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    //console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
+    console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
     if(this.error){
       //console.log('ngOnChanges', changes.errorMsg.currentValue);
       //console.log('this.error', this.error)
       //this.getErrorMessage(this.error);
       this.message = this.utils.getErrorMessage(this.error);
+      // @ts-ignore
+      if(this.error.status === 403){
+          this.showLoginBtn = true;
+      }
     }
     else{
       this.message = null;

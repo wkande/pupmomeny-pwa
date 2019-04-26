@@ -1,9 +1,9 @@
 <ion-header>
-    <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;">
+    <ion-toolbar>
       <ion-searchbar mode="md" style="background-color:gray;font-size:200%;" (ionChange)="startSearch($event)" debounce="800">
       </ion-searchbar>
       <!-- SEARCH SUMMARY -->
-      <div style="text-align:center;">Found: {{totalCount}} <span [hidden]="totalCount == 0">- Showing: {{skip+1}} - {{skip+50}}</span></div>
+      <div style="text-align:center;color:white;">Found: {{totalCount}} <span [hidden]="totalCount == 0">- Showing: {{skip+1}} - {{skip+50}}</span></div>
 
     </ion-toolbar>
   </ion-header>

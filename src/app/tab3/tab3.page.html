@@ -1,22 +1,24 @@
 <ion-header>
   <!-- #9370DB -->
-  <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#7044ff;">
+  <ion-toolbar style="color:white;">
     <ion-title>
       Settings
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [hidden]="!ready">
+
+
 
 <ion-list>
 
   <!-- USER -->
-  <ion-item-divider style="font-size:120%;background-color:lightgrey;">
-    <ion-label style="color:black;">
+  <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
+    <ion-label class="section">
       User
     </ion-label>
-    <ion-button slot="end" (click)="logout()" fill="outline">Logout</ion-button>
+    <ion-button slot="end" (click)="logout()" size="medium">Logout</ion-button>
   </ion-item-divider>
   <!-- EMAIL -->
   <ion-item-sliding>
@@ -43,12 +45,12 @@
 
 
 <!-- WALLETS -->
-  <ion-item-divider style="font-size:120%;background-color:lightgrey;">
-      <ion-label style="color:black;">
+  <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
+      <ion-label  class="section">
           Wallets
       </ion-label>
-      <ion-button [hidden]="user.wallets.length === 1" slot="end" color="primary" fill="outline">Switch Wallets</ion-button>
-      <ion-button slot="end" color="primary" fill="outline">Add</ion-button>
+      <ion-button [hidden]="user.wallets.length === 1" slot="end" size="medium">Switch Wallets</ion-button>
+      <ion-button slot="end" size="medium">Add</ion-button>
   </ion-item-divider>
 
   <ion-item-sliding *ngFor="let item of user.wallets; index as i;">
@@ -72,8 +74,8 @@
 
 
 
-  <ion-item-divider style="color:black;font-size:120%;background-color:lightgrey;">
-      <ion-label>
+  <ion-item-divider padding style="color:black;font-size:120%;background-color:lightgrey;">
+      <ion-label class="section">
           General
       </ion-label>
   </ion-item-divider>

@@ -24,6 +24,7 @@ export class UpsertExpensePage implements OnInit {
   @Input("expenseParam") expenseParam:any;
   @Input("categoryParam") categoryParam:any;
   @Input("mode") mode:string;
+  @ViewChild('datePicker') datePicker:ElementRef
 
   @ViewChild('inputAmt') inputAmt:ElementRef;
 
@@ -140,6 +141,10 @@ export class UpsertExpensePage implements OnInit {
 
   hideVendors(ev:any){
     this.hideVendorPicker = true;
+  }
+
+  showDatePicker() {
+    this.datePicker.open();
   }
 
 

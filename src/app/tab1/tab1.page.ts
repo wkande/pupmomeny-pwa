@@ -121,10 +121,10 @@ export class Tab1Page {
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
-
+      
       let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
-      .pipe(timeout(7000), delay (this.utils.delayTimer))
+      .pipe(timeout(7000), delay(this.utils.delayTimer))
       .toPromise();
       //console.log(result)
       this.categories = result['categories'];

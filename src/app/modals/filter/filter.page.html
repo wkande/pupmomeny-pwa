@@ -21,7 +21,7 @@
 
       <ion-radio-group (ionChange)="changed($event)" [(ngModel)]="filter.tag">
           <!-- THIS MONTH -->
-          <ion-item #thisMonth >
+          <ion-item>
               <ion-radio slot="end" value="btnThisMonth" (ionSelect)="selected($event, 'btnThisMonth', null)"></ion-radio>
               <ion-label>This Month</ion-label>
           </ion-item>

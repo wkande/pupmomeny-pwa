@@ -10,12 +10,12 @@ import { BACKEND } from '../../../environments/environment';
 export class UtilsService {
 
 
-  delayTimer:number = 0;
+  delayTimer:number = 500;
   currentView:string;
 
 
   constructor() { 
-    if(BACKEND.name === 'Dev') this.delayTimer = 0;
+    if(BACKEND.name != 'Dev') this.delayTimer = 0;
   }
 
 
@@ -25,11 +25,11 @@ export class UtilsService {
     if(err.status === 0) message += 'There seems to be a connection issue, please try again. ';
     else if(err.name == 'TimeoutError') message+=  'There was a timeout issue waiting for a response, please wait a moment and try again. ';
     else if(typeof err.status != 'undefined'){
-      message += "Error getting data: " 
+      message += "Error: " 
         //if (err.message) msg += err.message;
         //if (err.error && err.error.text) msg += err.text;
         message += err.status+ ": "
-        if(err.error) message += (err.error.statusMessage || '')+": "+(err.error.statusMsg || '');
+        if(err.error) message += (err.error.statusMessage || ' ')+" "+(err.error.statusMsg || ' ');
     }
         
     // Something other than http errored

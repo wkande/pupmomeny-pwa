@@ -3,9 +3,16 @@
   <ion-card-header style="text-align:center;">
     <ion-card-title style="color:red;font-size:medium;">{{message}}</ion-card-title>
   </ion-card-header>
+
+  <!-- 403 Login -->
+  <div [hidden]="!showLoginBtn" style="text-align:center;margin-bottom:20px;color:dimgray;">
+    There appears to be an issue with your login credentials. Please go to <b>Settings > Logout</b> and 
+    then Login in again.
+  </div>
+
   <ion-item [hidden]="!showButton" lines="none" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 5px;">
     <ion-button slot="start" size="default" (click)="tryAgain($event)">Try Again</ion-button>
-    <p style="font-size:medium;">There was an issue accessing the server. Many things could cause this including an internet disconnect. 
+    <p style="font-size:medium;color:dimgray;">There was an issue accessing the server. Many things could cause this including an internet disconnect. 
     <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
     </p>
   </ion-item>

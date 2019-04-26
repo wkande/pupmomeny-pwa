@@ -39,6 +39,7 @@ export class ExpensesPage implements OnInit {
   totalCount:string;
   error:any;
   ready:boolean = false;
+  showButtons:boolean = false;
   // methods to carry "this" into the event handler
   eventHandler_redraw:any; 
   redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
@@ -157,6 +158,7 @@ export class ExpensesPage implements OnInit {
       this.error = null;
       this.loading = true;
       this.ready = false;
+      this.showButtons = false;
       this.total = 0;
 
       this.filter = this.filterService.getFilter();
@@ -174,16 +176,12 @@ export class ExpensesPage implements OnInit {
  
       this.totalCount = result['totalCount'];
       this.expenses = result['expenses'];
-      console.log(this.expenses)
-      //console.log('Data >',this.expenses)
-      
+
       // Get total amt of all expenses and set the date divider
       for(var i=0; i<this.expenses.length; i++){
         // Total
-        //this.total = Decimal.add(this.total, this.expenses[i].amt);
         this.total = currency(this.total).add( (this.expenses[i].amt) );
         this.expenses[i].amtDisplay = currency(this.expenses[i].amt, this.wallet['currency']).format(true);
-
 
         // Date divider
         if(i === 0) this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
@@ -191,15 +189,19 @@ export class ExpensesPage implements OnInit {
         else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
       this.total = currency(this.total, this.wallet['currency']).format(true);
-      //this.total = parseFloat(this.total.toString());
       this.ready = true;
+      let self = this;
+      // Prevents buttons causing screen flicker
+      await setTimeout(function(){
+        self.showButtons = true;
+      }, 200);
     }
     catch(err){
-      console.log(err)
       this.error = err;
     }
     finally{
       this.loading = false;
+      
     }
   }
 

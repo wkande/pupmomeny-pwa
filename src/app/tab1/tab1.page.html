@@ -1,19 +1,22 @@
 <ion-header >
-  <!-- background-color:#76A923; -->
-  <ion-toolbar color="tertiary">
-
-    <ion-segment [(ngModel)]="segment" color="light" (ionChange)="tryAgain($event)"><!--  -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segment" color="light" (ionChange)="tryAgain($event)" style="margin-left:27px;">
       <ion-segment-button value="categories" checked>
-        <ion-label>By Categories</ion-label>
+        <ion-label class="segment-font-size">Summary</ion-label>
       </ion-segment-button>
       <ion-segment-button value="list">
-        <ion-label>List</ion-label>
+        <ion-label class="segment-font-size">List</ion-label>
       </ion-segment-button>
     </ion-segment>
 
-    <ion-button fill="clear" slot="end" (click)="presentFilterModal($event)">
+    <!--ion-button fill="clear" slot="end" (click)="presentFilterModal($event)"></ion-button>
       <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
-    </ion-button>
+    </ion-button-->
+    
+    <ion-button fill="clear" size="small" slot="end" (click)="presentFilterModal($event)">
+        <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
+      </ion-button>
+
   </ion-toolbar>
 </ion-header>
 

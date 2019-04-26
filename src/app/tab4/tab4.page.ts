@@ -69,9 +69,6 @@ export class Tab4Page {
         this.period.yearly.end = moment( base ).format("YYYY-12-31");
         this.period.yearly.display = moment( base ).format("YYYY");
   
-        console.log('PERIOD', this.period)
-        
-
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         await this.initChart()
         this.getCategories();
@@ -118,6 +115,7 @@ export class Tab4Page {
       console.log('---> Tabs4Page.getCategories')
       this.error = null;
       this.loading = true;
+      this.ready = false;
       this.amtTotal = 0;
       this.cntTotal = 0;
       this.categories = [];
@@ -167,7 +165,6 @@ export class Tab4Page {
       // ((portion/total) * 100).toFixed(2) + '%'
       console.log(typeof this.amtTotal, this.amtTotal['value'])
       for(let i=0;i<this.categories.length; i++){
-          
           if(this.amtTotal['value'] === 0) this.categories[i].sum.percent = "0%";
           else this.categories[i].sum.percent = ((this.categories[i].sum.amt/this.amtTotal['value']) * 100).toFixed(2) + '%';
       }
@@ -185,6 +182,11 @@ export class Tab4Page {
     }
     finally{
         this.loading = false;
+
+        setTimeout(() => {
+          console.log('Async operation has ended');
+          this.ready = true;
+        }, 200);
     }
   }
 
@@ -293,13 +295,13 @@ export class Tab4Page {
   }
 
 
-  doRefresh(ev:any) {
+  /*doRefresh(ev:any) {
     console.log('Begin doRefreshoperation');
     this.getCategories();
-  }
+  }*/
 
 
-  async presentFilterModal(ev:any) {
+  /*async presentFilterModal(ev:any) {
     try{
         const modal = await this.modalController.create({
           component: FilterPage
@@ -311,7 +313,7 @@ export class Tab4Page {
     catch(err){
       this.error = err;
     } 
-  }
+  }*/
 
 
 
