@@ -3,8 +3,6 @@ import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../services/auth.guard';
 import { ModalController, NavController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FilterPage } from '../modals/filter/filter.page';
-import { FilterService } from '../services/filter.service';
 import { UtilsService } from '../services/utils/utils.service';
 import { BACKEND } from '../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
@@ -45,8 +43,7 @@ export class Tab4Page {
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, 
     private modalController:ModalController,
-    private utils:UtilsService, private navCtrl:NavController, private events:Events,
-    private filterService:FilterService) { 
+    private utils:UtilsService, private navCtrl:NavController, private events:Events) { 
       console.log('>>>>>>>>>>>>>>>> Tab4Page.constructor <<<<<<<<<<<<<<<<<')
   }
 
@@ -72,6 +69,7 @@ export class Tab4Page {
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         await this.initChart()
         this.getCategories();
+        // Data changed
         this.events.subscribe('redraw', (data) => {
             try{
               console.log('Tab4Page > subscribe > fired > redraw');
@@ -85,13 +83,10 @@ export class Tab4Page {
               this.error = err;
             }
         });
-        this.events.subscribe('dml', (data) => {
-            try{
-              console.log('Tab4Page > ngOnInit > subscribe > fired > dml');
-            }
-            catch(err){
-              this.error = err;
-            }
+        // Current wallet changed
+        this.events.subscribe('wallet_reload', (data) => {
+            console.log('Tab4Page > subscribe > fired > wallet_reload');
+            this.wallet = JSON.parse(localStorage.getItem('wallet'));
         });
       }
       catch(err){
@@ -120,7 +115,6 @@ export class Tab4Page {
       this.cntTotal = 0;
       this.categories = [];
       this.chartData = {labels:[], amts:[]}
-      //this.filter = this.filterService.getFilter();
 
       // Date range
       let begin:string, end:string;
@@ -162,8 +156,7 @@ export class Tab4Page {
       
 
       // Add the percentage
-      // ((portion/total) * 100).toFixed(2) + '%'
-      console.log(typeof this.amtTotal, this.amtTotal['value'])
+      //console.log(typeof this.amtTotal, this.amtTotal['value'])
       for(let i=0;i<this.categories.length; i++){
           if(this.amtTotal['value'] === 0) this.categories[i].sum.percent = "0%";
           else this.categories[i].sum.percent = ((this.categories[i].sum.amt/this.amtTotal['value']) * 100).toFixed(2) + '%';
@@ -173,7 +166,7 @@ export class Tab4Page {
       //@ts-ignore
       this.amtTotal = currency(this.amtTotal, this.wallet['currency']).format(true);
 
-      console.log('categories >', this.categories)
+      //console.log('categories >', this.categories)
 
       this.redrawChart();
     }
@@ -184,7 +177,6 @@ export class Tab4Page {
         this.loading = false;
 
         setTimeout(() => {
-          console.log('Async operation has ended');
           this.ready = true;
         }, 200);
     }
@@ -293,28 +285,6 @@ export class Tab4Page {
   async tryAgain(ev:any){
     this.getCategories();
   }
-
-
-  /*doRefresh(ev:any) {
-    console.log('Begin doRefreshoperation');
-    this.getCategories();
-  }*/
-
-
-  /*async presentFilterModal(ev:any) {
-    try{
-        const modal = await this.modalController.create({
-          component: FilterPage
-        });
-        await modal.present();
-
-        const { data } = await modal.onDidDismiss();
-    }
-    catch(err){
-      this.error = err;
-    } 
-  }*/
-
 
 
 }

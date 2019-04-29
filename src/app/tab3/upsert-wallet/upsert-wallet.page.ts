@@ -1,27 +1,26 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, LoadingController, Events} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthGuard } from '../../../services/auth.guard';
+import { AuthGuard } from '../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
-import { BACKEND } from '../../../../environments/environment';
+import { BACKEND } from '../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
-import { UtilsService } from '../../../services/utils/utils.service';
+import { UtilsService } from '../../services/utils/utils.service';
 
 
 @Component({
-  selector: 'app-upsert-category',
-  templateUrl: './upsert-category.page.html',
-  styleUrls: ['./upsert-category.page.scss'],
+  selector: 'app-upsert-wallet',
+  templateUrl: './upsert-wallet.page.html',
+  styleUrls: ['./upsert-wallet.page.scss'],
 })
 
 
-export class UpsertCategoryPage implements OnInit {
+export class UpsertWalletPage implements OnInit {
 
-  @ViewChild('nameInput') nameInput: ElementRef;
-  @Input("category") category:any;
+  @Input("wallet") wallet:any;
   @Input("mode") mode:string;
   title:string;
-  wallet:any;
+
 
   error:any;
   showTryAgainBtn:boolean = false;
@@ -37,10 +36,12 @@ export class UpsertCategoryPage implements OnInit {
 
   ngOnInit() {
       try{
-        this.wallet = JSON.parse(localStorage.getItem('wallet'));
-        //console.log('UpsertCategoryPage ngOnInit', this.mode);
-        this.title = ((this.category == null) ? 'Add Category' : 'Edit Category');
-        if(this.mode == 'edit') this.nameInput.nativeElement.value = this.category.name;
+        if(!this.wallet){
+          this.wallet = {name:null};
+        }
+        console.log('UpsertWalletPage ngOnInit', this.wallet, this.mode);
+        this.title = ((this.wallet == null) ? 'Add Wallet' : 'Edit Wallet');
+        //if(this.mode == 'edit') this.nameInput.nativeElement.value = this.wallet.name;
         this.ready = true;
       }
       catch(err){
@@ -57,30 +58,34 @@ export class UpsertCategoryPage implements OnInit {
 
   async apply(ev:any) {
       try{
-          this.error = null;
-          this.showTryAgainBtn = false;
-
-          if(this.nameInput.nativeElement.value.length == 0){
+      // TEMP UNTILL COMP IS BUILT
+      let currency = '{"curId": 2, "symbol": "", "decimal": ".", "precision": 2, "separator": ","}';
+          if(this.wallet.name.length == 0){
             this.error = 'Please enter a category name.';
             return;
           }
           await this.presentLoading(); // wait for it so it exists, otherwise it may still be null when finally runs
-          
+
+          this.error = null;
+          this.showTryAgainBtn = false;
+
           let headers = new HttpHeaders();
           headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
           headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
           if(this.mode == 'insert'){
-            var result = await this.http.post(BACKEND.url+'/categories', 
-              {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+            var result = await this.http.post(BACKEND.url+'/wallets', 
+              {name:this.wallet.name, shares:'{}', currency:currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           else{
-            var result = await this.http.patch(BACKEND.url+'/categories/'+this.category.id+'/name', 
-              {name:this.nameInput.nativeElement.value}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+            var result = await this.http.patch(BACKEND.url+'/wallets/'+this.wallet.id, 
+              {name:this.wallet.name, shares:'{}', currency:currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
-          this.category = result['expense'];
-          this.events.publish('redraw', {category:this.category, mode:this.mode});
-          this.modalController.dismiss( {status:"OK"});
+          //@ts-ignore
+          this.wallet = result.wallet;
+          console.log(this.wallet)
+          this.events.publish('wallet_reload', {});
+          this.modalController.dismiss( {mode:this.mode, wallet:this.wallet});
       }
       catch(err){
         this.showTryAgainBtn = true;

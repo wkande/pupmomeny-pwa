@@ -44,6 +44,11 @@ export class AuthGuard implements CanActivate {
   }
 
 
+  setUser(user:any){
+    this.user = user;
+  }
+
+
   /**
    * Will activate or deactivate a user. 
    * Called by login modal to activate user.

@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
     this.error = null;
     this.errorSupport = false;
     
-    if(this.isValidMailFormat() == true){
+    if(this.utils.isValidMailFormat(this.email) == true){
         try{
           await this.presentLoading('Sending a code, please wait...'); // wait for it so it exists, otherwise it may still be null when finally runs
           var result = await this.http.post(BACKEND.url+'/code', {email:this.email}).pipe(timeout(5000)).toPromise();
@@ -196,10 +196,13 @@ export class LoginPage implements OnInit {
   }
 
 
+  /* MOVED TO UTILS
+  
   isValidMailFormat(){
     var re = /\S+@\S+\.\S+/;
     return(re.test(this.email));
   }
+  */
   
 }
 

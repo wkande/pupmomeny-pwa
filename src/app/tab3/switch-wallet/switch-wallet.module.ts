@@ -2,16 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
+import { SwitchWalletPage } from './switch-wallet.page';
 import { ErrorModule } from '../../components/error/error.module';
-import { UpdateEmailPage } from './update-email.page';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: UpdateEmailPage
+    component: SwitchWalletPage
   }
 ];
 
@@ -26,4 +25,6 @@ const routes: Routes = [
   ],
   declarations: []
 })
-export class UpdateEmailPageModule {}
+
+
+export class UpsertWalletPageModule {}

@@ -10,96 +10,91 @@
 <ion-content [hidden]="!ready">
 
 
-
-<ion-list>
-
-  <!-- USER -->
-  <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
-    <ion-label class="section">
-      User
-    </ion-label>
-    <ion-button slot="end" (click)="logout()" size="medium">Logout</ion-button>
-  </ion-item-divider>
-  <!-- EMAIL -->
-  <ion-item-sliding>
-    <ion-item detail>
-        <ion-label style="color:dimgray;font-size:120%;">{{user.email}}</ion-label>
-    </ion-item>
-  <ion-item-options side="start">
-      <ion-item-option style="width:75px;" (click)="presentEmailModal($event)">Edit</ion-item-option>
-    </ion-item-options>
-  </ion-item-sliding>
-
-  <!-- NAME -->
-  <ion-item-sliding>
-    <ion-item detail>
-        <ion-label style="color:dimgray;font-size:120%;">{{user.name || 'No name entered'}}</ion-label>
-    </ion-item>
-  <ion-item-options side="start">
-      <ion-item-option style="width:75px;" (click)="presentNameModal($event)">Edit</ion-item-option>
-    </ion-item-options>
-  </ion-item-sliding>
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component>
 
 
+    <ion-list>
 
+      <!-- USER -->
+      <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
+        <ion-label class="section">
+          User
+        </ion-label>
+        <ion-button slot="end" (click)="logout()" size="medium">Logout</ion-button>
+      </ion-item-divider>
+      <!-- EMAIL -->
+      <ion-item-sliding>
+        <ion-item detail (click)="presentEmailModal($event)">
+            <ion-label style="color:dimgray;font-size:120%;">{{user.email}}</ion-label>
+        </ion-item>
+      <ion-item-options side="start">
+          <ion-item-option style="width:75px;" (click)="presentEmailModal($event)">Edit</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
 
-
-<!-- WALLETS -->
-  <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
-      <ion-label  class="section">
-          Wallets
-      </ion-label>
-      <ion-button [hidden]="user.wallets.length === 1" slot="end" size="medium">Switch Wallets</ion-button>
-      <ion-button slot="end" size="medium">Add</ion-button>
-  </ion-item-divider>
-
-  <ion-item-sliding *ngFor="let item of user.wallets; index as i;">
-    <ion-item detail>
-        <ion-icon name="checkmark" color="primary" slot="end" 
-          [hidden]="wallet.default_wallet != item.default_wallet || user.id != item.owner_id">
-        </ion-icon>
-
-
-        <ion-label style="color:dimgray;font-size:120%;">{{item.name}}</ion-label>
-        <div style="color:dimgray;font-size:small;" slot="end">{{item.owner_name}}</div>
-    </ion-item>
-    <ion-item-options side="start">
-        <ion-item-option style="width:75px;" (click)="presentWalletEditModal($event)">Edit</ion-item-option>
-        <ion-item-option style="width:75px;" (click)="presentWalletDeleteModal($event)" color="danger" [hidden]="item.default_wallet == 1">Delete</ion-item-option>
-    </ion-item-options>
-
-  </ion-item-sliding>
+      <!-- NAME -->
+      <ion-item-sliding>
+        <ion-item detail (click)="presentNameModal($event)">
+            <ion-label style="color:dimgray;font-size:120%;">{{user.name || 'No name entered'}}</ion-label>
+        </ion-item>
+      <ion-item-options side="start">
+          <ion-item-option style="width:75px;" (click)="presentNameModal($event)">Edit</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
 
 
 
 
 
-  <ion-item-divider padding style="color:black;font-size:120%;background-color:lightgrey;">
-      <ion-label class="section">
-          General
-      </ion-label>
-  </ion-item-divider>
+    <!-- WALLETS -->
+      <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
+          <ion-label class="section">
+              Wallets
+          </ion-label>
+          <ion-button [hidden]="user.wallets.length === 1" slot="end" size="medium" (click)="presentWalletSwitchModal($event)">Switch Wallets</ion-button>
+          <ion-button slot="end" size="medium" (click)="presentWalletUpsertModal($event, name, 'insert')">Add</ion-button>
+      </ion-item-divider>
 
-  <ion-item detail>
-      <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
-      <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
-  </ion-item>
-
-
-  <!-- TERMS -->
-  <ion-item detail [routerLink]="['/term']">
-      <ion-label style="color:dimgray;font-size:120%;">Terms of Service</ion-label>
-  </ion-item>
-
-</ion-list>
+      <ion-item-sliding *ngFor="let item of user.wallets; index as i;">
+        <ion-item detail (click)="presentWalletUpsertModal($event, item, 'edit')">
+            <!--ion-icon name="checkmark" color="primary" slot="end" 
+              [hidden]="wallet.default_wallet != item.default_wallet || user.id != item.owner_id">
+            </ion-icon-->
 
 
+            <ion-label style="color:dimgray;font-size:120%;">{{item.name}}</ion-label>
+            <!--div style="color:dimgray;font-size:small;" slot="end">{{item.owner_name}}</div-->
+        </ion-item>
+        <ion-item-options side="start">
+            <ion-item-option style="width:75px;" (click)="presentWalletUpsertModal($event, item, 'edit')">Edit</ion-item-option>
+            <ion-item-option style="width:75px;" (click)="presentWalletDeleteModal($event)" color="danger" [hidden]="item.default_wallet == 1">Delete</ion-item-option>
+        </ion-item-options>
+
+      </ion-item-sliding>
 
 
-    
-    <!-- DISPLAY ERROR -->
-    <ion-item [hidden]="!errorDisplay" style="margin-top:20px;color:red;">
-        {{errorDisplay}}
-    </ion-item>
+
+
+
+      <ion-item-divider padding style="color:black;font-size:120%;background-color:lightgrey;">
+          <ion-label class="section">
+              General
+          </ion-label>
+      </ion-item-divider>
+
+      <ion-item detail>
+          <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
+          <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
+      </ion-item>
+
+
+      <!-- TERMS -->
+      <ion-item detail [routerLink]="['/term']">
+          <ion-label style="color:dimgray;font-size:120%;">Terms of Service</ion-label>
+      </ion-item>
+
+    </ion-list>
+
+
     
 </ion-content>

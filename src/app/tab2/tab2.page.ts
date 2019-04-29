@@ -67,6 +67,11 @@ export class Tab2Page {
             this.error = err;
           }
         });
+        // Current wallet changed
+        this.events.subscribe('wallet_reload', (data) => {
+            console.log('Tab2Page > subscribe > fired > wallet_reload');
+            this.wallet = JSON.parse(localStorage.getItem('wallet'));
+        });
       }
       catch(err){
         this.error = err;

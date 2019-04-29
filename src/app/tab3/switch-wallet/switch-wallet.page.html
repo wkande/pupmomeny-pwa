@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="secondary">
+          <ion-button (click)="cancel()">
+              Cancel
+          </ion-button>
+      </ion-buttons>
+    <ion-title>Switch Wallet</ion-title>
+    <ion-buttons slot="primary">
+        <ion-button (click)="apply($event)">
+            Submit
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+    <error-component [error]="error"></error-component>
+    <ion-list>
+
+  
+ 
+        <ion-item  *ngFor="let item of user.wallets; index as i;" (click)="setWallet($event, item)">
+            <ion-icon name="checkmark" color="primary" slot="end" 
+              [hidden]="wallet.id != item.id">
+            </ion-icon>
+
+
+            <div [class.activeWallet]="wallet.id === item.id" [class.inActiveWallet]="wallet.id != item.id" style="font-size:120%;">{{item.name}}</div>
+            <!--div style="color:dimgray;font-size:small;" slot="end">{{item.owner_name}}</div-->
+        </ion-item>
+    </ion-list>
+</ion-content>

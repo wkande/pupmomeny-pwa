@@ -144,6 +144,7 @@ export class UpsertExpensePage implements OnInit {
   }
 
   showDatePicker() {
+    //@ts-ignore
     this.datePicker.open();
   }
 

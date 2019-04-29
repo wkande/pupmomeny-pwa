@@ -61,4 +61,10 @@ export class UtilsService {
   }
 
 
+  isValidMailFormat(email){
+    var re = /\S+@\S+\.\S+/;
+    return(re.test(email));
+  }
+
+
 }

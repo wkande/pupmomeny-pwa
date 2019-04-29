@@ -5,7 +5,7 @@
                 Cancel
             </ion-button>
         </ion-buttons>
-      <ion-title>Update Name</ion-title>
+      <ion-title>Update My Name</ion-title>
       <ion-buttons slot="primary">
           <ion-button (click)="apply()">
               Apply
@@ -17,25 +17,13 @@
 
   <ion-content padding>
 
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component>
+
     <!-- INPUTS -->
     <ion-item style="margin-top:50px;">
       <ion-label position="stacked" style="font-size:120%;color:gray;">Name</ion-label>
-      <input type="text" #nameInput placeholder="Enter name">
+      <input type="text" [(ngModel)]="user.name" placeholder="Enter name">
     </ion-item>
   
-    <!-- DISPLAY ERROR -->
-    <ion-item [hidden]="!error" style="color:red;">
-        {{error}}
-    </ion-item>
-  
-    <!-- LOADING -->
-    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <div [hidden]="!loading" style="margin-top:100px;">
-      <ion-card-header style="text-align:center;">
-        <ion-card-subtitle style="font-size:120%;">Please wait...</ion-card-subtitle>
-        <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
-      </ion-card-header>
-    </div>
-  
-  
+
   </ion-content>

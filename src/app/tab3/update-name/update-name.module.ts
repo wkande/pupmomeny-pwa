@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-
+import { ErrorModule } from '../../components/error/error.module';
 import { UpdateNamePage } from './update-name.page';
+
 
 const routes: Routes = [
   {
@@ -14,11 +15,13 @@ const routes: Routes = [
   }
 ];
 
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    ErrorModule,
     RouterModule.forChild(routes)
   ],
   declarations: []

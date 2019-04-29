@@ -70,14 +70,19 @@ export class Tab1Page {
       });
       // A message will come from the expenses (child) page that Tab1Page can redraw as ExpensesPage close
       this.events.subscribe('tab1page-redraw-if-needed', (data) => {
-        try{
-          console.log('Tab1Page > subscribe > fired > tab1page-redraw-if-needed', this.redrawNeeded);
-          this.ionViewDidEnter();
-        }
-        catch(err){
-          this.error = err;
-        }
-    });
+          try{
+            console.log('Tab1Page > subscribe > fired > tab1page-redraw-if-needed', this.redrawNeeded);
+            this.ionViewDidEnter();
+          }
+          catch(err){
+            this.error = err;
+          }
+      });
+      // Current wallet changed
+      this.events.subscribe('wallet_reload', (data) => {
+          console.log('Tab1Page > subscribe > fired > wallet_reload');
+          this.wallet = JSON.parse(localStorage.getItem('wallet'));
+      });
     }
     catch(err){
       this.error = err;
@@ -121,7 +126,7 @@ export class Tab1Page {
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
-      
+
       let q = this.utils.formatQ(  ((this.filter.search.toggle) ? this.filter.search.text : '')  );
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
       .pipe(timeout(7000), delay(this.utils.delayTimer))

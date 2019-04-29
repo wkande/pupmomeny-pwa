@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { Events } from '@ionic/angular';
 import { BACKEND } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-tabs',
@@ -8,19 +10,20 @@ import { BACKEND } from '../../environments/environment';
 })
 
 
-
 export class TabsPage {
+
 
   backend:any = BACKEND;
   wallet:any;
 
-  constructor(){
-    //console.log(this.backend.name)
+
+  constructor(private events:Events){
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
-    //console.log(this.wallet)
+
+    this.events.subscribe('wallet_reload', (data) => {
+        console.log('TabsPage > subscribe > fired > wallet_reload');
+        this.wallet = JSON.parse(localStorage.getItem('wallet'));
+    });
+
   }
-
-
-
-
 }

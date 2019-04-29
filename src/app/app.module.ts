@@ -22,19 +22,16 @@ import { FilterPage } from './modals/filter/filter.page';
 // import { UpsertCategoryPage } from './tab1/upsert-category/upsert-category.page';
 // import { DeleteCategoryPage } from './tab1/delete-category/delete-category.page';
 // import { DeleteExpensePage } from './tab1/expenses/delete-expense/delete-expense.page';
-
-
-// ? Do we need these here
-import { UpdateNamePage } from './tab3/update-name/update-name.page';
-import { UpdateEmailPage } from './tab3/update-email/update-email.page';
+//import { UpdateNamePage } from './tab3/update-name/update-name.page';
+//import { UpdateEmailPage } from './tab3/update-email/update-email.page';
 
 
 
 
 @NgModule({
-  declarations: [AppComponent, FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage],
+  declarations: [AppComponent, FilterPage, LoginPage],
     
-  entryComponents: [FilterPage, LoginPage, UpdateNamePage, UpdateEmailPage],
+  entryComponents: [FilterPage, LoginPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     HttpClientModule,

@@ -90,7 +90,6 @@ export class DeleteCategoryPage implements OnInit {
     }
     finally{
       this.loading.dismiss();
-      
     }
     
   }

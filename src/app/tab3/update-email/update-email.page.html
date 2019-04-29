@@ -1,42 +1,57 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="secondary">
-            <ion-button (click)="cancel()">
+            <ion-button (click)="cancel($event)">
                 Cancel
             </ion-button>
         </ion-buttons>
-      <ion-title>Update Email</ion-title>
-      <ion-buttons slot="primary">
-          <ion-button (click)="apply()">
-              Apply
-          </ion-button>
-      </ion-buttons>
+      <ion-title>Update My Email</ion-title>
+
     </ion-toolbar>
   </ion-header>
 
 
   <ion-content padding>
 
-    <!-- INPUTS -->
-    <ion-item style="margin-top:50px;">
-      <ion-label position="stacked" style="font-size:120%;color:gray;">Email Address</ion-label>
-      <input type="text" #nameInput placeholder="Enter email">
-    </ion-item>
-  
-    <!-- DISPLAY ERROR -->
-    <ion-item [hidden]="!error" style="color:red;">
-        {{error}}
-    </ion-item>
-  
-    <!-- LOADING -->
-    <!-- @TODO MAKE THIS A COMPONENT FOR ALL PAGES -->
-    <div [hidden]="!loading" style="margin-top:100px;">
-      <ion-card-header style="text-align:center;">
-        <ion-card-subtitle style="font-size:120%;">Please wait...</ion-card-subtitle>
-        <ion-card-title><ion-spinner name="dots" style="transform: scale(2);"></ion-spinner></ion-card-title>
-      </ion-card-header>
-    </div>
-  
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component>
+
+
+    <ion-list padding lines="none" style="max-width:400px;margin:0 auto;">
+
+          <h4 [hidden]="codeReady">Step #1 of 2</h4>
+          <p [hidden]="codeReady">We will send a code to your new email address.</p>
+          <h4 [hidden]="!codeReady">Step #2 of 2</h4>
+          <p [hidden]="!codeReady">Enter the code we sent to <b>{{newEmail}}</b> and "Submit".</p>
+
+          <div style="border-bottom:1px solid dimgray;margin-bottom:70px;"></div>
+
+          <!-- INPUTS -->
+          <ion-item [hidden]="codeReady">
+              <ion-input name="email" [(ngModel)]="newEmail" style="border-bottom:1px solid gray;font-size:120%;"
+              required type="email" placeholder="Enter new email here"></ion-input>
+          </ion-item>
+          <ion-item [hidden]="!codeReady">
+              <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;font-size:120%;" 
+              required type="number" placeholder="Enter code here"></ion-input>
+          </ion-item>
+
+
+          <!-- BUTTONS -->
+          <ion-item [hidden]="codeReady" lines="none">
+              <ion-button style="margin:0 auto;margin-top:20px;" [disabled]="!newEmail"  expand="block" size="medium" color="primary" (click)="sendCode($event);">
+                  Send Code <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+              </ion-button>
+          </ion-item>
+          <ion-item [hidden]="!codeReady">
+              <ion-button style="margin:0 auto;margin-top:20px;" expand="block" size="medium" color="tertiary" (click)="back($event);">
+                      <ion-icon slot="start" name="arrow-round-back"></ion-icon> Back
+              </ion-button>
+              <ion-button style="margin:0 auto;margin-top:20px;" [disabled]="!code" expand="block" size="medium" color="primary" (click)="submit($event);">
+                  Submit
+              </ion-button>
+          </ion-item>
+
+  </ion-list>
   
   </ion-content>
   
