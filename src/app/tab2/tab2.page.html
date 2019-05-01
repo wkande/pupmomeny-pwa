@@ -21,16 +21,18 @@
       </ion-refresher-content>
     </ion-refresher>
   
+
+    <!-- LOADING  & ERROR-->
+    <loading-component [loading]="loading"></loading-component>
+    <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+
   
     <!-- LIST -->
-    <ion-list>
+    <ion-list [hidden]="error || loading">
   
       
   
-        <!-- LOADING  & ERROR-->
-        <loading-component [loading]="loading"></loading-component>
-        <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
-  
+        
   
         <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || !showButtons">
           <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>

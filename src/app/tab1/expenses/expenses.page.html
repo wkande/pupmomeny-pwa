@@ -26,8 +26,15 @@
   </ion-refresher>
 
 
+
+  <!-- LOADING  & ERROR-->
+  <loading-component [loading]="loading"></loading-component>
+  <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+
+
+
   <!-- LIST -->
-  <ion-list>
+  <ion-list [hidden]=" error || loading">
 
       <!-- LIST SUMMARY -->
       <div *ngIf="filter">
@@ -53,9 +60,7 @@
       </div>
 
 
-      <!-- LOADING  & ERROR-->
-      <loading-component [loading]="loading"></loading-component>
-      <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+      
 
 
       <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || !showButtons">

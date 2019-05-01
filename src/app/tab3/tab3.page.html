@@ -52,22 +52,23 @@
               Wallets
           </ion-label>
           <ion-button [hidden]="user.wallets.length === 1" slot="end" size="medium" (click)="presentWalletSwitchModal($event)">Switch Wallets</ion-button>
-          <ion-button slot="end" size="medium" (click)="presentWalletUpsertModal($event, name, 'insert')">Add</ion-button>
+          <ion-button slot="end" size="medium" (click)="presentWalletUpsertModal($event, null, 'insert')">Add</ion-button>
       </ion-item-divider>
 
       <ion-item-sliding *ngFor="let item of user.wallets; index as i;">
         <ion-item detail (click)="presentWalletUpsertModal($event, item, 'edit')">
-            <!--ion-icon name="checkmark" color="primary" slot="end" 
-              [hidden]="wallet.default_wallet != item.default_wallet || user.id != item.owner_id">
-            </ion-icon-->
+
+            <ion-icon name="checkmark" color="primary" slot="start" 
+              [hidden]="wallet.id != item.id">
+            </ion-icon>
 
 
-            <ion-label style="color:dimgray;font-size:120%;">{{item.name}}</ion-label>
+            <ion-label [class.activeWallet]="wallet.id === item.id" [class.inActiveWallet]="wallet.id != item.id">{{item.name}}</ion-label>
             <!--div style="color:dimgray;font-size:small;" slot="end">{{item.owner_name}}</div-->
         </ion-item>
         <ion-item-options side="start">
             <ion-item-option style="width:75px;" (click)="presentWalletUpsertModal($event, item, 'edit')">Edit</ion-item-option>
-            <ion-item-option style="width:75px;" (click)="presentWalletDeleteModal($event)" color="danger" [hidden]="item.default_wallet == 1">Delete</ion-item-option>
+            <ion-item-option style="width:75px;" (click)="presentWalletDeleteModal($event, item)" color="danger" [hidden]="item.default_wallet == 1">Delete</ion-item-option>
         </ion-item-options>
 
       </ion-item-sliding>

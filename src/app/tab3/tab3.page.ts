@@ -5,6 +5,7 @@ import { UpdateNamePage } from './update-name/update-name.page';
 import { UpdateEmailPage } from './update-email/update-email.page';
 import { UpsertWalletPage } from './upsert-wallet/upsert-wallet.page';
 import { SwitchWalletPage } from './switch-wallet/switch-wallet.page';
+import { DeleteWalletPage } from './delete-wallet/delete-wallet.page';
 import { UtilsService } from '../services/utils/utils.service';
 import { BACKEND } from '../../environments/environment';
 import { timeout } from 'rxjs/operators';
@@ -20,7 +21,7 @@ export class Tab3Page {
 
 
   user = {email:null, name:null, sub_expires:null, wallets:[]};
-  wallet = {name:null, default_wallet:null};
+  wallet = {id:null, name:null, default_wallet:null};
   error:any;
   ready:boolean = false;
 
@@ -32,7 +33,7 @@ export class Tab3Page {
    * @param http 
    */
   constructor(private authGuard:AuthGuard, private modalController:ModalController,
-    private utilsService:UtilsService, private http:HttpClient, private events:Events){
+    private utils:UtilsService, private http:HttpClient, private events:Events){
       
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
       console.log(this.wallet)
@@ -52,7 +53,8 @@ export class Tab3Page {
 
 
   async ionViewWillEnter(){
-    console.log('---> Tab2Page.ionViewWillEnter')
+    console.log('---> Tab3Page.ionViewWillEnter')
+    this.utils.currentView = 'Tab3Page';
     // Make sure the user and wallet objects are reloaded each time the user comes to this tab.
     // If not then logout the user.
     if(!this.user || !this.wallet){
@@ -100,7 +102,7 @@ export class Tab3Page {
         }
     }
     catch(err){
-      this.error = this.utilsService.getErrorMessage(err);
+      this.error = this.utils.getErrorMessage(err);
     } 
   }
 
@@ -122,14 +124,20 @@ export class Tab3Page {
         }
     }
     catch(err){
-      this.error = this.utilsService.getErrorMessage(err);
+      this.error = this.utils.getErrorMessage(err);
     } 
   }
 
 
+  /**
+   * Add or update a wallet
+   * @param ev 
+   * @param wallet 
+   * @param mode 
+   */
   async presentWalletUpsertModal(ev:any, wallet:any, mode:string) {
     try{
-        console.log('Tab3Page:presentWalletUpsertModal()', wallet)
+        console.log('Tab3Page:presentWalletUpsertModal()', wallet, mode)
         const modal = await this.modalController.create({
           component: UpsertWalletPage,
           componentProps: { wallet:wallet, mode:mode },
@@ -140,27 +148,12 @@ export class Tab3Page {
         
         const { data } = await modal.onDidDismiss();
         console.log('Tab3Page:presentWalletUpsertModal():dismissed: data',data);
-
         // Reload 
         if(data != null){
-          this.user = JSON.parse(localStorage.getItem('user'));
-          if(data.mode === 'insert'){
-              this.user.wallets.push(data.wallet);
-          }
-          else{
-              // Change the wallet in the user object
-              for(let i=0; i<this.user.wallets.length;i++){
-                  if(this.user.wallets[i].id === data.wallet.id){
-                    this.user.wallets[i].name = data.wallet.name;
-                  }
-              }
-          }
-          localStorage.setItem('user', JSON.stringify(this.user));
-          this.authGuard.setUser(this.user);
         }
     }
     catch(err){
-      this.error = this.utilsService.getErrorMessage(err);
+      this.error = this.utils.getErrorMessage(err);
     } 
   }
 
@@ -184,11 +177,38 @@ export class Tab3Page {
         
         const { data } = await modal.onDidDismiss();
         console.log('Tab3Page:presentWalletSwitchModal():dismissed: data',data);
-        this.wallet = JSON.parse(localStorage.getItem('wallet'));
+       
     }
     catch(err){
-      this.error = this.utilsService.getErrorMessage(err);
+      this.error = this.utils.getErrorMessage(err);
     } 
   }
+
+
+  /**
+   * Delete wallet
+   * @param ev 
+   * @param wallet 
+   */
+  async presentWalletDeleteModal(ev:any, wallet:any) {
+  console.log(wallet)
+    try{
+        console.log('Tab3Page:presentWalletDeleteModal()', wallet)
+        const modal = await this.modalController.create({
+          component: DeleteWalletPage,
+          componentProps: { wallet:wallet },
+          showBackdrop:true,
+          backdropDismiss:false
+        });
+        await modal.present();
+        
+        const { data } = await modal.onDidDismiss();
+        console.log('Tab3Page:presentWalletDeleteModal():dismissed: data',data);
+    }
+    catch(err){
+      this.error = this.utils.getErrorMessage(err);
+    } 
+  }
+
 
 }

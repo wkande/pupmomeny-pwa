@@ -19,10 +19,13 @@
     <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="apply($event)"></error-component>
 
     <!-- INPUTS -->
-    <ion-item style="margin-top:30px;" [hidden]="!ready">
+    <ion-item [hidden]="!ready" lines="none">
       <ion-label position="stacked" style="font-size:120%;color:gray;">Name</ion-label>
       <input type="text" [(ngModel)]="wallet.name" placeholder="Enter name">
     </ion-item>
 
+
+    <!-- CURRENCY -->
+    <currency-component [hidden]="!ready" [currency]="wallet.currency" (selectedCurrency)="selectedCurrency($event)"></currency-component>
 
 </ion-content>

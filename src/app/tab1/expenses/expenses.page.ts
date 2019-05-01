@@ -190,8 +190,9 @@ export class ExpensesPage implements OnInit {
       }
       this.total = currency(this.total, this.wallet['currency']).format(true);
       this.ready = true;
-      let self = this;
+      
       // Prevents buttons causing screen flicker
+      let self = this;
       await setTimeout(function(){
         self.showButtons = true;
       }, 200);

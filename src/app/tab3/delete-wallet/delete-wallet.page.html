@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="secondary">
+          <ion-button (click)="cancel()">
+              Cancel
+          </ion-button>
+      </ion-buttons>
+    <ion-title>Delete Wallet</ion-title>
+    <ion-buttons slot="primary">
+        <ion-button (click)="presentAlertConfirm()">
+            Delete
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+  
+  
+  <ion-content padding>
+
+      <error-component [error]="error" [showButton]="true" (tryAgainSelected)="presentAlertConfirm()"></error-component>
+
+
+      <ion-list [hidden]="!ready">
+
+          <p padding style="font-size:large;color:#3880ff">
+            Deleting a wallet will delete all the expense records associated with it. This action cannot be reversed.
+          </p>
+          
+          <ion-item>
+            <div slot="start" style="width:100px;">Wallet:</div>
+            <ion-label style="font-size:large;color:dimgray;">{{wallet.name}}</ion-label>
+          </ion-item>
+
+      </ion-list>
+
+  
+</ion-content>
+  

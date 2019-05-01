@@ -2,15 +2,15 @@
 
 <ion-content>
 
-        <br><br>
+       
         <ion-segment padding (ionChange)="segmentChanged($event)" [hidden]="segment=='percision'">
-                <ion-segment-button value="login" checked>
-                  <ion-label>Login</ion-label>
-                </ion-segment-button>
-                <ion-segment-button value="terms">
-                  <ion-label>Terms of Service</ion-label>
-                </ion-segment-button>
-              </ion-segment>
+          <ion-segment-button value="login" checked>
+            <ion-label>Login</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="terms">
+            <ion-label>Terms of Service</ion-label>
+          </ion-segment-button>
+        </ion-segment>
               
     
     <div [hidden]="!error" padding style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
@@ -19,7 +19,7 @@
     </div>
       
 
-  <ion-list [hidden]="segment!='login'" padding lines="none" style="max-width:400px;margin:0 auto;">
+  <ion-list [hidden]="segment != 'login'" padding lines="none" style="max-width:400px;margin:0 auto;">
       <ion-item style="margin:0 auto;">
           <img style="margin:0 auto;width:50%;" src="/assets/puppy-512.png">
       </ion-item>
@@ -72,9 +72,26 @@
 
   </ion-list>
 
+  <!-- CURRENCY -->
+  <div [hidden]="segment != 'percision'">
+      <ion-button expand="block" size="medium" color="primary" (click)="setCurrency($event);">
+          Continue
+      </ion-button>
+        <p padding>
+            Welcome to PupMoney. Your account has been created. To get started we have created a "Default Wallet" for your expenses. 
+            You can add more Wallets later as well.
+        </p>
+        <p padding style="margin-top:-30px;">
+            Please tell us how you want to view the numbers (currency) in your Default Wallet. You can change this later in the Settings tab.
+        </p>
+        <currency-component style="margin-top:-90px;" [currency]="defaultWallet.currency" (selectedCurrency)="selectedCurrency($event)"></currency-component>
+  </div>
+  
 
-<!-- CURRENCY -->
-<div [hidden]="segment!='percision'" style="color:dimgray;" padding>
+
+
+
+<!--div [hidden]="segment!='percision'" style="color:dimgray;" padding>
     <p>
         Welcome to PupMoney. To get started we have created a "Default Wallet" for your expenses. You can add more wallets later as well.
     </p>
@@ -154,7 +171,7 @@
             Submit
         </ion-button>
 
-</div>
+</div-->
 
 
 

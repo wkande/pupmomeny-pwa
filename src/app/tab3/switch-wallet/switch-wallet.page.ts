@@ -47,7 +47,7 @@ export class SwitchWalletPage implements OnInit {
   async apply(ev:any) {
       try{
           console.log(this.wallet)
-          localStorage.setItem('wallet', JSON.stringify(this.wallet));
+          let data = await localStorage.setItem('wallet', JSON.stringify(this.wallet));
           this.events.publish('wallet_reload', {});
           this.events.publish('redraw', {});
           this.modalController.dismiss( {});

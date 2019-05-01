@@ -7,7 +7,6 @@ import { BACKEND } from '../../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
-import { DecimalPipe } from '@angular/common';
 import * as currency from 'currency.js';
 
 @Component({
@@ -58,8 +57,7 @@ export class UpsertExpensePage implements OnInit {
 
   constructor(private modalController:ModalController, private http:HttpClient,
     private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService, private cache:CacheService, private events:Events,
-    private decimalPipe: DecimalPipe) { 
+    private utils:UtilsService, private cache:CacheService, private events:Events) { 
 
   }
 

@@ -27,7 +27,7 @@
             </ion-icon>
 
 
-            <div [class.activeWallet]="wallet.id === item.id" [class.inActiveWallet]="wallet.id != item.id" style="font-size:120%;">{{item.name}}</div>
+            <div [class.activeWallet]="wallet.id === item.id" [class.inActiveWallet]="wallet.id != item.id">{{item.name}}</div>
             <!--div style="color:dimgray;font-size:small;" slot="end">{{item.owner_name}}</div-->
         </ion-item>
     </ion-list>

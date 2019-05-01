@@ -34,11 +34,14 @@
   </ion-refresher>
 
 
+  <!-- LOADING & ERROR-->
+  <loading-component [loading]="loading"></loading-component>
+  <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
  
 
   <!-- BY CATEGORIES ------------------------------ -->
   <!-- BY CATEGORIES ------------------------------ -->
-  <ion-list [hidden]="segment != 'categories'">
+  <ion-list [hidden]="segment != 'categories' || error || loading">
  
       <!-- LIST SUMMARY -->
       <div>
@@ -66,9 +69,7 @@
           </div-->
       </div>
 
-      <!-- LOADING & ERROR-->
-      <loading-component [loading]="loading"></loading-component>
-      <error-component [hidden]="loading" [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
+      
 
 
       <ion-item-sliding *ngFor="let item of categories; index as i;">
@@ -95,7 +96,7 @@
 
   <!-- BY EXPENSES ------------------------------ -->
   <!-- BY EXPENSES ------------------------------ -->
-  <ion-list [hidden]="segment != 'list'">
+  <ion-list [hidden]="segment != 'list' || error || loading">
 
           <!-- LIST SUMMARY -->
           <div>
@@ -122,7 +123,7 @@
           <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
     
     
-          <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || loading">
+          <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || !showButtons">
             <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
           </ion-button>
     
@@ -148,7 +149,7 @@
                     </ion-item-sliding>
           </div>
     
-          <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= cntTotal || loading">
+          <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= cntTotal || !showButtons">
             <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
           </ion-button>
       </ion-list>

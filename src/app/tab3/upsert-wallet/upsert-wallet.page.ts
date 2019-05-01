@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, LoadingController, Events} from '@ionic/angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, JsonpInterceptor } from '@angular/common/http';
 import { AuthGuard } from '../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
 import { BACKEND } from '../../../environments/environment';
@@ -36,12 +36,16 @@ export class UpsertWalletPage implements OnInit {
 
   ngOnInit() {
       try{
-        if(!this.wallet){
-          this.wallet = {name:null};
-        }
         console.log('UpsertWalletPage ngOnInit', this.wallet, this.mode);
+        // The wallet will be null for inserts
         this.title = ((this.wallet == null) ? 'Add Wallet' : 'Edit Wallet');
-        //if(this.mode == 'edit') this.nameInput.nativeElement.value = this.wallet.name;
+        
+        if(!this.wallet){
+          // Need a name for the html input binding
+          // The currency component needs a currency 
+          this.wallet = {name:null, currency:{"curId":2, "symbol":"", "separator":",", "decimal":".", "precision": 2}};
+        }
+        
         this.ready = true;
       }
       catch(err){
@@ -55,11 +59,20 @@ export class UpsertWalletPage implements OnInit {
       this.modalController.dismiss(null)
   } 
 
+/**
+ * Called by the currency component when the user changes the currency format.
+ * @param ev 
+ */
+  selectedCurrency(ev:any){
+      console.log('UpsertWalletPage.selectedCurrency.ev', ev);
+      this.wallet.currency = ev;
+      console.log('this.wallet', this.wallet)
+  }
+
 
   async apply(ev:any) {
       try{
-      // TEMP UNTILL COMP IS BUILT
-      let currency = '{"curId": 2, "symbol": "", "decimal": ".", "precision": 2, "separator": ","}';
+
           if(this.wallet.name.length == 0){
             this.error = 'Please enter a category name.';
             return;
@@ -73,23 +86,36 @@ export class UpsertWalletPage implements OnInit {
           headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
           headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
+          let result:any;
           if(this.mode == 'insert'){
-            var result = await this.http.post(BACKEND.url+'/wallets', 
-              {name:this.wallet.name, shares:'{}', currency:currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+            result = await this.http.post(BACKEND.url+'/wallets', 
+              {name:this.wallet.name, shares:'{}', currency:this.wallet.currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           else{
-            var result = await this.http.patch(BACKEND.url+'/wallets/'+this.wallet.id, 
-              {name:this.wallet.name, shares:'{}', currency:currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+            result = await this.http.patch(BACKEND.url+'/wallets/'+this.wallet.id, 
+              {name:this.wallet.name, shares:'{}', currency:this.wallet.currency}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
-          //@ts-ignore
+
           this.wallet = result.wallet;
-          console.log(this.wallet)
+          await localStorage.setItem('wallet', JSON.stringify(this.wallet));
+
+          // The user's wallet list is not up-to-date in the token
+          var userData:any = await this.http.get(BACKEND.url+'/user', {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
+          this.authGuard.setUser(userData.user); // authGuard will update localstorage
+          
           this.events.publish('wallet_reload', {});
+          this.events.publish('redraw', {wallet:this.wallet, mode:this.mode});
           this.modalController.dismiss( {mode:this.mode, wallet:this.wallet});
       }
       catch(err){
-        this.showTryAgainBtn = true;
-        this.error = err;
+        if(JSON.stringify(err).indexOf('duplicate key value') != -1){
+          this.error = 'That wallet name is already in use. Please enter a different one.';
+        }
+        else{
+          this.showTryAgainBtn = true;
+          this.error = err;
+        }
+        
       }
       finally{
         this.loading.dismiss();

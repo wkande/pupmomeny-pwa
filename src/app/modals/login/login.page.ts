@@ -19,6 +19,7 @@ export class LoginPage implements OnInit {
   email:string = null;
   code:string = null;
   codeReady:boolean = false;
+  
   curId:string;
   currencies = [
     {"curId":0, "symbol":"", "separator":",", "decimal":".", "precision": 0},
@@ -42,11 +43,12 @@ export class LoginPage implements OnInit {
   termsHTML:any;
   loadController:any;
 
-  defaultWallet:any;
+  // Needs a default for the currency component to draw
+  defaultWallet:any = {currency:{"curId":2, "symbol":"", "separator":",", "decimal":".", "precision": 2}};
+
 
   constructor(private modalController: ModalController, private authGuard:AuthGuard,
     private http: HttpClient, private utils:UtilsService, private loadingController:LoadingController) {
-
   }
 
   
@@ -107,14 +109,14 @@ export class LoginPage implements OnInit {
           var result = await this.http.post(BACKEND.url+'/me', {email:this.email, code:this.code}).pipe(timeout(5000)).toPromise();
           user = result['user'];
           this.authGuard.activate(true, user);
-          console.log('LOGIN >', user)
+          //console.log('LOGIN >', user)
 
           // New Account, give the user a chance to change the percision for the default wallet
           if(user.newAccount){
             this.defaultWallet = JSON.parse(localStorage.getItem('wallet'));
             this.curId = this.defaultWallet.currency.curId.toString();
-            console.log(42, localStorage.getItem('wallet'))
-            console.log(43, typeof this.curId, this.curId, this.defaultWallet.currency)
+            //console.log(42, localStorage.getItem('wallet'))
+            //console.log(43, typeof this.curId, this.curId, this.defaultWallet.currency)
             this.segment = "percision";
           }
           else this.modalController.dismiss({path:this.path});
@@ -144,7 +146,7 @@ export class LoginPage implements OnInit {
     try{
       // Only need to send if the percision has changed
       let currencyBody = this.currencies[this.curId]
-      console.log(44, currencyBody, this.defaultWallet.currency)
+      //console.log(44, currencyBody, this.defaultWallet.currency)
       if(this.defaultWallet.currency.curId != this.curId){
         let headers = new HttpHeaders();
         headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);

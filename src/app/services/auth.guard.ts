@@ -46,6 +46,7 @@ export class AuthGuard implements CanActivate {
 
   setUser(user:any){
     this.user = user;
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
 

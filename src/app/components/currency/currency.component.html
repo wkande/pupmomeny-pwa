@@ -1,0 +1,91 @@
+<!-- CURRENCY -->
+
+
+<div style="color:dimgray;" padding>
+    
+    <ion-list>
+          <ion-item lines="none">
+            <p style="text-align:center;font-size:large;">Currency Format:</p>
+          </ion-item>
+            <ion-radio-group mode="md" [(ngModel)]="curId" (ionChange)="selectedRadioBtn($event)">
+          
+              <ion-item-divider>
+                  <ion-label>
+                    Separator (comma) - Decimal (period)
+                  </ion-label>
+              </ion-item-divider>
+
+              <ion-item>
+                <ion-label>1,234</ion-label>
+                <ion-radio slot="start" value="0"></ion-radio>
+                <span slot="end">Yen</span>
+              </ion-item>
+          
+              <ion-item>
+                <ion-label>1,234.1</ion-label>
+                <ion-radio slot="start" value="1"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+          
+              <ion-item>
+                <ion-label>1,234.12</ion-label>
+                <ion-radio slot="start" value="2">USD</ion-radio>
+                <span slot="end">US Dollars, Euros</span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1,234.123</ion-label>
+                <ion-radio slot="start" value="3"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1,234.1234</ion-label>
+                <ion-radio slot="start" value="4"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+
+
+              <ion-item-divider>
+                  <ion-label>
+                    Separator (period) - Decimal (comma)
+                  </ion-label>
+              </ion-item-divider>
+
+              <ion-item>
+                  <ion-label>1.234</ion-label>
+                  <ion-radio slot="start" value="5"></ion-radio>
+                  <span slot="end"></span>
+                </ion-item>
+
+              <ion-item>
+                <ion-label>1.234,1</ion-label>
+                <ion-radio slot="start" value="6"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1.234,12</ion-label>
+                <ion-radio slot="start" value="7"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1.234,123</ion-label>
+                <ion-radio slot="start" value="8"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1.234,1234</ion-label>
+                <ion-radio slot="start" value="9"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+            </ion-radio-group>
+          </ion-list>
+
+
+
+</div>

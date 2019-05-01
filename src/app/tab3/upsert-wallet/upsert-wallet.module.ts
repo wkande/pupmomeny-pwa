@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { UpsertWalletPage } from './upsert-wallet.page';
 import { ErrorModule } from '../../components/error/error.module';
+import { CurrencyComponentModule } from '../../components/currency/currency.module';
 
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     ErrorModule,
+    CurrencyComponentModule,
     RouterModule.forChild(routes)
   ],
   declarations: []
