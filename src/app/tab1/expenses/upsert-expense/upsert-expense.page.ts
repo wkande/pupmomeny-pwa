@@ -23,7 +23,7 @@ export class UpsertExpensePage implements OnInit {
   @Input("expenseParam") expenseParam:any;
   @Input("categoryParam") categoryParam:any;
   @Input("mode") mode:string;
-  @ViewChild('datePicker') datePicker:ElementRef
+  @ViewChild('datePicker') datePicker:ElementRef;
 
   @ViewChild('inputAmt') inputAmt:ElementRef;
 
@@ -92,8 +92,7 @@ export class UpsertExpensePage implements OnInit {
             this.credit = true;
             // Make a postive number
             this.expenseParam.amt = Math.abs(this.expenseParam.amt);
-            this.amt = this.amt; 
-            console.log('CREDIT', this.amt)
+            this.amt = this.amt;
           }
           else{
             this.amt = this.expenseParam.amt;
@@ -215,9 +214,7 @@ export class UpsertExpensePage implements OnInit {
                 return;
               }
 
-
           /********** DML **************/
-
           await this.presentLoading(); // wait for it so it exists, otherwise it may still be null when finally runs
           
           let headers = new HttpHeaders();
@@ -252,9 +249,7 @@ export class UpsertExpensePage implements OnInit {
           this.error = err;
       }
       finally{
-          if(typeof this.loading != 'undefined'){
-              this.loading.dismiss();
-          }
+        if(this.loading) this.loading.dismiss();
       }
   }
 
@@ -268,6 +263,11 @@ export class UpsertExpensePage implements OnInit {
     await this.loading.present();
     //const { role, data } = await this.load.onDidDismiss();
     //console.log('Loading dismissed!');
+  }
+
+
+  componentError(ev:any){
+    this.error = ev.toString();
   }
 
 

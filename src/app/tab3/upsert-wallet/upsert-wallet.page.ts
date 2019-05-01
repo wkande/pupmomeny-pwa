@@ -70,13 +70,20 @@ export class UpsertWalletPage implements OnInit {
   }
 
 
-  async apply(ev:any) {
-      try{
+  validateThenApply(ev:any){
+      // Remove leading/trailng spaces
+      if(this.wallet.name) this.wallet.name = this.wallet.name.trim();
+      if(!this.wallet.name || this.wallet.name.length == 0){
+        this.error = 'Please enter a wallet name.';
+      }
+      else{
+        this.apply();
+      }
+  }
 
-          if(this.wallet.name.length == 0){
-            this.error = 'Please enter a category name.';
-            return;
-          }
+
+  async apply() {
+      try{
           await this.presentLoading(); // wait for it so it exists, otherwise it may still be null when finally runs
 
           this.error = null;
@@ -115,13 +122,16 @@ export class UpsertWalletPage implements OnInit {
           this.showTryAgainBtn = true;
           this.error = err;
         }
-        
       }
       finally{
-        this.loading.dismiss();
+        if(this.loading) this.loading.dismiss();
       }
   };
 
+
+  componentError(ev:any){
+    this.error = ev.toString();
+  }
 
   async presentLoading() {
     this.loading = await this.loadingController.create({
@@ -130,7 +140,6 @@ export class UpsertWalletPage implements OnInit {
       showBackdrop:true
     });
     await this.loading.present();
-
   }
 
 }

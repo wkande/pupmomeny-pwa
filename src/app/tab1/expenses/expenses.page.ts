@@ -213,7 +213,9 @@ export class ExpensesPage implements OnInit {
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expenseParam: expense, categoryParam:category }
+          componentProps: { expenseParam: expense, categoryParam:category },
+          showBackdrop:true,
+          backdropDismiss:false
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
@@ -228,7 +230,9 @@ export class ExpensesPage implements OnInit {
     try{
         const modal = await this.modalController.create({
           component: DeleteExpensePage,
-          componentProps: { expense: expense, category:this.category }
+          componentProps: { expense: expense, category:this.category },
+          showBackdrop:true,
+          backdropDismiss:false
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
@@ -236,6 +240,11 @@ export class ExpensesPage implements OnInit {
     catch(err){
       this.error = err;
     } 
+  }
+
+
+  componentError(ev:any){
+    this.error = ev.toString();
   }
 
 

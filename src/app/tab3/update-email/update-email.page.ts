@@ -65,7 +65,7 @@ export class UpdateEmailPage implements OnInit {
           this.showTryAgainBtn = true;
       }
       finally{
-          this.loading.dismiss();
+        if(this.loading) this.loading.dismiss();
       }
   }
 
@@ -99,7 +99,7 @@ export class UpdateEmailPage implements OnInit {
         
       }
       finally{
-          this.loading.dismiss();
+        if(this.loading) this.loading.dismiss();
       }
   };
 

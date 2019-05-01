@@ -8,11 +8,6 @@
         <ion-label class="segment-font-size">List</ion-label>
       </ion-segment-button>
     </ion-segment>
-
-    <!--ion-button fill="clear" slot="end" (click)="presentFilterModal($event)"></ion-button>
-      <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
-    </ion-button-->
-    
     <ion-button fill="clear" size="small" slot="end" (click)="presentFilterModal($event)">
         <ion-icon name="funnel" style="font-size:200%;color:white;"></ion-icon>
       </ion-button>
@@ -75,7 +70,7 @@
       <ion-item-sliding *ngFor="let item of categories; index as i;">
           <ion-item class="pointer" (click)="itemSelected($event, item)" detail>
               <ion-label class="name">{{item.name}}<span class="cnt" *ngIf="item.sum.cnt > 0"> ({{item.sum.cnt}})</span></ion-label>
-              <ion-label class="amt">{{item.amtDisplay}}</ion-label>
+              <ion-label class="amt" [class.negative]="item.sum.amt < 0">{{item.amtDisplay}}</ion-label>
           </ion-item>
           <ion-item-options side="start">
               <ion-item-option style="width:75px;" (click)="presentUpsertCategoryModal(item, 'edit')">Edit</ion-item-option>
@@ -84,9 +79,9 @@
       </ion-item-sliding>
 
       <div [hidden]="error || loading" style="text-align:center;margin-top:10px;">
-          <ion-button size="medium" fill="outline" (click)="presentUpsertCategoryModal(null, 'insert')">
+          <ion-button size="medium" (click)="presentUpsertCategoryModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
-              Add a Category
+              Add Category
           </ion-button>
       </div>
 
@@ -140,7 +135,7 @@
                               <br><span class="dttm">{{item.note}}</span> 
                             </ion-label>
                             
-                            <ion-label class="amt">{{item.amtDisplay}}</ion-label>
+                            <ion-label class="amt" [class.negative]="item.amt < 0">{{item.amtDisplay}}</ion-label>
                         </ion-item>
                         <ion-item-options side="start">
                             <ion-item-option style="width:75px;" color="danger" (click)="presentDeleteModal(item)">Delete</ion-item-option>
@@ -158,4 +153,4 @@
   
 </ion-content>
 
-<expense-fab-component [hidden]="error"></expense-fab-component>
+<expense-fab-component [hidden]="error" (errored)="componentError($event)"></expense-fab-component>

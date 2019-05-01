@@ -25,13 +25,19 @@
           <ion-item>
               <div style="font-size:x-large;font-weight:bold;">{{category.name}}</div>
           </ion-item>
-          <ion-item padding>
+          <ion-item padding [hidden]="transactionCnt == 0">
               <div style="font-size:medium;color:gray;"> 
-                <span [hidden]="transactionCnt == 0">Proceed by selecting a  
+                <span>Proceed by selecting a  
                 <b>Delete Option</b> shown below.</span></div>
           </ion-item>
 
+          <ion-item padding  [hidden]="transactionCnt != 0">
+              <div style="font-size:medium;color:gray;"> 
+                <span>There are no transactions associated with this category.</span></div>
+          </ion-item>
+
       </ion-list>
+
 
 
   

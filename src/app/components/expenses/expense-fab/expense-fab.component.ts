@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UpsertExpensePage } from '../../../tab1/expenses/upsert-expense/upsert-expense.page';
 import { ModalController, Events } from '@ionic/angular';
 
@@ -8,36 +8,41 @@ import { ModalController, Events } from '@ionic/angular';
   templateUrl: './expense-fab.component.html',
   styleUrls: ['./expense-fab.component.scss'],
 })
+
+
+/** Component to display currency picker. 
+  *
+  * Usage:
+    <expense-fab-component
+      (errored)="componentError($event)">
+    </expense-fab-component>
+  */
+
+
 export class ExpenseFabComponent implements OnInit {
+
 
   constructor(private modalController:ModalController, private events:Events) { }
 
-  ngOnInit() {}
 
+  @Output() errored: EventEmitter<any> = new EventEmitter<any>();
+
+
+  ngOnInit() {};
 
 
   async presentExpenseUpsertModal(ev:any) {
     try{
-
-        console.log('ExpenseFabComponent:presentUpsertModal()')
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
           componentProps: { expense: null, mode:"insert" },
           backdropDismiss:false
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
-        console.log('ExpenseFabComponent:presentUpsertModal():dismissed: data',data);
-
-        // Reload
-        if(data != null){
-          //this.filter = this.filterService.getFilter();
-          //this.getExpenses();
-        }
     }
     catch(err){
-      console.log(err);
+        this.errored.emit( err.toString() );
     } 
   }
 

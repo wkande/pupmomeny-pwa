@@ -7,13 +7,15 @@ import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
   styleUrls: ['./currency.component.scss'],
 })
 
+
 /** Component to display currency picker. 
   *
   * Usage:
     <currency-component
       [currency]="currency"
       [showButton]=true
-      (selectedCurrency)="selectedCurrency($event)">
+      (selectedCurrency)="selectedCurrency($event)"
+      (errored)="componentError($event)">
     </currency-component>
   */
 
@@ -23,6 +25,7 @@ export class CurrencyComponent implements OnInit {
 
   @Input() currency:any;
   @Output() selectedCurrency: EventEmitter<any> = new EventEmitter<any>();
+  @Output() errored: EventEmitter<any> = new EventEmitter<any>();
   curId:string;
   currencies = [
     {"curId":0, "symbol":"", "separator":",", "decimal":".", "precision": 0},
@@ -42,12 +45,28 @@ export class CurrencyComponent implements OnInit {
 
 
   ngOnInit() {
-      console.log('---> CurrencyComponent.ngOnInit', this.currency);
-      this.curId = this.currency.curId.toString();
+    try{
+        console.log('---> CurrencyComponent.ngOnInit', this.currency);
+        this.curId = this.currency.curId.toString();
+    }
+    catch(err){
+        // The setTimout prevents a `ExpressionChangedAfterItHasBeenCheckedError` error for ngOnInit
+        // https://blog.angularindepth.com/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error-e3fd9ce7dbb4
+        setTimeout(() => {
+          this.errored.emit( err.toString() );
+        });
+    }
   }
 
 
   selectedRadioBtn(ev:any){
-    this.selectedCurrency.emit( this.currencies[this.curId] );
+    try{
+      this.selectedCurrency.emit( this.currencies[this.curId] );
+    }
+    catch(err){
+      this.errored.emit( err.toString() );
+    }
   }
+
+
 }

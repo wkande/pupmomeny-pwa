@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthGuard } from '../services/auth.guard';
-import { ModalController, Events } from '@ionic/angular';
+import { ModalController, Events, LoadingController } from '@ionic/angular';
 import { UpdateNamePage } from './update-name/update-name.page';
 import { UpdateEmailPage } from './update-email/update-email.page';
 import { UpsertWalletPage } from './upsert-wallet/upsert-wallet.page';
@@ -33,7 +33,7 @@ export class Tab3Page {
    * @param http 
    */
   constructor(private authGuard:AuthGuard, private modalController:ModalController,
-    private utils:UtilsService, private http:HttpClient, private events:Events){
+    private utils:UtilsService, private http:HttpClient, private events:Events, private loadingController:LoadingController){
       
       this.wallet = JSON.parse(localStorage.getItem('wallet'));
       console.log(this.wallet)
@@ -80,11 +80,24 @@ export class Tab3Page {
   }
 
 
+  // Used to change hide btn and show spinner
+  logoutClicked:boolean = false;
+  /**
+   * Logout the user. Shows a spinner momentarily.
+   */
   logout(){
-    this.authGuard.activate(false, {});
+    this.logoutClicked = true;
+    // This is to allow the spiiner to show
+    setTimeout(() => {
+      this.authGuard.activate(false, {});
+    }, 200);
   }
 
 
+  /**
+   * Allows the user to change their email address which is also the login ID.
+   * @param ev 
+   */
   async presentEmailModal(ev:any){
     try{
         console.log('Tab3Page:presentEmailModal()')
@@ -156,7 +169,6 @@ export class Tab3Page {
       this.error = this.utils.getErrorMessage(err);
     } 
   }
-
 
 
   /**

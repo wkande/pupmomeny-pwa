@@ -13,7 +13,8 @@ import { CacheService } from '../../services/cache/cache.service';
   *
   * Usage:
     <categories-component
-      (selected)="categorySelected($event)">
+      (selected)="categorySelected($event)"
+      (errored)="componentError($event)">
     </categories-component>
   */
 
@@ -23,6 +24,7 @@ export class CategoriesComponent implements OnInit {
   
   categories:[];
   @Output() selected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() errored: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor(private cache:CacheService) { 
@@ -31,15 +33,29 @@ export class CategoriesComponent implements OnInit {
 
   
   ngOnInit() {
-    //console.log('>>>>>>>>>>>>>>>> CategoriesComponent.ngOnInit <<<<<<<<<<<<<<<<<')
-    this.categories = this.cache.categories;
-    //console.log('CategoriesComponent > ngOnInt > this.categories > ', this.categories);
+    
+    try{
+        //console.log('>>>>>>>>>>>>>>>> CategoriesComponent.ngOnInit <<<<<<<<<<<<<<<<<')
+        this.categories = this.cache.categories;
+    }
+    catch(err){
+        // The setTimout prevents a `ExpressionChangedAfterItHasBeenCheckedError` error for ngOnInit
+        // https://blog.angularindepth.com/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error-e3fd9ce7dbb4
+        setTimeout(() => {
+          this.errored.emit( err.toString() );
+        });
+    }
   }
 
 
   selectedCategory(ev:any, id:number, name:string, vendors:any){
-    //console.log(ev, id, name)
-    this.selected.emit({id:id, name:name, vendors:vendors});
+    try{
+        this.selected.emit({id:id, name:name, vendors:vendors});
+    }
+    catch(err){
+        this.errored.emit( err.toString() );
+    }
   }
+
 
 }

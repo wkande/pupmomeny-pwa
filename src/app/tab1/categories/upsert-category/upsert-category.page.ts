@@ -60,6 +60,8 @@ export class UpsertCategoryPage implements OnInit {
           this.error = null;
           this.showTryAgainBtn = false;
 
+          // Remove leading/trailng spaces
+          if(this.nameInput.nativeElement.value) this.nameInput.nativeElement.value = this.nameInput.nativeElement.value.trim();
           if(this.nameInput.nativeElement.value.length == 0){
             this.error = 'Please enter a category name.';
             return;
@@ -83,11 +85,16 @@ export class UpsertCategoryPage implements OnInit {
           this.modalController.dismiss( {status:"OK"});
       }
       catch(err){
-        this.showTryAgainBtn = true;
-        this.error = err;
+        if(JSON.stringify(err).indexOf('duplicate key value') != -1){
+          this.error = 'That category name is already in use. Please enter a different one.';
+        }
+        else{
+          this.showTryAgainBtn = true;
+          this.error = err;
+        }
       }
       finally{
-        this.loading.dismiss();
+        if(this.loading) this.loading.dismiss();
       }
   };
 

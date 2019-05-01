@@ -89,7 +89,7 @@ export class DeleteCategoryPage implements OnInit {
       this.showTryAgainBtn = true;
     }
     finally{
-      this.loading.dismiss();
+      if(this.loading) this.loading.dismiss();
     }
     
   }
@@ -118,7 +118,7 @@ export class DeleteCategoryPage implements OnInit {
         this.showTryAgainBtn = true;
     }
     finally{
-        this.loading.dismiss();
+        if(this.loading) this.loading.dismiss();
     }
   };
 

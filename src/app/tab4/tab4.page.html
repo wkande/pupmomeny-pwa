@@ -34,13 +34,13 @@
     <div>
 
       <ion-button expand="full" fill="clear" size="large">
-          <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-right:5px;" (click)="dttmBack($event)">
+          <ion-button [class.hideBtns]="loading" expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-right:5px;" (click)="dttmBack($event)">
               <ion-icon name="arrow-round-back"></ion-icon>
           </ion-button>
           <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:120%;">
               <span [hidden]="segment == 'yearly'">{{period.monthly.display}}</span><span [hidden]="segment == 'monthly'">{{period.yearly.display}}</span>
           </ion-button>
-          <ion-button expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-left:5px;" (click)="dttmForward($event)">
+          <ion-button [class.hideBtns]="loading" expand="full" fill="clear" slot="end" size="large" style="font-size:200%;margin-left:5px;" (click)="dttmForward($event)">
               <ion-icon name="arrow-round-forward"></ion-icon>
           </ion-button>
       </ion-button>

@@ -105,16 +105,21 @@ export class Tab4Page {
   }
 
 
+
+/**
+ * 
+ */
   async getCategories(){
     try{
-      console.log('---> Tabs4Page.getCategories')
+      console.log('---> Tabs4Page.getCategories');
       this.error = null;
       this.loading = true;
       this.ready = false;
       this.amtTotal = 0;
       this.cntTotal = 0;
       this.categories = [];
-      this.chartData = {labels:[], amts:[]}
+      this.chartData = {labels:[], amts:[]};
+      
 
       // Date range
       let begin:string, end:string;
@@ -154,19 +159,16 @@ export class Tab4Page {
             }
       }
       
-
       // Add the percentage
-      //console.log(typeof this.amtTotal, this.amtTotal['value'])
       for(let i=0;i<this.categories.length; i++){
           if(this.amtTotal['value'] === 0) this.categories[i].sum.percent = "0%";
           else this.categories[i].sum.percent = ((this.categories[i].sum.amt/this.amtTotal['value']) * 100).toFixed(2) + '%';
       }
 
-      // This needs to after the percent loop because it is getting formatted
+      // This needs to happen after the percent loop because it is getting formatted
       //@ts-ignore
       this.amtTotal = currency(this.amtTotal, this.wallet['currency']).format(true);
 
-      //console.log('categories >', this.categories)
 
       this.redrawChart();
     }
@@ -174,11 +176,11 @@ export class Tab4Page {
         this.error = err;
     }
     finally{
-        this.loading = false;
-
+    
         setTimeout(() => {
+          this.loading = false;
           this.ready = true;
-        }, 200);
+        }, 100);
     }
   }
 
@@ -234,12 +236,6 @@ export class Tab4Page {
       this.theChart.data.datasets[0].data = this.chartData.amts;
       this.theChart.update();
   }
-
-
-
-  /*private pad2(numb) {
-    return (numb < 10 ? '0' : '') + numb;
-  }*/
 
 
 /**

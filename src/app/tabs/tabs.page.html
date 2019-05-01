@@ -1,7 +1,7 @@
 <ion-tabs>
   <!-- If the wallet is missing hide wallet name, queries will guide user to correct the problem -->
-  <div *ngIf="wallet" style="background-color:gray;text-align:center;color:white;">
-    <span [hidden]="backend.name ==='Prod'" style="float:left;">-> {{backend.name}} </span>
+  <div *ngIf="wallet" style="background-color:#9370DB;text-align:center;color:white;">
+    <span [hidden]="backend.name ==='Prod'" style="float:left;">{{backend.name}} </span>
     {{wallet.name}}
   </div>
 

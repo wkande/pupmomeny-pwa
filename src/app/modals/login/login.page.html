@@ -84,7 +84,9 @@
         <p padding style="margin-top:-30px;">
             Please tell us how you want to view the numbers (currency) in your Default Wallet. You can change this later in the Settings tab.
         </p>
-        <currency-component style="margin-top:-90px;" [currency]="defaultWallet.currency" (selectedCurrency)="selectedCurrency($event)"></currency-component>
+        <currency-component style="margin-top:-90px;" [currency]="defaultWallet.currency" 
+          (selectedCurrency)="selectedCurrency($event)" (errored)="componentError($event)">
+        </currency-component>
   </div>
   
 

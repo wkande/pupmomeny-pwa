@@ -44,8 +44,10 @@
     
 <ion-content padding>
     <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="submit($event)"></error-component>
+    
     <categories-component [hidden]="hideCatPicker"
-      (selected)="categorySelected($event)">
+      (selected)="categorySelected($event)"
+      (errored)="componentError($event)">
     </categories-component>
 
     <vendors-component [hidden]="hideVendorPicker"
@@ -83,13 +85,15 @@
 
 
         <!-- DATE -->
-        <ion-item (click)="showDatePicker($event)">
-          <div type="cssDiv" slot="start">
+        <!-- Do not put the showDatePicker() click on hte ion-item or you get two clicks if the 
+             user clicks on th ion-datetime -->
+        <ion-item>
+          <div type="cssDiv" slot="start"  (click)="showDatePicker($event)">
                 <div>Date</div>
                 <ion-icon style="font-size:300%;" name="calendar" color="primary"></ion-icon>
           </div>
           <ion-datetime #datePicker value="{{dateDefault}}" (ionChange)="dateChanged($event)" placeholder="Select Date"
-          display-format="MMMM DD, YYYY,  DDDD" picker-format="MMMM-DD-YYYY"></ion-datetime>
+            display-format="MMMM DD, YYYY,  DDDD" picker-format="MMMM-DD-YYYY"></ion-datetime>
         </ion-item>
 
 

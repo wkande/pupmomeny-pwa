@@ -237,7 +237,9 @@ export class Tab1Page {
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expenseParam: expense, categoryParam:category }
+          componentProps: { expenseParam: expense, categoryParam:category },
+          showBackdrop:true,
+          backdropDismiss:false
         });
         await modal.present();
         const { data } = await modal.onDidDismiss();
@@ -280,7 +282,9 @@ export class Tab1Page {
         //console.log('Tab1Page:presentDeleteModal()', category)
         const modal = await this.modalController.create({
           component: DeleteCategoryPage,
-          componentProps: { category: category, categories:this.categories }
+          componentProps: { category: category, categories:this.categories },
+          showBackdrop:true,
+          backdropDismiss:false
         });
         await modal.present();
         
@@ -311,6 +315,11 @@ export class Tab1Page {
 
   itemSelected(ev:any, item:any){
     this.navCtrl.navigateForward('/expenses/'+item.id+'/'+item.name);
+  }
+
+
+  componentError(ev:any){
+    this.error = ev.toString();
   }
 
 

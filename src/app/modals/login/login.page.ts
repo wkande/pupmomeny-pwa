@@ -198,13 +198,10 @@ export class LoginPage implements OnInit {
   }
 
 
-  /* MOVED TO UTILS
-  
-  isValidMailFormat(){
-    var re = /\S+@\S+\.\S+/;
-    return(re.test(this.email));
+  componentError(ev:any){
+    this.error = ev.toString();
   }
-  */
+  
   
 }
 

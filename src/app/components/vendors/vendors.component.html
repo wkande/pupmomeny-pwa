@@ -33,11 +33,11 @@
 
 
 <!-- FOOTER -->
-<ion-footer class="footer" [hidden]="!manage">
-    <ion-toolbar>
-            <ion-button color="primary" fill="outline" style="margin-right:20px;" (click)="manageVendorsAdd($event)">Add Line</ion-button>
-            <ion-button color="primary"fill="outline" style="margin-right:20px;" (click)="manageVendorsCancel($event)">Cancel</ion-button>
-            <ion-button color="primary"(click)="manageVendorsSave($event)">Save</ion-button>
+<ion-footer class="footer" [hidden]="!manage" color="primary">
+    <ion-toolbar color="primary">
+            <ion-button color="light" fill="outline" style="margin-right:20px;" (click)="manageVendorsAdd($event)">Add Line</ion-button>
+            <ion-button color="light" fill="outline" style="margin-right:20px;" (click)="manageVendorsCancel($event)">Cancel</ion-button>
+            <ion-button color="light" fill="outline" (click)="manageVendorsSave($event)">Save</ion-button>
     </ion-toolbar>
 </ion-footer>
 

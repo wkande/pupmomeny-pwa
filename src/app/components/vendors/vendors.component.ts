@@ -6,6 +6,7 @@ import { timeout } from 'rxjs/operators';
 import { BACKEND } from '../../../environments/environment';
 import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../services/utils/utils.service';
+import { CacheService } from '../../services/cache/cache.service';
 
 
 @Component({
@@ -43,7 +44,7 @@ export class VendorsComponent implements OnInit {
 
 
   constructor(private http:HttpClient, private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService) { 
+    private utils:UtilsService, private cache:CacheService) { 
     //console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
@@ -115,7 +116,7 @@ export class VendorsComponent implements OnInit {
           if(inputs[i].value && inputs[i].value.length > 0)
             this.category.vendors.push(inputs[i].value);
         }
-        console.log(inputs, this.category, this.vendorsManage)
+
 
         this.error = null;
         this.showTryAgainBtn = false;
@@ -128,6 +129,8 @@ export class VendorsComponent implements OnInit {
         var result = await this.http.patch(BACKEND.url+'/categories/'+this.category.id+'/vendors', 
           {vendors:this.category.vendors}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
 
+        // Update the category vendor array in the CacheService
+        this.cache.setVendors(this.category.id, this.category.vendors)
         this.manage = false;
     }
     catch(err){
@@ -135,7 +138,7 @@ export class VendorsComponent implements OnInit {
       this.error = err;
     }
     finally{
-      this.loading.dismiss();
+      if(this.loading) this.loading.dismiss();
     }
 };
 

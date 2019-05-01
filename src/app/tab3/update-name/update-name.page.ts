@@ -47,7 +47,6 @@ export class UpdateNamePage implements OnInit {
 
 
   async apply() {
-  console.log(this.user.name)
       try{
           if(this.user.name.length == 0) throw 'Please enter a name.';
           this.error = null;
@@ -69,7 +68,7 @@ export class UpdateNamePage implements OnInit {
           this.showTryAgainBtn = true;
       }
       finally{
-          this.loading.dismiss();
+        if(this.loading)  this.loading.dismiss();
       }
   };
 

@@ -15,12 +15,13 @@
 
     <ion-list>
 
-      <!-- USER -->
+    <!-- USER -->
       <ion-item-divider padding style="font-size:120%;background-color:lightgrey;">
         <ion-label class="section">
           User
         </ion-label>
-        <ion-button slot="end" (click)="logout()" size="medium">Logout</ion-button>
+        <ion-button [hidden]="logoutClicked" slot="end" (click)="logout()" size="medium">Logout</ion-button>
+        <ion-spinner [hidden]="!logoutClicked" style="margin-right:34px;" name="lines" color="primary" slot="end"></ion-spinner>
       </ion-item-divider>
       <!-- EMAIL -->
       <ion-item-sliding>
@@ -43,7 +44,23 @@
       </ion-item-sliding>
 
 
+    <!-- GENERAL -->
+      <ion-item-divider padding style="color:black;font-size:120%;background-color:lightgrey;">
+          <ion-label class="section">
+              General
+          </ion-label>
+      </ion-item-divider>
+      <!-- SUBSCRIPTION -->
+      <ion-item detail>
+          <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
+          <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
+      </ion-item>
 
+
+      <!-- TERMS -->
+      <ion-item detail [routerLink]="['/term']">
+          <ion-label style="color:dimgray;font-size:120%;">Terms of Service</ion-label>
+      </ion-item>
 
 
     <!-- WALLETS -->
@@ -73,26 +90,6 @@
 
       </ion-item-sliding>
 
-
-
-
-
-      <ion-item-divider padding style="color:black;font-size:120%;background-color:lightgrey;">
-          <ion-label class="section">
-              General
-          </ion-label>
-      </ion-item-divider>
-
-      <ion-item detail>
-          <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
-          <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
-      </ion-item>
-
-
-      <!-- TERMS -->
-      <ion-item detail [routerLink]="['/term']">
-          <ion-label style="color:dimgray;font-size:120%;">Terms of Service</ion-label>
-      </ion-item>
 
     </ion-list>
 
