@@ -1,3 +1,5 @@
+
+
 <ion-header [hidden]="!hideCatPicker || !hideVendorPicker">
   <ion-toolbar>
       <ion-buttons slot="secondary">
@@ -42,7 +44,13 @@
 
 
     
-<ion-content padding>
+<ion-content padding
+    [scrollEvents]="true"
+    (ionScrollStart)="logScrollStart()"
+    (ionScroll)="logScrolling($event)"
+    (ionScrollEnd)="logScrollEnd()">
+
+
     <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="submit($event)"></error-component>
     
     <categories-component [hidden]="hideCatPicker"
@@ -62,7 +70,7 @@
         <ion-item id='catPopoverBtn' slot="start" (click)="showCategories($event)">
             <div type="cssDiv" >
                 <div>Category</div>
-                <ion-icon style="font-size:300%;" name="list-box" color="primary"></ion-icon>
+                <ion-icon icon name="list-box" color="primary"></ion-icon>
             </div>
             <span style="margin-left:20px;font-size:120%">{{category.name}}</span>
         </ion-item>
@@ -70,18 +78,45 @@
   
         
         <!-- AMT -->
-        <ion-item>
-          <div type="cssDiv" id='catAmt' slot="start">
-              <div style="height:80px;">Amount</div>
+        <ion-item id='catAmt' slot="start" (click)="toggleKeypad($event)">
+          <div type="cssDiv">
+              <div>Amount</div>
+              <ion-icon icon name="cash" color="primary"></ion-icon>
               <!--ion-icon style="font-size:300%;" name="cash" color="medium"></ion-icon-->
           </div>
-          <input type="number" #inputAmt [(ngModel)]="amt" placeholder="Enter amount" (keypress)="onKeyPress($event)">
+
+          <!-- type="number"   inputmode="numeric"    pattern="\d*"  pattern="[\d\.]*"   pattern="[\d]*"   pattern="[0-9]*"   -->
+          <!---input type="number" #inputAmt [(ngModel)]="amt" placeholder="Enter amount" (keypress)="onKeyPress($event)"-->
+          <div style="font-size:x-large;padding-left:30px;">{{amt}}</div>
           <div slot="end" style="color:dimgray;font-weight:bold;">
             <span style="margin-left:15px;">Credit</span>
               <br>
             <ion-toggle color="danger" [(ngModel)]="credit" slot="end" value="credit"></ion-toggle>
           </div>
         </ion-item>
+
+        <div [hidden]="hideKeypad" style="text-align:center;">
+            <div>
+              <ion-button keys size="large" (click)="keyPadPress(1)">1</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(2)">2</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(3)">3</ion-button>
+            </div>
+            <div>
+              <ion-button keys size="large" (click)="keyPadPress(4)">4</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(5)">5</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(6)">6</ion-button>
+            </div>
+            <div style="text-align:center;">
+              <ion-button keys size="large" (click)="keyPadPress(7)">7</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(8)">8</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(9)">9</ion-button>
+            </div>
+            <div style="text-align:center;">
+              <ion-button keys size="large" (click)="keyPadPress('.')">.</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress(0)">0</ion-button>
+              <ion-button keys size="large" (click)="keyPadPress('b')"><ion-icon name="backspace"></ion-icon></ion-button>
+            </div>
+        </div>
 
 
         <!-- DATE -->

@@ -56,7 +56,7 @@ export class ExpensesPage implements OnInit {
     
   ngOnInit() {
       try{
-        console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
+        //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnInit <<<<<<<<<<<<<<<<<')
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
         
         this.category.id = this.routerActivated.snapshot.paramMap.get('id');
@@ -71,7 +71,6 @@ export class ExpensesPage implements OnInit {
         this.events.subscribe('redraw', this.eventHandler_redraw);
       }
       catch(err){
-        console.log(err);
         this.error = err;
       }
   }
@@ -79,7 +78,7 @@ export class ExpensesPage implements OnInit {
 
   ionViewDidEnter(){
     this.utils.currentView = 'ExpensesPage';
-    console.log('---> ExpensesPage.ionViewDidEnter')
+    //console.log('---> ExpensesPage.ionViewDidEnter')
     if(this.redrawNeeded) {
         this.redrawNeeded = false;
         this.tryAgain(null);
@@ -88,14 +87,14 @@ export class ExpensesPage implements OnInit {
   
 
   ngOnDestroy(){
-    console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    //console.log('>>>>>>>>>>>>>>>> ExpensesPage.ngOnDestroy <<<<<<<<<<<<<<<<<')
     this.events.unsubscribe('redraw', this.eventHandler_redraw);
   }
 
   
   redrawEventHandler(){
     try{
-      console.log('ExpensesPage > subscribe > fired > redraw')
+      //console.log('ExpensesPage > subscribe > fired > redraw')
       this.skip = 0;
       if(this.utils.currentView === 'ExpensesPage') this.tryAgain(null);
       else this.redrawNeeded = true;
@@ -120,19 +119,19 @@ export class ExpensesPage implements OnInit {
   }
 
 
-  getMore(){
+  getMore(ev:any){
     this.skip = this.skip+50;
     this.getExpenses();
   }
 
 
-  getLess(){
+  getLess(ev:any){
     this.skip = this.skip-50;
     this.getExpenses();
   }
 
   goBack(en:any){
-    // Tab1Page will no fire ionViewDidEnter() because when a root tab page opens a child
+    // Tab1Page will not fire ionViewDidEnter() because when a root tab page opens a child
     // and the child closes, root tab pages ignore ionViewDidEnter().
     // Send an event to Tab1Page so it can redraw if needed.
     // The ion-back-btn will cause the return to parent
@@ -153,7 +152,6 @@ export class ExpensesPage implements OnInit {
 
   async getExpenses(){
     try{
-      console.log('>>> ExpensesPage > getExpenses()')
       this.expenses = [];
       this.error = null;
       this.loading = true;
@@ -162,7 +160,6 @@ export class ExpensesPage implements OnInit {
       this.total = 0;
 
       this.filter = this.filterService.getFilter();
-      console.log('Filter >', this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -202,7 +199,6 @@ export class ExpensesPage implements OnInit {
     }
     finally{
       this.loading = false;
-      
     }
   }
 

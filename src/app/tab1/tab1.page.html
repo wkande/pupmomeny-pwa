@@ -53,7 +53,7 @@
               </ion-label>
           </ion-item-divider>
           <!-- DATE RANGE -->
-          <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+          <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
               *ngIf="filter.range.startDisplay">
             {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
           </div>
@@ -78,7 +78,7 @@
           </ion-item-options>
       </ion-item-sliding>
 
-      <div [hidden]="error || loading" style="text-align:center;margin-top:10px;">
+      <div [hidden]="error || loading  || !showButtons" style="text-align:center;margin-top:10px;">
           <ion-button size="medium" (click)="presentUpsertCategoryModal(null, 'insert')">
               <ion-icon slot="start" name="add" style="font-size:200%;"></ion-icon>
               Add Category
@@ -106,7 +106,7 @@
                   <!--ion-label slot="end" style="font-size:120%;color:black;margin-right:24px;" [hidden]="loading">{{total}}</ion-label-->
               </ion-item-divider>
               <!-- DATE RANGE -->
-              <div style="background-color:#7044ff;text-align:center;color:white;padding:4px 2px 4px 2px;" 
+              <div style="background-color:#9370DB;text-align:center;color:white;padding:4px 2px 4px 2px;" 
                   *ngIf="filter.range.startDisplay">
                   {{filter.range.startDisplay}} - {{filter.range.endDisplay}}
               </div>
@@ -118,7 +118,7 @@
           <error-component [error]="error" [showButton]=true (tryAgainSelected)="tryAgain($event)"></error-component>
     
     
-          <ion-button color="medium" expand="full" fill="solid" (click)="getLess()" [hidden]="skip == 0 || !showButtons">
+          <ion-button color="medium" expand="full" fill="solid" (click)="getLess($event)" [hidden]="skip == 0 || !showButtons">
             <ion-icon style="transform: scale(2);" name="arrow-dropup"></ion-icon>
           </ion-button>
     
@@ -144,7 +144,7 @@
                     </ion-item-sliding>
           </div>
     
-          <ion-button color="medium" expand="full" fill="solid" (click)="getMore()" [hidden]="(skip+50) >= cntTotal || !showButtons">
+          <ion-button color="medium" expand="full" fill="solid" (click)="getMore($event)" [hidden]="(skip+50) >= cntTotal || !showButtons">
             <ion-icon style="transform: scale(2);" name="arrow-dropdown"></ion-icon>
           </ion-button>
       </ion-list>

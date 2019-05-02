@@ -55,3 +55,11 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+ion-button[keys]{
+    width:70px;
+}
+
+ion-icon[icon]{
+  font-size:300%;
+}

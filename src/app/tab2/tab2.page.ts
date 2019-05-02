@@ -95,13 +95,13 @@ export class Tab2Page {
   }
 
 
-  getMore(){
+  getMore(ev:any){
     this.skip = this.skip+50;
     this.searchExpenses(this.searchEvent);
   }
 
 
-  getLess(){
+  getLess(ev:any){
     this.skip = this.skip-50;
     this.searchExpenses(this.searchEvent);
   }
@@ -125,8 +125,6 @@ export class Tab2Page {
 
 
   async searchExpenses(ev:any){
-    
-    console.log('>>> TAB2 > searchExpenses', ev.detail.value);
     try{
       this.searchEvent = ev;
       this.expenses = [];
@@ -142,7 +140,6 @@ export class Tab2Page {
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
       let q = this.utils.formatQ(ev.detail.value);
-      //console.log('final q', q)
 
       var result = await this.http.get(BACKEND.url+'/expenses/context?q='+q+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(7000), delay (this.utils.delayTimer)).toPromise();
@@ -157,7 +154,7 @@ export class Tab2Page {
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
         else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
-      console.log(this.expenses)
+
     }
     catch(err){
       this.error = err;
@@ -165,6 +162,7 @@ export class Tab2Page {
     finally{
       this.ready = true;
       this.loading = false;
+
       let self = this;
       // Prevents buttons causing screen flicker
       await setTimeout(function(){
@@ -195,7 +193,7 @@ export class Tab2Page {
   
   async presentUpsertModal(expense:any) {
     try{
-      this.error = null;
+        this.error = null;
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,

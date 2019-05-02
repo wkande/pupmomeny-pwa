@@ -115,14 +115,13 @@ export class Tab1Page {
 
   async getCategories(){
     try{
-      //console.log('>>> TAB1 > getCategories')
       this.error = null;
       this.loading = true;
       this.total = 0;
       this.cntTotal = 0;
       this.categories = [];
+      this.showButtons = false;
       this.filter = this.filterService.getFilter();
-      //console.log('getCategories', this.authGuard.getUser(), this.wallet, this.filter)
       
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -132,21 +131,22 @@ export class Tab1Page {
       var result = await this.http.get(BACKEND.url+'/categories?q='+q+'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end, {headers: headers})
       .pipe(timeout(7000), delay(this.utils.delayTimer))
       .toPromise();
-      //console.log(result)
       this.categories = result['categories'];
       
-
       for(var i=0; i<this.categories.length; i++){
         this.cntTotal += this.categories[i].sum.cnt;
-        //this.total = Decimal.add(this.total, this.categories[i].sum.amt);
         this.total = currency(this.total).add( (this.categories[i].sum.amt) );
         this.categories[i].amtDisplay = currency(this.categories[i].sum.amt, this.wallet['currency']).format(true);
       }
-      //console.log(this.total, this.categories)
-      //this.total = parseFloat(this.total.toString());
+
       this.total = currency(this.total, this.wallet['currency']).format(true);
       this.cache.categories = this.categories;
       
+      // Prevents buttons causing screen flicker
+      let self = this;
+      await setTimeout(function(){
+        self.showButtons = true;
+      }, 200);
     }
     catch(err){
       this.error = err;
@@ -154,6 +154,18 @@ export class Tab1Page {
     finally{
       this.loading = false;
     }
+  }
+
+
+  getMore(ev:any){
+    this.skip = this.skip+50;
+    this.getExpenses();
+  }
+
+
+  getLess(ev:any){
+    this.skip = this.skip-50;
+    this.getExpenses();
   }
 
 
@@ -168,7 +180,6 @@ export class Tab1Page {
       this.showButtons = false;
 
       this.filter = this.filterService.getFilter();
-      //console.log(this.filter)
 
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -182,15 +193,14 @@ export class Tab1Page {
  
       this.cntTotal = result['totalCount'];
       this.expenses = result['expenses'];
+      console.log(1, this.expenses);
       
       // Get total amt of all expenses and set the date divider
       for(var i=0; i<this.expenses.length; i++){
         // Total
-        //this.total = Decimal.add(this.total, this.expenses[i].amt);
         this.total = currency(this.total).add( (this.expenses[i].amt) );
         this.expenses[i].amtDisplay = currency(this.expenses[i].amt, this.wallet['currency']).format(true);
         this.expenses[i].category = {id:this.expenses[i].c_id, name:this.expenses[i].c_name};
-
 
         // Date divider
         if(i === 0) this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
@@ -198,8 +208,9 @@ export class Tab1Page {
         else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
       this.total = currency(this.total, this.wallet['currency']).format(true);
-      //this.total = parseFloat(this.total.toString());
       this.ready = true;
+
+      console.log(2, this.expenses);
 
       // Prevents buttons causing screen flicker
       let self = this;
@@ -253,7 +264,6 @@ export class Tab1Page {
   async presentUpsertCategoryModal(category:any, mode:string) {
     try{
         this.error = null;
-        //console.log('Tab1Page > presentUpsertCategoryModal()', category)
         const modal = await this.modalController.create({
           component: UpsertCategoryPage,
           componentProps: { category: category, mode:mode },
@@ -263,7 +273,6 @@ export class Tab1Page {
         await modal.present();
         
         const { data } = await modal.onDidDismiss();
-        //console.log('Tab1Page:presentUpsertModal():dismissed: data',data);
 
         // Reload
         if(data != null){
@@ -279,7 +288,6 @@ export class Tab1Page {
   async presentDeleteCategoryModal(category:any) {
     try{
         this.error = null;
-        //console.log('Tab1Page:presentDeleteModal()', category)
         const modal = await this.modalController.create({
           component: DeleteCategoryPage,
           componentProps: { category: category, categories:this.categories },
@@ -303,11 +311,9 @@ export class Tab1Page {
 
 
   doRefresh(event:any) {
-    //console.log('Begin refresh async operation');
     this.getCategories();
 
     setTimeout(() => {
-      //console.log('Async operation has ended');
       event.target.complete();
     }, 200);
   }

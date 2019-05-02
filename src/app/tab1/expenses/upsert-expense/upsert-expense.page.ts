@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
+import { IonContent } from '@ionic/angular';
 import { ModalController, LoadingController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../../services/auth.guard';
@@ -8,6 +9,7 @@ import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
 import * as currency from 'currency.js';
+import { async } from 'q';
 
 @Component({
   selector: 'app-upsert-expense',
@@ -19,6 +21,7 @@ import * as currency from 'currency.js';
 export class UpsertExpensePage implements OnInit {
 
 
+  @ViewChild(IonContent) content: IonContent;
   wallet:any;
   @Input("expenseParam") expenseParam:any;
   @Input("categoryParam") categoryParam:any;
@@ -32,11 +35,10 @@ export class UpsertExpensePage implements OnInit {
 
   // Data entry fields
   note:string
-  //amtDisplay:string;
   categoryOrg:any; // The original category needed if the user changes the cateory_id
   // cat must be initialized or the ngOnInt will cause HTML errors if ngOnInt failes
   category:any = {id:null, name:null, vendors:null};
-  amt:number;
+  amt:string;
   credit:boolean = false;
   vendor:string;
   dateDefault:string;
@@ -51,6 +53,7 @@ export class UpsertExpensePage implements OnInit {
   // Component hide flags
   hideCatPicker:boolean = true;
   hideVendorPicker:boolean = true;
+  hideKeypad:boolean = true;
 
   //eventHandlerCategories:any; // method to carry "this" into the event handler
   //eventHandlerVendors:any; // method to carry "this" into the event handler
@@ -73,7 +76,7 @@ export class UpsertExpensePage implements OnInit {
         }
         // Edit
         else{
-          console.log('>>>>>>>', this.expenseParam, this.categoryParam)
+          console.log('>>>>>>> START WITH this.expenseParam.amt', this.expenseParam.amt)
           this.categoryOrg = JSON.parse(JSON.stringify(this.categoryParam)); // Deep copy because the param is read only
           // The vendors in catgeory may-or-may-not be presented, get them from cache
           this.categoryOrg.vendors = this.cache.getVendors(this.categoryOrg.id);
@@ -87,22 +90,21 @@ export class UpsertExpensePage implements OnInit {
           this.dateSelected = this.dateDefault;
 
           // Vendor, amt, note
+          /////////////////////////
           this.vendor = this.expenseParam.vendor;
           if(this.expenseParam.amt < 0){
             this.credit = true;
             // Make a postive number
-            this.expenseParam.amt = Math.abs(this.expenseParam.amt);
-            this.amt = this.amt;
+            this.amt = Math.abs(this.expenseParam.amt).toString();
           }
           else{
             this.amt = this.expenseParam.amt;
           }
-          console.log(typeof this.expenseParam.amt)
           
           //@ts-ignore
-          this.amt = currency(this.expenseParam.amt, this.wallet['currency']).format(true);
+          this.amt = currency(this.amt, this.wallet['currency']).format(true);
+          console.log('3 this.amt', this.amt, typeof this.amt)
 
-          //this.amtDisplay = currency(this.amt, this.wallet.currency).format(true);
           this.note = this.expenseParam.note;
         }
 
@@ -119,30 +121,59 @@ export class UpsertExpensePage implements OnInit {
     this.modalController.dismiss(null);
   } 
 
+  toggleKeypad(en:any){
+    this.hideKeypad = !this.hideKeypad;
+  }
+
+  keyPadPress(key:string){
+    console.log(key)
+    if(key === 'b')
+        this.amt = this.amt.substring(0, this.amt.length-1);
+    else
+      this.amt += key;
+    this.beep();
+  }
+
+  // https://github.com/flukeout/simple-sounds
+  beep() {
+  }
 
 
   showCategories(ev: any) {
+    this.hideKeypad = true;
     this.hideCatPicker = false;
   }
 
 
   hideCategories(ev:any){
+    this.hideKeypad = true;
     this.hideCatPicker = true;
   }
 
 
   showVendors(ev: any) {
+    this.hideKeypad = true;
     this.hideVendorPicker = false;
-
   }
 
   hideVendors(ev:any){
+    this.hideKeypad = true;
     this.hideVendorPicker = true;
   }
 
   showDatePicker() {
+    this.hideKeypad = true;
     //@ts-ignore
     this.datePicker.open();
+  }
+
+  ____________________scroll(ev:any){
+
+    this.note += ' hey';
+    setTimeout(() => {
+      this.content.scrollToBottom();
+    });
+    
   }
 
 
@@ -153,8 +184,15 @@ export class UpsertExpensePage implements OnInit {
 
   chars = [];
   onKeyPress(ev:any){
+    // Set up cahr array for the key check if it does not exist
     if(this.chars.length === 0)
-      this.chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", this.wallet.currency.decimal];
+        this.chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", this.wallet.currency.decimal];
+    // If this.amt already contains the decimal symbol return false;
+    if( ev.key === this.wallet.currency.decimal && this.amt.toString().indexOf(this.wallet.currency.decimal) > 0 )  
+        return false;
+
+    console.log(ev.key, this.amt)
+    console.log(this.chars.includes(ev.key))
     return this.chars.includes(ev.key);
   }
 
@@ -185,7 +223,7 @@ export class UpsertExpensePage implements OnInit {
               }
               
               // AMT
-              console.log(this.amt)
+              
               if(!this.amt || this.amt == 0){
                 this.error = 'Invalid amount. Please enter a positive number.';
                 return;
@@ -206,6 +244,11 @@ export class UpsertExpensePage implements OnInit {
                     return;
                   }
               }
+
+              // If using a comma as the decimal then switch it to a period
+              // Use this WITH NON
+              let amount = this.amt.toString().replace(/,/g, '.');
+              console.log(this.amt, amount, parseFloat(this.amt.toString()))
               
 
               // DATE
