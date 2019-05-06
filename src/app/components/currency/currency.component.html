@@ -9,6 +9,7 @@
           </ion-item>
             <ion-radio-group mode="md" [(ngModel)]="curId" (ionChange)="selectedRadioBtn($event)">
           
+              <!-- SEP PERIOD -->
               <ion-item-divider>
                   <ion-label>
                     Separator (comma) - Decimal (period)
@@ -46,7 +47,7 @@
               </ion-item>
 
 
-
+              <!-- SEP COMMA -->
               <ion-item-divider>
                   <ion-label>
                     Separator (period) - Decimal (comma)
@@ -80,6 +81,44 @@
               <ion-item>
                 <ion-label>1.234,1234</ion-label>
                 <ion-radio slot="start" value="9"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+
+              <!-- SEP SPACE -->
+              <ion-item-divider>
+                  <ion-label>
+                    Separator (space) - Decimal (comma)
+                  </ion-label>
+              </ion-item-divider>
+
+              <ion-item>
+                  <ion-label>1 234</ion-label>
+                  <ion-radio slot="start" value="10"></ion-radio>
+                  <span slot="end"></span>
+                </ion-item>
+
+              <ion-item>
+                <ion-label>1 234,1</ion-label>
+                <ion-radio slot="start" value="11"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1 234,12</ion-label>
+                <ion-radio slot="start" value="12"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1 234,123</ion-label>
+                <ion-radio slot="start" value="13"></ion-radio>
+                <span slot="end"></span>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>1 234,1234</ion-label>
+                <ion-radio slot="start" value="14"></ion-radio>
                 <span slot="end"></span>
               </ion-item>
 

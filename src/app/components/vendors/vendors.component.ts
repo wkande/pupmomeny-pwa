@@ -57,7 +57,7 @@ export class VendorsComponent implements OnInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    //console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
+    console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
     if(changes.category.currentValue && changes.category.currentValue.id){
       //console.log('ngOnChanges', changes.category.currentValue);
       this.vendorsManage = changes.category['vendors'];
@@ -73,7 +73,7 @@ export class VendorsComponent implements OnInit {
 
   setManageVendors(ev:any){
     this.vendorsManage = JSON.parse(JSON.stringify(this.category.vendors))
-    this.manage = true; //this.manage != true;
+    this.manage = true; 
   }
 
 
@@ -140,19 +140,18 @@ export class VendorsComponent implements OnInit {
     finally{
       if(this.loading) this.loading.dismiss();
     }
-};
+  };
 
 
 
-async presentLoading() {
-  this.loading = await this.loadingController.create({
-    message: 'Submitting changes, please wait...',
-    keyboardClose:true,
-    showBackdrop:true
-  });
-  await this.loading.present();
-  //const { role, data } = await this.load.onDidDismiss();
-  //console.log('Loading dismissed!');
-}
+  async presentLoading() {
+    this.loading = await this.loadingController.create({
+      message: 'Submitting changes, please wait...',
+      keyboardClose:true,
+      showBackdrop:true
+    });
+    await this.loading.present();
+  }
+
 
 }

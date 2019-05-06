@@ -33,11 +33,18 @@ export class CurrencyComponent implements OnInit {
     {"curId":2, "symbol":"", "separator":",", "decimal":".", "precision": 2},
     {"curId":3, "symbol":"", "separator":",", "decimal":".", "precision": 3},
     {"curId":4, "symbol":"", "separator":",", "decimal":".", "precision": 4},
+
     {"curId":5, "symbol":"", "separator":".", "decimal":",", "precision": 0},
     {"curId":6, "symbol":"", "separator":".", "decimal":",", "precision": 1},
     {"curId":7, "symbol":"", "separator":".", "decimal":",", "precision": 2},
     {"curId":8, "symbol":"", "separator":".", "decimal":",", "precision": 3},
     {"curId":9, "symbol":"", "separator":".", "decimal":",", "precision": 4},
+
+    {"curId":10, "symbol":"", "separator":" ", "decimal":",", "precision": 0},
+    {"curId":11, "symbol":"", "separator":" ", "decimal":",", "precision": 1},
+    {"curId":12, "symbol":"", "separator":" ", "decimal":",", "precision": 2},
+    {"curId":13, "symbol":"", "separator":" ", "decimal":",", "precision": 3},
+    {"curId":14, "symbol":"", "separator":" ", "decimal":",", "precision": 4},
   ];
 
 

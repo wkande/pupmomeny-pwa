@@ -10,7 +10,7 @@ import { BACKEND } from '../../../environments/environment';
 export class UtilsService {
 
 
-  delayTimer:number = 500;
+  delayTimer:number = 0;
   currentView:string;
 
 

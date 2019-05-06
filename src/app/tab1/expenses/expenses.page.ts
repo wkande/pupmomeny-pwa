@@ -31,12 +31,13 @@ export class ExpensesPage implements OnInit {
   loading:boolean = false;
   dttmStart:string;
   dttmEnd:string;
-  total:any;
+  //total:any;
 
   num:string = "2";
   filter:any;
   skip:number = 0;
   totalCount:string;
+  totalAmt:any;
   error:any;
   ready:boolean = false;
   showButtons:boolean = false;
@@ -157,7 +158,8 @@ export class ExpensesPage implements OnInit {
       this.loading = true;
       this.ready = false;
       this.showButtons = false;
-      this.total = 0;
+      //this.total = 0;
+      this.totalAmt = 0;
 
       this.filter = this.filterService.getFilter();
 
@@ -170,14 +172,16 @@ export class ExpensesPage implements OnInit {
       var result = await this.http.get(BACKEND.url+'/categories/'+this.category.id+'/expenses?q='+q
         +'&dttmStart='+this.filter.range.start+'&dttmEnd='+this.filter.range.end+'&skip='+this.skip, {headers: headers})
         .pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
- 
+
       this.totalCount = result['totalCount'];
+      this.totalAmt = result['totalAmt'];
       this.expenses = result['expenses'];
+
 
       // Get total amt of all expenses and set the date divider
       for(var i=0; i<this.expenses.length; i++){
-        // Total
-        this.total = currency(this.total).add( (this.expenses[i].amt) );
+        // Total - NO LONGER USED
+        //this.total = currency(this.total).add( (this.expenses[i].amt) );
         this.expenses[i].amtDisplay = currency(this.expenses[i].amt, this.wallet['currency']).format(true);
 
         // Date divider
@@ -185,7 +189,8 @@ export class ExpensesPage implements OnInit {
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
         else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
-      this.total = currency(this.total, this.wallet['currency']).format(true);
+      //this.total = currency(this.total, this.wallet['currency']).format(true);
+      this.totalAmt = currency(this.totalAmt, this.wallet['currency']).format(true);
       this.ready = true;
       
       // Prevents buttons causing screen flicker
@@ -209,7 +214,7 @@ export class ExpensesPage implements OnInit {
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expenseParam: expense, categoryParam:category },
+          componentProps: { expenseParam: expense, categoryParam:category, mode:"edit" },
           showBackdrop:true,
           backdropDismiss:false
         });

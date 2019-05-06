@@ -31,7 +31,7 @@
 <!-- HEADER VENDOR PICKER -->
 <ion-header [hidden]="hideVendorPicker">
     <ion-toolbar>
-        <ion-title>Vendors List</ion-title>
+        <ion-title>Select a Vendor</ion-title>
       <ion-buttons slot="primary">
           <ion-icon name="close" (click)="hideVendors($event)"
           style="float:right;font-size:200%;margin-right:20px;margin-top:-7px;cursor:pointer;">
@@ -59,6 +59,7 @@
     </categories-component>
 
     <vendors-component [hidden]="hideVendorPicker"
+      [manage]="manageVendorFlag"
       [category]="category"
       (selected)="vendorSelected($event)">
     </vendors-component>
@@ -67,8 +68,8 @@
     <ion-list [hidden]="!hideCatPicker || !hideVendorPicker || !ready">
 
         <!-- CAT -->
-        <ion-item id='catPopoverBtn' slot="start" (click)="showCategories($event)">
-            <div type="cssDiv" >
+        <ion-item id='catPopoverBtn' (click)="showCategories($event)">
+            <div type="cssDiv" slot="start" >
                 <div>Category</div>
                 <ion-icon icon name="list-box" color="primary"></ion-icon>
             </div>
@@ -78,8 +79,8 @@
   
         
         <!-- AMT -->
-        <ion-item id='catAmt' slot="start" (click)="toggleKeypad($event)">
-          <div type="cssDiv">
+        <ion-item id='catAmt'>
+          <div type="cssDiv"  slot="start" (click)="toggleKeypad($event)">
               <div>Amount</div>
               <ion-icon icon name="cash" color="primary"></ion-icon>
               <!--ion-icon style="font-size:300%;" name="cash" color="medium"></ion-icon-->
@@ -87,7 +88,7 @@
 
           <!-- type="number"   inputmode="numeric"    pattern="\d*"  pattern="[\d\.]*"   pattern="[\d]*"   pattern="[0-9]*"   -->
           <!---input type="number" #inputAmt [(ngModel)]="amt" placeholder="Enter amount" (keypress)="onKeyPress($event)"-->
-          <div style="font-size:x-large;padding-left:30px;">{{amt}}</div>
+          <div style="font-size:x-large;padding-left:30px;width:100%;padding: 20px 0 20px 15px" (click)="toggleKeypad($event)">{{amt}}</div>
           <div slot="end" style="color:dimgray;font-weight:bold;">
             <span style="margin-left:15px;">Credit</span>
               <br>
@@ -97,24 +98,24 @@
 
         <div [hidden]="hideKeypad" style="text-align:center;">
             <div>
-              <ion-button keys size="large" (click)="keyPadPress(1)">1</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(2)">2</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(3)">3</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(1)">1</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(2)">2</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(3)">3</ion-button>
             </div>
             <div>
-              <ion-button keys size="large" (click)="keyPadPress(4)">4</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(5)">5</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(6)">6</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(4)">4</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(5)">5</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(6)">6</ion-button>
             </div>
             <div style="text-align:center;">
-              <ion-button keys size="large" (click)="keyPadPress(7)">7</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(8)">8</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(9)">9</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(7)">7</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(8)">8</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(9)">9</ion-button>
             </div>
             <div style="text-align:center;">
-              <ion-button keys size="large" (click)="keyPadPress('.')">.</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress(0)">0</ion-button>
-              <ion-button keys size="large" (click)="keyPadPress('b')"><ion-icon name="backspace"></ion-icon></ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(wallet.currency.decimal)" [hidden]="wallet.currency.precision == 0">{{wallet.currency.decimal}}</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress(0)">0</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('b')"><ion-icon name="backspace"></ion-icon></ion-button>
             </div>
         </div>
 
@@ -123,7 +124,7 @@
         <!-- Do not put the showDatePicker() click on hte ion-item or you get two clicks if the 
              user clicks on th ion-datetime -->
         <ion-item>
-          <div type="cssDiv" slot="start"  (click)="showDatePicker($event)">
+          <div type="cssDiv" slot="start" (click)="showDatePicker($event)">
                 <div>Date</div>
                 <ion-icon style="font-size:300%;" name="calendar" color="primary"></ion-icon>
           </div>

@@ -31,8 +31,9 @@ export class Tab1Page {
   error:any;
   dttmStart:string;
   dttmEnd:string;
-  total:any = 0;
+  //total:any = 0;
   cntTotal = 0; // Number of transactions
+  totalAmt:any;
   num:string = "2";
   filter:any;
   loading:boolean = true;
@@ -117,7 +118,7 @@ export class Tab1Page {
     try{
       this.error = null;
       this.loading = true;
-      this.total = 0;
+      this.totalAmt = 0;
       this.cntTotal = 0;
       this.categories = [];
       this.showButtons = false;
@@ -132,14 +133,14 @@ export class Tab1Page {
       .pipe(timeout(7000), delay(this.utils.delayTimer))
       .toPromise();
       this.categories = result['categories'];
-      
+ 
       for(var i=0; i<this.categories.length; i++){
         this.cntTotal += this.categories[i].sum.cnt;
-        this.total = currency(this.total).add( (this.categories[i].sum.amt) );
+        this.totalAmt = currency(this.totalAmt).add( (this.categories[i].sum.amt) );
         this.categories[i].amtDisplay = currency(this.categories[i].sum.amt, this.wallet['currency']).format(true);
       }
 
-      this.total = currency(this.total, this.wallet['currency']).format(true);
+      this.totalAmt = currency(this.totalAmt, this.wallet['currency']).format(true);
       this.cache.categories = this.categories;
       
       // Prevents buttons causing screen flicker
@@ -176,7 +177,7 @@ export class Tab1Page {
       this.error = null;
       this.loading = true;
       this.ready = false;
-      this.total = 0;
+      this.totalAmt = 0;
       this.showButtons = false;
 
       this.filter = this.filterService.getFilter();
@@ -193,12 +194,12 @@ export class Tab1Page {
  
       this.cntTotal = result['totalCount'];
       this.expenses = result['expenses'];
-      console.log(1, this.expenses);
+
       
       // Get total amt of all expenses and set the date divider
       for(var i=0; i<this.expenses.length; i++){
         // Total
-        this.total = currency(this.total).add( (this.expenses[i].amt) );
+        //this.total = currency(this.total).add( (this.expenses[i].amt) );
         this.expenses[i].amtDisplay = currency(this.expenses[i].amt, this.wallet['currency']).format(true);
         this.expenses[i].category = {id:this.expenses[i].c_id, name:this.expenses[i].c_name};
 
@@ -207,7 +208,8 @@ export class Tab1Page {
         else if (this.expenses[i].dttm == this.expenses[i-1].dttm) this.expenses[i].d = null;
         else this.expenses[i].d = moment(this.expenses[i].dttm).format("MMM DD, YYYY");
       }
-      this.total = currency(this.total, this.wallet['currency']).format(true);
+      //this.total = currency(this.total, this.wallet['currency']).format(true);
+      this.totalAmt = currency(result['totalAmt'], this.wallet['currency']).format(true);
       this.ready = true;
 
       console.log(2, this.expenses);
@@ -248,7 +250,7 @@ export class Tab1Page {
         let category = {id:expense.c_id, name:expense.c_name};
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
-          componentProps: { expenseParam: expense, categoryParam:category },
+          componentProps: { expenseParam: expense, categoryParam:category, mode:"edit" },
           showBackdrop:true,
           backdropDismiss:false
         });

@@ -10,6 +10,7 @@ import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
 import * as currency from 'currency.js';
 import { async } from 'q';
+import { sep } from 'path';
 
 @Component({
   selector: 'app-upsert-expense',
@@ -41,6 +42,7 @@ export class UpsertExpensePage implements OnInit {
   amt:string;
   credit:boolean = false;
   vendor:string;
+  manageVendorFlag:boolean = false;
   dateDefault:string;
   dateSelected:string;
 
@@ -68,9 +70,15 @@ export class UpsertExpensePage implements OnInit {
   ngOnInit() {
     try{
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
+        // Use by the keypad method
+        this.sep = this.wallet.currency.separator;
+        this.dec = this.wallet.currency.decimal;
+        this.pre = this.wallet.currency.precision;
+
         // Insert
         if(this.mode === 'insert'){
           this.title = 'New Expense';
+          this.amt = '';
           let element: HTMLElement = document.getElementById('catPopoverBtn') as HTMLElement;
           element.click(); // Open the category popover list
         }
@@ -125,13 +133,93 @@ export class UpsertExpensePage implements OnInit {
     this.hideKeypad = !this.hideKeypad;
   }
 
+  // Keypress variables, populate in onNgInit
+  sep:string;
+  dec:string;
+  pre:number;
+
   keyPadPress(key:string){
-    console.log(key)
-    if(key === 'b')
-        this.amt = this.amt.substring(0, this.amt.length-1);
-    else
+    // Remember if the amt has a decimal, will need at the end of this method
+    let hasDecimal:boolean = false;
+    if(this.amt.indexOf(this.dec) > -1)
+        hasDecimal = true;
+
+    console.log('-->', key, this.sep, this.dec, this.pre)
+    let pos = this.amt.indexOf(this.dec);
+    console.log('pos', pos)
+
+    // Backspace always go thru
+    if(key === 'b'){
+      this.amt = this.amt.substring(0, this.amt.length-1);
+    }
+        
+    // Check for decimal already present
+    else if(key === this.dec && pos > -1){
+       ; // Do nothing
+    }
+
+    // Check for the precision
+    else if(pos > -1){
+        let arr = this.amt.split(this.dec);
+        console.log('arr', arr[1])
+        // Limit the precision
+        if(arr[1].length === this.pre){
+          ; 
+        }
+        else this.amt += key;
+    }
+    else{
       this.amt += key;
-    this.beep();
+    }
+
+    if(hasDecimal) return;
+      
+
+    // Separators
+    console.log('---------------- 0 AMT', typeof this.amt, this.amt)
+
+    // Remove the separators
+      // Cannot use -> this.amt = this.amt.replace(/\'+this.sep+'/g  ,''); 
+      // As it only replaces on sep
+
+      if(this.sep === '.') this.amt = this.amt.replace(/\./g  ,''); 
+      else if(this.sep === ',') this.amt = this.amt.replace(/\,/g  ,'');
+      else if(this.sep === ' ') this.amt = this.amt.replace(/\s/g  ,''); // this.amt = this.amt.replace(/\s+/g  ,'');
+      //this.amt = this.amt.replace(/'\ '/g  ,'');
+
+    console.log('---------------- 1 AMT', this.amt)
+    let arr = this.amt.split(this.dec);
+    console.log('---------------- 2 ARR', arr)
+
+
+    let m:string;
+    let reverse = [];
+    if(arr[0].length > 3){
+
+        console.log('+++++++++++++++++ 3 SEP', arr[0].split(''), arr[0].length  )
+        reverse = arr[0].split('');
+        let p = 0;
+        let place = 4;
+        for (let j=reverse.length-1; j>=0; j--){
+            p++;
+            console.log('--> 4', j, reverse[j], p)
+            if(p === place){
+              reverse[j] += this.sep;
+              place = place+3;
+              //p = 0;
+            }
+        }
+        console.log(reverse)
+        console.log('hasDeciaml', hasDecimal)
+        m = reverse.join('');
+        console.log('--> 5', m, reverse, arr[1])
+        if(key != 'b' && (hasDecimal || key === this.dec))
+          this.amt = m+this.dec+(arr[1] || '');
+        else
+          this.amt = m+(arr[1] || '');
+    }
+    
+
   }
 
   // https://github.com/flukeout/simple-sounds
@@ -157,7 +245,9 @@ export class UpsertExpensePage implements OnInit {
   }
 
   hideVendors(ev:any){
+    console.log('hideVendors')
     this.hideKeypad = true;
+    this.manageVendorFlag = false;
     this.hideVendorPicker = true;
   }
 
@@ -182,7 +272,8 @@ export class UpsertExpensePage implements OnInit {
     this.dateSelected = ev.detail.value;
   }
 
-  chars = [];
+
+  /*chars = [];
   onKeyPress(ev:any){
     // Set up cahr array for the key check if it does not exist
     if(this.chars.length === 0)
@@ -194,7 +285,7 @@ export class UpsertExpensePage implements OnInit {
     console.log(ev.key, this.amt)
     console.log(this.chars.includes(ev.key))
     return this.chars.includes(ev.key);
-  }
+  }*/
 
 
   /**
@@ -215,47 +306,52 @@ export class UpsertExpensePage implements OnInit {
               if(this.vendor) this.vendor.trim(); 
               if(this.vendor && this.vendor.length === 0 )this.vendor = null;
               if(this.note && this.note.length === 0 )this.note = null;
-
-              // CATEGORY
+              
+            // CATEGORY
               if(!this.category.id){
                   this.error = 'Please select a category.';
                   return;
               }
               
               // AMT
-              
-              if(!this.amt || this.amt == 0){
-                this.error = 'Invalid amount. Please enter a positive number.';
-                return;
-              }
-              else if(isNaN( parseFloat(this.amt.toString())) ){
+              // Remove all separators from the amt
+              let amtConverted = this.amt;
+              if(this.sep === '.') amtConverted = amtConverted.replace(/\./g  ,''); 
+              else if(this.sep === ',') amtConverted = amtConverted.replace(/\,/g  ,'');
+              else if(this.sep === ' ') amtConverted = amtConverted.replace(/\s/g  ,'');
+
+              // Now convert the comma decimal (if used) to period
+              amtConverted = amtConverted.replace(/\,/g  ,'.');
+
+              // Some safety checks
+              if(isNaN( parseFloat(amtConverted)) ){ // This should never fire but ya never know
                 this.error = "Amount is not a valid number.";
                 return;
               }
-              
-              else if (this.amt < 0){ // This should never fire but ya never know
+              else if(parseFloat(amtConverted) === 0){
+                this.error = 'A zero amount is not allowed.';
+                return;
+              }
+              else if (parseFloat(amtConverted) < 0){ // This should never fire but ya never know
+                  console.log('2 amtConverted', amtConverted, parseFloat(amtConverted))
                   this.error = 'Negative numbers are not allowed. If this is a credit please use the credit toggle and a positive number.';
                   return;
               }
-              
-              else if(this.amt.toString().indexOf('.') > -1){
-                  if(this.amt.toString().split('.')[1].length > this.wallet.currency.precision){
+              else if(amtConverted.indexOf('.') > -1){ // This should never fire but ya never know
+                  if(amtConverted.split('.')[1].length > this.wallet.currency.precision){
                     this.error = "Your preferences only allow "+this.wallet.currency.precision+" decimals points.";
                     return;
                   }
               }
-
-              // If using a comma as the decimal then switch it to a period
-              // Use this WITH NON
-              let amount = this.amt.toString().replace(/,/g, '.');
-              console.log(this.amt, amount, parseFloat(this.amt.toString()))
+              // Convert amt for credit
+              if(this.credit ) amtConverted = (parseFloat(amtConverted) * -1).toString();
               
-
-              // DATE
+            // DATE
               if(!this.dateSelected){
                 this.error = 'Please select a date.';
                 return;
               }
+
 
           /********** DML **************/
           await this.presentLoading(); // wait for it so it exists, otherwise it may still be null when finally runs
@@ -264,16 +360,14 @@ export class UpsertExpensePage implements OnInit {
           headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
           headers = headers.set('wallet',  JSON.stringify(this.wallet));
 
-          // Convert amt for credit
-          let amt = ((this.credit) ? -Math.abs(this.amt) : this.amt);
 
           if(this.mode == 'insert'){
-            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt}
+            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amtConverted}
             var result = await this.http.post(BACKEND.url+'/categories/'+this.category.id+'/expenses', 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           else{
-            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amt, cat_id:this.category.id};
+            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amtConverted, cat_id:this.category.id};
             var result = await this.http.put(BACKEND.url+'/categories/'+this.categoryOrg.id+'/expenses/'+this.expenseParam.id, 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
@@ -282,8 +376,6 @@ export class UpsertExpensePage implements OnInit {
           // Trim the date
           expense.dttm = expense.dttm.split('T')[0];
           
-          console.log('UPSERT >>>', expense);
-
           this.events.publish('redraw', {expense:expense, mode:this.mode});
           this.modalController.dismiss({status:"OK"});
       }

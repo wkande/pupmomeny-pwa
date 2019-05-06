@@ -1,9 +1,9 @@
 <error-component [error]="error" [showButton]="true" (tryAgainSelected)="manageVendorsSave($event)"></error-component>
 
 <!-- List of Vendors (PICK)-->
-<div style="text-align:center;">
+<!---div style="text-align:center;">
         <ion-label [hidden]="manage" style="color:dimgray">Select a Vendor</ion-label>
-    </div>
+    </div-->
 <ion-list [hidden]="manage" style="cursor:pointer;">
     <ion-item detail *ngFor="let item of category.vendors;" (click)="vendorSelected($event, item)">
         <ion-label>{{item}}</ion-label>
