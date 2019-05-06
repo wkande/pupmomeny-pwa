@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, HostListener} from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { ModalController, LoadingController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9,8 +9,8 @@ import { delay } from 'rxjs/internal/operators'; // Testing only
 import { UtilsService } from '../../../services/utils/utils.service';
 import { CacheService } from '../../../services/cache/cache.service';
 import * as currency from 'currency.js';
-import { async } from 'q';
-import { sep } from 'path';
+//import { async } from 'q';
+//import { sep } from 'path';
 
 @Component({
   selector: 'app-upsert-expense',
@@ -42,7 +42,6 @@ export class UpsertExpensePage implements OnInit {
   amt:string;
   credit:boolean = false;
   vendor:string;
-  manageVendorFlag:boolean = false;
   dateDefault:string;
   dateSelected:string;
 
@@ -133,11 +132,33 @@ export class UpsertExpensePage implements OnInit {
     this.hideKeypad = !this.hideKeypad;
   }
 
+
+  chars = [];
+  @HostListener('window:keyup', ['$event'])
+  /**
+   * Fires the KeyPadPress method from the desktop keybaord
+   * @TODO :ool into international keyboard characters
+   */
+  keyEvent(event: KeyboardEvent) {
+    if(this.chars.length === 0)
+        this.chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", this.wallet.currency.decimal];
+    if(!this.hideKeypad){
+      if(event.key === 'Backspace'){
+          this.keyPadPress('b')
+      }
+      else if (this.chars.includes(event.key))
+          this.keyPadPress(event.key)
+      console.log(event.key, this.chars.includes(event.key));
+
+    }
+  }
+
+
+
   // Keypress variables, populate in onNgInit
   sep:string;
   dec:string;
   pre:number;
-
   keyPadPress(key:string){
     // Remember if the amt has a decimal, will need at the end of this method
     let hasDecimal:boolean = false;
@@ -247,8 +268,8 @@ export class UpsertExpensePage implements OnInit {
   hideVendors(ev:any){
     console.log('hideVendors')
     this.hideKeypad = true;
-    this.manageVendorFlag = false;
     this.hideVendorPicker = true;
+    this.events.publish("vendors-picker-closed", {});
   }
 
   showDatePicker() {

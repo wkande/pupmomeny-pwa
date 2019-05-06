@@ -1,5 +1,3 @@
-
-
 <ion-header [hidden]="!hideCatPicker || !hideVendorPicker">
   <ion-toolbar>
       <ion-buttons slot="secondary">
@@ -30,26 +28,18 @@
 
 <!-- HEADER VENDOR PICKER -->
 <ion-header [hidden]="hideVendorPicker">
-    <ion-toolbar>
-        <ion-title>Select a Vendor</ion-title>
-      <ion-buttons slot="primary">
-          <ion-icon name="close" (click)="hideVendors($event)"
-          style="float:right;font-size:200%;margin-right:20px;margin-top:-7px;cursor:pointer;">
-        </ion-icon>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-
-
-
+  <ion-toolbar>
+      <ion-title>Select a Vendor</ion-title>
+    <ion-buttons slot="primary">
+        <ion-icon name="close" (click)="hideVendors($event)"
+        style="float:right;font-size:200%;margin-right:20px;margin-top:-7px;cursor:pointer;">
+      </ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
     
-<ion-content padding
-    [scrollEvents]="true"
-    (ionScrollStart)="logScrollStart()"
-    (ionScroll)="logScrolling($event)"
-    (ionScrollEnd)="logScrollEnd()">
-
+<ion-content padding>
 
     <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="submit($event)"></error-component>
     

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { LoadingController} from '@ionic/angular';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { LoadingController, Events} from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthGuard } from '../../services/auth.guard';
 import { timeout } from 'rxjs/operators';
@@ -21,20 +21,20 @@ import { CacheService } from '../../services/cache/cache.service';
   *
   * Usage:
     <vendors-component
-      [manage]=flag
       [category]="category"
       (selected)="vendorSelected($event)">
     </vendors-component>
   */
 
 
-export class VendorsComponent implements OnInit {
+export class VendorsComponent implements OnInit, OnChanges {
 
 
   //@ViewChild('manageList') manageList:any; 
+  @Input() manage:boolean;
   @Input() category:any; // The category object with a vendors array
   vendorsManage:any; // deep copy
-  @Input() manage:boolean = false;
+  
   @Output() selected: EventEmitter<any> = new EventEmitter<any>();
 
   wallet:any;
@@ -42,9 +42,11 @@ export class VendorsComponent implements OnInit {
   showTryAgainBtn:boolean = false;
   loading:any;
 
+  eventHandler_mange_close:any; 
+
 
   constructor(private http:HttpClient, private authGuard:AuthGuard, private loadingController:LoadingController,
-    private utils:UtilsService, private cache:CacheService) { 
+    private utils:UtilsService, private cache:CacheService, private events:Events) { 
     //console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
@@ -53,15 +55,33 @@ export class VendorsComponent implements OnInit {
     //console.log('>>>>>>>>>>>>>>>> VendorsComponent.ngOnInit <<<<<<<<<<<<<<<<<')
     //console.log('VendorsComponent > ngOnInt > this.category > ', this.category);
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
+
+    // Using an event rather than SimpleChanges. SimpleChanges doe not seem to fire
+    // reliably for this.manage, works just fine for category. The parent page will fire 
+    // an event to hide the management of the list.
+    this.eventHandler_mange_close = this.manageCloseEventHandler.bind( this );
+    this.events.subscribe('vendors-picker-closed', this.eventHandler_mange_close);
+  }
+
+
+  ngOnDestroy(){
+    //console.log('>>>>>>>>>>>>>>>> VendorsComponent.ngOnDestroy <<<<<<<<<<<<<<<<<')
+    this.events.unsubscribe('vendors-picker-closed', this.eventHandler_mange_close);
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
     console.log('>>>>>>>>>>>>>> VendorsComponent ngOnChange fired.', changes);
-    if(changes.category.currentValue && changes.category.currentValue.id){
-      //console.log('ngOnChanges', changes.category.currentValue);
+    if(changes.category && changes.category.currentValue && changes.category.currentValue.id){
       this.vendorsManage = changes.category['vendors'];
+      this.manage = false; // In case the list manage mode is on
     }
+  }
+
+
+  manageCloseEventHandler(){
+    this.manage = false;
+    console.log('clode vendor pick list')
   }
 
 
@@ -88,6 +108,7 @@ export class VendorsComponent implements OnInit {
 
 
   manageVendorsCancel(ev:any){
+    console.log('VendorsComponent.manageVendorsCancel')
     this.manage = false;
   }
 
