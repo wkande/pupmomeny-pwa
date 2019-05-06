@@ -272,7 +272,7 @@ export class UpsertExpensePage implements OnInit {
     this.events.publish("vendors-picker-closed", {});
   }
 
-  showDatePicker() {
+  showDatePicker(ev:any) {
     this.hideKeypad = true;
     //@ts-ignore
     this.datePicker.open();

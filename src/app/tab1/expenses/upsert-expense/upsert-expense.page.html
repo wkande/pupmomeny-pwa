@@ -49,7 +49,6 @@
     </categories-component>
 
     <vendors-component [hidden]="hideVendorPicker"
-      [manage]="manageVendorFlag"
       [category]="category"
       (selected)="vendorSelected($event)">
     </vendors-component>
@@ -88,23 +87,23 @@
 
         <div [hidden]="hideKeypad" style="text-align:center;">
             <div>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(1)">1</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(2)">2</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(3)">3</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('1')">1</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('2')">2</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('3')">3</ion-button>
             </div>
             <div>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(4)">4</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(5)">5</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(6)">6</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('4')">4</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('5')">5</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('6')">6</ion-button>
             </div>
             <div style="text-align:center;">
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(7)">7</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(8)">8</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(9)">9</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('7')">7</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('8')">8</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('9')">9</ion-button>
             </div>
             <div style="text-align:center;">
               <ion-button keys size="large" fill="outline" (click)="keyPadPress(wallet.currency.decimal)" [hidden]="wallet.currency.precision == 0">{{wallet.currency.decimal}}</ion-button>
-              <ion-button keys size="large" fill="outline" (click)="keyPadPress(0)">0</ion-button>
+              <ion-button keys size="large" fill="outline" (click)="keyPadPress('0')">0</ion-button>
               <ion-button keys size="large" fill="outline" (click)="keyPadPress('b')"><ion-icon name="backspace"></ion-icon></ion-button>
             </div>
         </div>

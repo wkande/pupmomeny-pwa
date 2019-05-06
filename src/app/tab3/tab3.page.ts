@@ -177,9 +177,9 @@ export class Tab3Page {
    * @param wallet 
    * @param mode 
    */
-  async presentWalletSwitchModal(ev:any, wallet:any, mode:string) {
+  async presentWalletSwitchModal(ev:any) {
     try{
-        console.log('Tab3Page:presentWalletSwitchModal()', wallet)
+        console.log('Tab3Page:presentWalletSwitchModal()')
         const modal = await this.modalController.create({
           component: SwitchWalletPage,
           showBackdrop:true,
@@ -203,7 +203,6 @@ export class Tab3Page {
    * @param wallet 
    */
   async presentWalletDeleteModal(ev:any, wallet:any) {
-  console.log(wallet)
     try{
         console.log('Tab3Page:presentWalletDeleteModal()', wallet)
         const modal = await this.modalController.create({
@@ -213,9 +212,7 @@ export class Tab3Page {
           backdropDismiss:false
         });
         await modal.present();
-        
         const { data } = await modal.onDidDismiss();
-        console.log('Tab3Page:presentWalletDeleteModal():dismissed: data',data);
     }
     catch(err){
       this.error = this.utils.getErrorMessage(err);

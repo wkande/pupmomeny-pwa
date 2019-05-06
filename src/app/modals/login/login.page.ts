@@ -56,10 +56,7 @@ export class LoginPage implements OnInit {
       /*
         Input will contain the path to use upon success
       */
-    console.log('@Input.path', this.path);
     this.getTerms();
-
-    
   }
 
   async getTerms(){
@@ -101,7 +98,6 @@ export class LoginPage implements OnInit {
 
 
   async login() {
-    console.log('next', this.email, this.code, BACKEND);
     this.error = null;
     let user:any;
         try{
@@ -146,7 +142,6 @@ export class LoginPage implements OnInit {
     try{
       // Only need to send if the percision has changed
       let currencyBody = this.currencies[this.curId]
-      //console.log(44, currencyBody, this.defaultWallet.currency)
       if(this.defaultWallet.currency.curId != this.curId){
         let headers = new HttpHeaders();
         headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
@@ -158,7 +153,6 @@ export class LoginPage implements OnInit {
       }
           
       this.defaultWallet.currency = currencyBody;
-      console.log(45, currencyBody, this.defaultWallet.currency)
       localStorage.setItem('wallet', JSON.stringify(this.defaultWallet));
       this.modalController.dismiss({path:this.path});
     }
@@ -169,10 +163,18 @@ export class LoginPage implements OnInit {
     finally{
       this.loadController.dismiss();
     }
-
   }
 
 
+  /**
+   * @TODO get this to do its thing
+   * @param ev 
+   */
+  selectedCurrency(ev:any){
+      throw "OUCH we are here and doing nothing"
+  }
+
+  
   async presentLoading(msg:string) {
     this.loadController = await this.loadingController.create({
       message: msg,
@@ -180,8 +182,6 @@ export class LoginPage implements OnInit {
       showBackdrop:true
     });
     await this.loadController.present();
-    //const { role, data } = await this.load.onDidDismiss();
-    //console.log('Loading dismissed!');
   }
 
 

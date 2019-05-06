@@ -42,11 +42,11 @@ export class UpdateNamePage implements OnInit {
 
 
   tryAgain(ev:any){
-    this.apply();
+    this.apply(null);
   }
 
 
-  async apply() {
+  async apply(ev:any) {
       try{
           if(this.user.name.length == 0) throw 'Please enter a name.';
           this.error = null;

@@ -36,7 +36,7 @@ export class ExpensesPage implements OnInit {
   num:string = "2";
   filter:any;
   skip:number = 0;
-  totalCount:string;
+  totalCount:number;
   totalAmt:any;
   error:any;
   ready:boolean = false;

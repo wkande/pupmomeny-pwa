@@ -77,12 +77,12 @@ export class UpsertWalletPage implements OnInit {
         this.error = 'Please enter a wallet name.';
       }
       else{
-        this.apply();
+        this.apply(null);
       }
   }
 
 
-  async apply() {
+  async apply(ev:any) {
       try{
           await this.presentLoading(); // wait for it so it exists, otherwise it may still be null when finally runs
 
