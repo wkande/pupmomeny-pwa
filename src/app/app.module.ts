@@ -19,6 +19,8 @@ import { FilterPage } from './modals/filter/filter.page';
 
 // CurrencyComponentModule is needed here because it is part of login which loads of this module
 import { CurrencyComponentModule } from './components/currency/currency.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 // Imported at the tab level
 //import { CategoriesPopoverComponent } from './components/categories/categories-popover/categories.popover.component';
@@ -38,7 +40,7 @@ import { CurrencyComponentModule } from './components/currency/currency.module';
   declarations: [AppComponent, FilterPage, LoginPage],
     
   entryComponents: [FilterPage, LoginPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule, CurrencyComponentModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule, CurrencyComponentModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
   providers: [
     HttpClientModule,
     StatusBar,

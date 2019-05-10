@@ -1,1 +1,15 @@
+.customToastClass{
+   >  div{
+      background-color:#32db64!important;
+      font-weight: bold;
+      position: absolute;
+      top: 446px !important;
+      text-align: center !important;
+      border-radius: 30px !important;
+      width: 50% !important;
+    }
+}
 
+.toast-button{
+    color: red;
+    }

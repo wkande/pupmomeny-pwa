@@ -15,6 +15,7 @@ const routes: Routes = [
 
   
   { path: 'term', loadChildren: './tab3/term/term.module#TermPageModule' },
+  { path: 'tips', loadChildren: './tab3/tips/tips.module#TipsPageModule' },
   
   // MODAL{ path: 'upsert-expense', loadChildren: './tab1/expenses/upsert-expense/upsert-expense.module#UpsertExpensePageModule' },
   // MODAL { path: 'update-name', loadChildren: './tab3/update-name/update-name.module#UpdateNamePageModule' },

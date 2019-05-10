@@ -25,6 +25,7 @@ export class Tab3Page {
   error:any;
   ready:boolean = false;
 
+
   /**
    * 
    * @param authGuard 
@@ -195,6 +196,13 @@ export class Tab3Page {
       this.error = this.utils.getErrorMessage(err);
     } 
   }
+
+
+
+  
+
+  
+
 
 
   /**

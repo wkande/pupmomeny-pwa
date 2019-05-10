@@ -7,7 +7,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FilterPage } from '../../modals/filter/filter.page';
 import { FilterService } from '../../services/filter.service';
 import { UtilsService } from '../../services/utils/utils.service';
-//import { Decimal } from 'decimal.js';
 import { UpsertExpensePage } from './upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from './delete-expense/delete-expense.page';
 import { BACKEND } from '../../../environments/environment';

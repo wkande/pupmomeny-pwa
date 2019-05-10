@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Events } from '@ionic/angular';
+import { Events, ToastController, NavController } from '@ionic/angular';
 import { BACKEND } from '../../environments/environment';
 
 
@@ -17,7 +17,7 @@ export class TabsPage {
   wallet:any;
 
 
-  constructor(private events:Events){
+  constructor(private events:Events, private toast:ToastController, private navCtrl:NavController){
     this.wallet = JSON.parse(localStorage.getItem('wallet'));
 
     this.events.subscribe('wallet_reload', (data) => {
@@ -25,5 +25,36 @@ export class TabsPage {
         this.wallet = JSON.parse(localStorage.getItem('wallet'));
     });
 
+    // Show slides toast message on new installs
+    if(!localStorage.getItem('tips')){
+        this.presentToast();
+    }
+  }
+
+
+  async presentToast() {
+    const toast = await this.toast.create({
+      header: 'Quick Tips',
+      message: 'Available anytime in the "Settings" tab.',
+      position: 'middle',
+      color:'dark',
+      buttons: [
+        {
+          text: 'View',
+          icon: 'cog',
+          handler: () => {
+            this.navCtrl.navigateForward('tips');
+            console.log("View It")
+          }
+        }, {
+          text: 'Later',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    toast.present();
   }
 }

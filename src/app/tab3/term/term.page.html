@@ -1,8 +1,6 @@
 <ion-header>
-  <ion-toolbar color="dummy-to-envoke-style" style="color:white;background-color:#9370DB;">
-      
+  <ion-toolbar style="color:white;">
       <ion-buttons slot="start">
-
           <!-- https://github.com/ionic-team/ionic/issues/17421 -->
           <!-- POST ID: 442623641 commented -->
           <!-- Works with or without routerDirection="back" not sure why or if it is needed -->
@@ -12,13 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-
-
-
 <ion-content padding style="color:gray;font-family:arial;">
-
-<!-- TERMS -->
-<div style="color:dimgray;" [innerHTML]="termsHTML" padding></div>
-
-
+  <!-- TERMS -->
+  <div style="color:dimgray;" [innerHTML]="termsHTML" padding></div>
 </ion-content>

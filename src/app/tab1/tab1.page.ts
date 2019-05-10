@@ -7,8 +7,8 @@ import { FilterPage } from '../modals/filter/filter.page';
 import { FilterService } from '../services/filter.service';
 import { UtilsService } from '../services/utils/utils.service';
 import { CacheService } from '../services/cache/cache.service';
-import { Decimal } from 'decimal.js';
 import { UpsertExpensePage } from './expenses/upsert-expense/upsert-expense.page';
+import { DeleteExpensePage } from './expenses/delete-expense/delete-expense.page';
 import { UpsertCategoryPage } from './categories/upsert-category/upsert-category.page';
 import { DeleteCategoryPage } from './categories/delete-category/delete-category.page';
 import { BACKEND } from '../../environments/environment';
@@ -305,6 +305,24 @@ export class Tab1Page {
         if(data != null){
           this.getCategories();
         }
+    }
+    catch(err){
+      this.error = err;
+    } 
+  }
+
+  async presentDeleteModal(expense:any) {
+    try{
+      console.log('E', expense)
+      let category = {id:expense.c_id, name:expense.c_name};
+        const modal = await this.modalController.create({
+          component: DeleteExpensePage,
+          componentProps: { expense: expense, category:category },
+          showBackdrop:true,
+          backdropDismiss:false
+        });
+        await modal.present();
+        const { data } = await modal.onDidDismiss();
     }
     catch(err){
       this.error = err;

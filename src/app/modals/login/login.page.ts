@@ -1,5 +1,5 @@
 import { Component, OnInit, Input  } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController, NavController } from '@ionic/angular';
 import { AuthGuard } from '../../services/auth.guard';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class LoginPage implements OnInit {
   defaultWallet:any = {currency:{"curId":2, "symbol":"", "separator":",", "decimal":".", "precision": 2}};
 
 
-  constructor(private modalController: ModalController, private authGuard:AuthGuard,
+  constructor(private modalController: ModalController, private authGuard:AuthGuard, private navCtrl:NavController,
     private http: HttpClient, private utils:UtilsService, private loadingController:LoadingController) {
   }
 
@@ -105,17 +105,16 @@ export class LoginPage implements OnInit {
           var result = await this.http.post(BACKEND.url+'/me', {email:this.email, code:this.code}).pipe(timeout(5000)).toPromise();
           user = result['user'];
           this.authGuard.activate(true, user);
-          //console.log('LOGIN >', user)
 
           // New Account, give the user a chance to change the percision for the default wallet
           if(user.newAccount){
             this.defaultWallet = JSON.parse(localStorage.getItem('wallet'));
             this.curId = this.defaultWallet.currency.curId.toString();
-            //console.log(42, localStorage.getItem('wallet'))
-            //console.log(43, typeof this.curId, this.curId, this.defaultWallet.currency)
             this.segment = "percision";
           }
-          else this.modalController.dismiss({path:this.path});
+          else {
+            this.modalController.dismiss({path:this.path});
+          }
 
         }
         catch(err){
@@ -174,7 +173,7 @@ export class LoginPage implements OnInit {
       throw "OUCH we are here and doing nothing"
   }
 
-  
+
   async presentLoading(msg:string) {
     this.loadController = await this.loadingController.create({
       message: msg,
@@ -201,7 +200,7 @@ export class LoginPage implements OnInit {
   componentError(ev:any){
     this.error = ev.toString();
   }
-  
+
   
 }
 

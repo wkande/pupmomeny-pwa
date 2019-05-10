@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
 
 
   constructor(private modalController: ModalController, private navController:NavController, private events:Events){
-    //console.log('------------> AuthGuard.constructor');
     this.user = JSON.parse(localStorage.getItem( "user"));
     if(this.user){
       this.activated = true;
@@ -25,7 +24,6 @@ export class AuthGuard implements CanActivate {
 
 
   async presentLoginModal() {
-    console.log('AuthGuard:presentLoginModal()')
     const modal = await this.modalController.create({
       component: LoginPage,
       componentProps: { path: '/tab1' },
@@ -35,7 +33,6 @@ export class AuthGuard implements CanActivate {
     await modal.present();
     
     const { data } = await modal.onDidDismiss();
-    //console.log('AuthGuard:presentLoginModal():dismissed: data',data);
     this.navController.navigateRoot('');
     return;
   }
@@ -93,8 +90,6 @@ export class AuthGuard implements CanActivate {
    */
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean 
   {
-    //console.log('AuthGuard.canActivate.next()', next)
-    //console.log('AuthGuard.canActivate.state()', state);
     if(!this.activated){
       this.presentLoginModal();
     }

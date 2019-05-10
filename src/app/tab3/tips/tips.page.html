@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar style="color:white;">
+
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref=""></ion-back-button>
+      </ion-buttons>
+
+      <ion-title>
+          Quick Tips
+      </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+  
+
+
+
+  <ion-content>
+
+
+    <ion-toolbar color="light" style="width:100%;">
+
+        <div slot="start" style="color:dimgray;font-size:x-large;margin-left:12px;">{{slide}} of 3</div>
+          
+        <div slot="end">
+            <ion-button color="primary" (click)="previous($event)" [disabled]="slide === 1">
+              Previous
+            </ion-button>
+      
+            <ion-button color="primary" (click)="next($event)" [disabled]="slide === 3">
+                Next
+            </ion-button>
+        </div>
+    </ion-toolbar>
+
+            <!-- WALLETS -->
+            <div class="slide" padding [hidden]="slide != 1">
+                <h3>Wallets</h3>
+                <p>We create a new wallet for your account when you first use the app called <b>Default Wallet</b>. Your Default Wallet 
+                  can be renamed but not deleted. You can create as many wallets as you link. Most users only have one but sometimes 
+                  you might want to track expenses separately for other reasons. 
+                </p>
+                <p>The blue bar accross the bottom shows which is the current wallet, or the wallet you are working with.</p>
+
+
+                <div style="width:100%;border-top: 1px solid #ccc; background: transparent;"></div>
+                <h3>Add-Edit-Delete Wallet</h3>
+                <p>Add a new wallet by selecting the <b>Add</b> button. 
+                </p>
+                <p>Update a wallet by clicking on it or swiping it to the right. Swipe to the right to delete the wallet.
+                </p>
+
+                <p>Switching between wallets is easy, just click on the <b>Switch</b> button and pick the desired wallet.
+                  </p>
+                <div><ion-img src="/assets/screens/category_add.jpg"></ion-img></div>
+          </div>
+
+          <!-- CATEGORIES -->
+          <div class="slide" padding [hidden]="slide != 2">
+                <h3>Categories</h3>
+                <p>All wallets start out with a set of catgeories that we have added. Your expenses are grouped into catgories. 
+                  You can use these catories as is or change the list however you like.
+                </p>
+
+
+                <div style="width:100%;border-top: 1px solid #ccc; background: transparent;"></div>
+                <h3>Add-Edit-Delete Category</h3>
+                <p>Add a new category by selecting the <b>Add Category</b> button at the bottom of the <b>Expenses</b> tab. 
+                </p>
+                <p>Change the name of a category or delete it by swiping it to the right.
+                </p>
+                <div><ion-img src="/assets/screens/category_add.jpg"></ion-img></div>
+          </div>
+
+          <!-- VENDORS -->
+          <div class="slide" padding [hidden]="slide != 3">
+                <h3>Vendors</h3>
+                <p>Every time you enter an expense you will pick a category for it. You then have the option of entering or picking a vendor name 
+                  for the expense. Each category has its own list of vendors. This keeps the vendors list short and only relavent to the 
+                  catgegory.
+                </p>
+
+
+                <div style="width:100%;border-top: 1px solid #ccc; background: transparent;"></div>
+                <h3>Add-Edit-Delete Vendor</h3>
+                <p>When entering a new expense click on the vendors button to open the vendor pick list. 
+                  Then click on hte <b>Manage List</b> button at the bottom.
+                </p>
+                <p>Add a new vendor by selecting the <b>Add Line</b> button, then enter a new vendor name. 
+                </p>
+                <p>Change the name of a vendor simply by editing a line.
+                </p>
+                <p>Use the X button next to a vendor name to remove it..
+                </p>
+                <p>Don't forget to click the <b>Save</b> button to save everything.
+                </p>
+                <div><ion-img src="/assets/screens/category_add.jpg"></ion-img></div>
+          </div>
+
+
+
+
+
+        
+            
+</ion-content>
