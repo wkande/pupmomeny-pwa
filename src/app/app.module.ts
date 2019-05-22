@@ -35,12 +35,12 @@ import { environment } from '../environments/environment';
 
 
 
-
 @NgModule({
   declarations: [AppComponent, FilterPage, LoginPage],
     
   entryComponents: [FilterPage, LoginPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule, CurrencyComponentModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule, 
+    CurrencyComponentModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
   providers: [
     HttpClientModule,
     StatusBar,
@@ -49,4 +49,5 @@ import { environment } from '../environments/environment';
   ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule {}

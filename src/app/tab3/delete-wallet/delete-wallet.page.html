@@ -22,14 +22,14 @@
 
       <ion-list [hidden]="!ready">
 
-          <p padding style="font-size:large;color:#3880ff">
+          <ion-item>
+              <div style="width:100%;font-size:x-large;font-weight:bold;text-align:center;">{{wallet.name}}</div>
+          </ion-item>
+
+          <p padding style="font-size:large;color:gray">
             Deleting a wallet will delete all the expense records associated with it. This action cannot be reversed.
           </p>
-          
-          <ion-item>
-            <div slot="start" style="width:100px;">Wallet:</div>
-            <ion-label style="font-size:large;color:dimgray;">{{wallet.name}}</ion-label>
-          </ion-item>
+
 
       </ion-list>
 

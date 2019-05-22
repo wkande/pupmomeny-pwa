@@ -80,3 +80,6 @@ https://app-manifest.firebaseapp.com/
 
 Generate PWA Splashscreens
 https://appsco.pe/developer/splash-screens
+
+PWA updates
+https://medium.com/progressive-web-apps/pwa-create-a-new-update-available-notification-using-service-workers-18be9168d717

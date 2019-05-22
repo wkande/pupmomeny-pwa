@@ -28,6 +28,7 @@ export class ErrorComponent implements OnInit {
   @Input() showButton:boolean = false;
   @Output() tryAgainSelected: EventEmitter<any> = new EventEmitter<any>();
   message:any;
+  offline:boolean = false;
 
   showLoginBtn:boolean = false;
 
@@ -40,7 +41,8 @@ export class ErrorComponent implements OnInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    //console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
+    console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
+    this.offline = false;
     if(this.error){
       //console.log('ngOnChanges', changes.errorMsg.currentValue);
       //console.log('this.error', this.error)
@@ -48,6 +50,10 @@ export class ErrorComponent implements OnInit {
    
       if(this.error.status === 403){
           this.showLoginBtn = true;
+      }
+      else if(this.error.status === 504){
+          this.offline = true;
+          this.message = null; //"We are offline making things better."
       }
     }
     else{

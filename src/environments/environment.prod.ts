@@ -26,8 +26,8 @@ const stage = {
 
 const prod = {
   name:"Prod",
-  url:"https://pupmoney-backend-.herokuapp.com"
+  url:"https://pupmoney-backend-prod.herokuapp.com"
 }
 
 
-export const BACKEND = stage;
+export const BACKEND = prod;

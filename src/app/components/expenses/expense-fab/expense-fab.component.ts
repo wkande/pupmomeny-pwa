@@ -27,19 +27,24 @@ export class ExpenseFabComponent implements OnInit {
 
   @Output() errored: EventEmitter<any> = new EventEmitter<any>();
 
+  isOpen:boolean = false;
 
   ngOnInit() {};
 
 
   async presentExpenseUpsertModal(ev:any) {
     try{
+      if(this.isOpen) return;
         const modal = await this.modalController.create({
           component: UpsertExpensePage,
           componentProps: { expense: null, mode:"insert" },
           backdropDismiss:false
         });
+        this.isOpen = true;
         await modal.present();
+      
         const { data } = await modal.onDidDismiss();
+        this.isOpen = false;
     }
     catch(err){
         this.errored.emit( err.toString() );

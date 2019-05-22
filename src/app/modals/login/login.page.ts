@@ -5,7 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
 import { BACKEND } from '../../../environments/environment';
 import { UtilsService } from '../../services/utils/utils.service';
-
+//@ts-ignore
+const p = require('../../../../package.json');
 
 @Component({
   selector: 'app-login',
@@ -34,6 +35,8 @@ export class LoginPage implements OnInit {
     {"curId":9, "symbol":"", "separator":".", "decimal":",", "precision": 4},
   ];
 
+  public json = {version:null};
+
   error:any = null;
   errorSupport:boolean = false;
   connectionTimeoutMsg:string = `There seems to be a connection issue, please try again.`;
@@ -57,11 +60,11 @@ export class LoginPage implements OnInit {
         Input will contain the path to use upon success
       */
     this.getTerms();
+    this.json = p;
   }
 
   async getTerms(){
     this.http.get('assets/terms.html', { responseType: 'text' as 'json'}).subscribe((data:string) => {
-      console.log(data.length);
       this.termsHTML = data;
     });
   }

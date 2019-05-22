@@ -23,8 +23,15 @@
       <ion-item style="margin:0 auto;">
           <img style="margin:0 auto;width:50%;" src="/assets/puppy-512.png">
       </ion-item>
+        
+
       <ion-item>
-          <h1 style="margin:0 auto;color:darkslateblue;">PupMoney Login</h1>
+          <div style="width:100%;text-align:center;">
+            <h1 style="margin:0 auto;color:darkslateblue;">PupMoney Login</h1>
+            <div style="font-size:small;color:dimgray;margin-top:4px;">
+                v{{json.version}}
+            </div>
+        </div>
       </ion-item>
 
       
@@ -36,7 +43,7 @@
         </ion-item>
         <ion-item [hidden]="!codeReady">
             <ion-input [(ngModel)]="code" style="margin-top:20px;border-bottom:1px solid gray;font-size:120%;" 
-              required type="number" inputmode="numeric" placeholder="Enter code here"></ion-input>
+              required type="tel" inputmode="number" placeholder="Enter code here"></ion-input>
         </ion-item>
         <ion-item [hidden]="!codeReady">
             <p style="font-size:medium;color:gray;">Please enter the code emailed to you.</p>
@@ -90,92 +97,6 @@
         </currency-component>
   </div>
   
-
-
-
-
-<!--div [hidden]="segment!='percision'" style="color:dimgray;" padding>
-    <p>
-        Welcome to PupMoney. To get started we have created a "Default Wallet" for your expenses. You can add more wallets later as well.
-    </p>
-    <p>
-        Please tell us how you want to view the numbers (currency) in your default wallet. You can change this later in the Settings tab.
-    </p>
-
-
-    <ion-list>
-            <ion-radio-group mode="md" [(ngModel)]="curId">
-          
-              <ion-item>
-                <ion-label>1,234</ion-label>
-                <ion-radio slot="start" value="0"></ion-radio>
-                <span slot="end">(Yen - no decimals)</span>
-              </ion-item>
-          
-              <ion-item>
-                <ion-label>1,234.1</ion-label>
-                <ion-radio slot="start" value="1"></ion-radio>
-                <span slot="end">(one decimal)</span>
-              </ion-item>
-          
-              <ion-item>
-                <ion-label>1,234.12</ion-label>
-                <ion-radio slot="start" value="2">USD</ion-radio>
-                <span slot="end">(US Dollars, Euros - two decimals)</span>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>1,234.123</ion-label>
-                <ion-radio slot="start" value="3"></ion-radio>
-                <span slot="end">(three decimals)</span>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>1,234.1234</ion-label>
-                <ion-radio slot="start" value="4"></ion-radio>
-                <span slot="end">(four decimals)</span>
-              </ion-item>
-
-
-              <ion-item>
-                  <ion-label>1,234</ion-label>
-                  <ion-radio slot="start" value="5"></ion-radio>
-                  <span slot="end">(no decimals)</span>
-                </ion-item>
-
-              <ion-item>
-                <ion-label>1,234.1</ion-label>
-                <ion-radio slot="start" value="6"></ion-radio>
-                <span slot="end">(one decimals)</span>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>1,234.12</ion-label>
-                <ion-radio slot="start" value="7"></ion-radio>
-                <span slot="end">(two decimals)</span>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>1,234.123</ion-label>
-                <ion-radio slot="start" value="8"></ion-radio>
-                <span slot="end">(three decimals)</span>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>1.234,1234</ion-label>
-                <ion-radio slot="start" value="9"></ion-radio>
-                <span slot="end">(four decimals)</span>
-              </ion-item>
-
-            </ion-radio-group>
-          </ion-list>
-
-        <ion-button style="margin:0 auto;margin-top:20px;"  expand="block" size="medium" color="primary" (click)="setCurrency($event);">
-            Submit
-        </ion-button>
-
-</div-->
-
 
 
   <!-- TERMS -->

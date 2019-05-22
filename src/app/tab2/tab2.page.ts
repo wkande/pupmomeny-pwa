@@ -4,7 +4,6 @@ import { AuthGuard } from '../services/auth.guard';
 import { ModalController, NavController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UtilsService } from '../services/utils/utils.service';
-import { Decimal } from 'decimal.js';
 import { UpsertExpensePage } from '../tab1/expenses/upsert-expense/upsert-expense.page';
 import { DeleteExpensePage } from '../tab1/expenses/delete-expense/delete-expense.page';
 import { BACKEND } from '../../environments/environment';

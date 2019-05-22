@@ -10,10 +10,29 @@
     then Login in again.
   </div>
 
-  <ion-item [hidden]="!showButton" lines="none" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 5px;">
+  <ion-item [hidden]="!showButton || offline" lines="none" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 5px;">
     <ion-button slot="start" size="default" (click)="tryAgain($event)">Try Again</ion-button>
     <p style="font-size:medium;color:dimgray;">There was an issue accessing the server. Many things could cause this including an internet disconnect. 
     <br><br>Please try again but if the issue persists email us at supportme@pupmoney.com.
     </p>
   </ion-item>
+
+</div>
+
+
+<!-- OFFLINE -->
+<div [hidden]="!offline" padding style="margin-top:30px;">
+  <div lines="none" style="color:gray;text-align:center;font-size:300%;">
+    <ion-icon name="construct"></ion-icon>
+  </div>
+  <ion-item  lines="none" style="color:gray;border:solid 1px gray;padding:5px 5px 5px 5px;border-radius: 5px;">
+    <p style="font-size:medium;color:dimgray;">PupMoney is offline for maintanence. 
+      Please go to www.pupmoney.com to learn more or give us a few minutes and try again.
+    </p>
+
+  </ion-item>
+  <div lines="none" style="text-align:center;margin-top:20px;">
+    <ion-button slot="end" size="default" (click)="tryAgain($event)">Try Again</ion-button>
+  </div>
+
 </div>

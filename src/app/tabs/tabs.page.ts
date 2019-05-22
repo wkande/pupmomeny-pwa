@@ -44,13 +44,12 @@ export class TabsPage {
           icon: 'cog',
           handler: () => {
             this.navCtrl.navigateForward('tips');
-            console.log("View It")
           }
         }, {
           text: 'Later',
           role: 'cancel',
           handler: () => {
-            console.log('Cancel clicked');
+            ;
           }
         }
       ]

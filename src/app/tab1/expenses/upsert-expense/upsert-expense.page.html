@@ -85,6 +85,7 @@
           </div>
         </ion-item>
 
+
         <div [hidden]="hideKeypad" style="text-align:center;">
             <div>
               <ion-button keys size="large" fill="outline" (click)="keyPadPress('1')">1</ion-button>
@@ -113,12 +114,26 @@
         <!-- Do not put the showDatePicker() click on hte ion-item or you get two clicks if the 
              user clicks on th ion-datetime -->
         <ion-item>
-          <div type="cssDiv" slot="start" (click)="showDatePicker($event)">
-                <div>Date</div>
-                <ion-icon style="font-size:300%;" name="calendar" color="primary"></ion-icon>
-          </div>
-          <ion-datetime #datePicker value="{{dateDefault}}" (ionChange)="dateChanged($event)" placeholder="Select Date"
-            display-format="MMMM DD, YYYY,  DDDD" picker-format="MMMM-DD-YYYY"></ion-datetime>
+          
+
+              <div type="cssDiv" slot="start" (click)="showDatePicker($event)">
+                  <div>Date</div>
+                  <ion-icon style="font-size:300%;" name="calendar" color="primary"></ion-icon>
+              </div>
+
+              <div style="width:100%;">
+                <!-- value="{{dateDefault}}"-->
+                <ion-datetime #datePicker  [(ngModel)]="date" (ionChange)="dateChanged($event)" placeholder="Select Date"
+                  display-format="MMMM DD, YYYY,  DDDD" picker-format="MMMM-DD-YYYY">
+                </ion-datetime>
+                <div style="width:100%;text-align:right;">
+                  <ion-button color="primary" fill="outline" (click)="setToday($event)">Today</ion-button>
+                  <ion-button color="primary" fill="outline" (click)="setYesterday($event)">Yesterday</ion-button>
+                </div>
+              </div>
+              
+
+
         </ion-item>
 
 

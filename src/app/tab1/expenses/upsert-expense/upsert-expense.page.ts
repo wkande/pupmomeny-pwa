@@ -11,6 +11,7 @@ import { CacheService } from '../../../services/cache/cache.service';
 import * as currency from 'currency.js';
 //import { async } from 'q';
 //import { sep } from 'path';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-upsert-expense',
@@ -42,10 +43,10 @@ export class UpsertExpensePage implements OnInit {
   amt:string;
   credit:boolean = false;
   vendor:string;
-  dateDefault:string;
-  dateSelected:string;
+  date:string; // = moment().format('YYYY-MM-DD');
+  //dateSelected:string;
 
-  error:any;
+  error:any = null;
   showTryAgainBtn:boolean = false;
   ready:boolean = false;
   loading:any;
@@ -78,8 +79,10 @@ export class UpsertExpensePage implements OnInit {
         if(this.mode === 'insert'){
           this.title = 'New Expense';
           this.amt = '';
-          let element: HTMLElement = document.getElementById('catPopoverBtn') as HTMLElement;
-          element.click(); // Open the category popover list
+
+          // May add this back in as a preference later
+          // let element: HTMLElement = document.getElementById('catPopoverBtn') as HTMLElement;
+          // element.click(); // Open the category popover list
         }
         // Edit
         else{
@@ -92,9 +95,8 @@ export class UpsertExpensePage implements OnInit {
           this.title = "Edit Expense";
 
           // Date
-          // Set to noon of the date so all time zones can adjust of of noon to stay on the same day
-          this.dateDefault = new Date(this.expenseParam.dttm+'T12:00:00').toISOString();
-          this.dateSelected = this.dateDefault;
+          this.date = this.expenseParam.dttm; //new Date(this.expenseParam.dttm+'T12:00:00').toISOString();
+          //this.dateSelected = this.dateDefault;
 
           // Vendor, amt, note
           /////////////////////////
@@ -110,7 +112,7 @@ export class UpsertExpensePage implements OnInit {
           
           //@ts-ignore
           this.amt = currency(this.amt, this.wallet['currency']).format(true);
-          console.log('3 this.amt', this.amt, typeof this.amt)
+          console.log('onInit > this.amt', this.amt, typeof this.amt)
 
           this.note = this.expenseParam.note;
         }
@@ -278,19 +280,25 @@ export class UpsertExpensePage implements OnInit {
     this.datePicker.open();
   }
 
-  ____________________scroll(ev:any){
 
-    this.note += ' hey';
-    setTimeout(() => {
-      this.content.scrollToBottom();
-    });
-    
+  setToday(ev:any){
+      this.date = moment().format('YYYY-MM-DD'); //new Date().toString();
+      console.log('date', this.date)
   }
+
+
+  setYesterday(ev:any){
+    //var prev_date = new Date();
+    //prev_date.setDate(prev_date.getDate() - 1);
+    this.date = moment().subtract(1, 'day').format('YYYY-MM-DD');; //prev_date.toString();
+    console.log('date', this.date)
+}
 
 
   dateChanged(ev:any){
     this.error = null;
-    this.dateSelected = ev.detail.value;
+    //this.dateSelected = ev.detail.value;
+    console.log('dateChanged > date', this.date)
   }
 
 
@@ -368,10 +376,11 @@ export class UpsertExpensePage implements OnInit {
               if(this.credit ) amtConverted = (parseFloat(amtConverted) * -1).toString();
               
             // DATE
-              if(!this.dateSelected){
+              if(!this.date){
                 this.error = 'Please select a date.';
                 return;
               }
+              console.log('submit > date', this.date)
 
 
           /********** DML **************/
@@ -383,12 +392,12 @@ export class UpsertExpensePage implements OnInit {
 
 
           if(this.mode == 'insert'){
-            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amtConverted}
+            let body = {vendor:this.vendor, note:this.note, dttm:this.date, amt:amtConverted}
             var result = await this.http.post(BACKEND.url+'/categories/'+this.category.id+'/expenses', 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }
           else{
-            let body = {vendor:this.vendor, note:this.note, dttm:this.dateSelected, amt:amtConverted, cat_id:this.category.id};
+            let body = {vendor:this.vendor, note:this.note, dttm:this.date, amt:amtConverted, cat_id:this.category.id};
             var result = await this.http.put(BACKEND.url+'/categories/'+this.categoryOrg.id+'/expenses/'+this.expenseParam.id, 
               body, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
           }

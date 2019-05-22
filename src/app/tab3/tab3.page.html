@@ -51,7 +51,7 @@
           </ion-label>
       </ion-item-divider>
       <!-- SUBSCRIPTION -->
-      <ion-item detail>
+      <ion-item detail [routerLink]="['/subscribe']">
           <ion-label style="color:dimgray;font-size:120%;">Subscription </ion-label>
           <div style="color:dimgray;font-size:medium;" slot="end">{{user.sub_expires | date }}</div>
       </ion-item>
@@ -96,5 +96,14 @@
     </ion-list>
 
 
+    <ion-button size="medium" (click)="updateApp($event)">Update App</ion-button>
+
+
     
 </ion-content>
+
+<div style="font-size:small;color:dimgray;width:100%;margin-top:10px;text-align:right;" padding>
+
+    {{json.version}}-{{ping.pup_version}}-{{ping.shard_versions[0]}}-{{ping.node_version}}
+  
+</div>
