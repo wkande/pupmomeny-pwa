@@ -81,7 +81,7 @@ export class Tab3Page {
 
           // PING
           var data = await this.http.get(BACKEND.url+'/ping', {headers: headers}).pipe(timeout(5000)).toPromise();
-          console.log(data)
+          //console.log(data)
           this.ping = data;
           
         }
@@ -211,12 +211,6 @@ export class Tab3Page {
 
 
 
-  
-
-  
-
-
-
   /**
    * Delete wallet
    * @param ev 
@@ -240,12 +234,5 @@ export class Tab3Page {
   }
 
 
-  updateApp(ev:any){
-    //location.reload(true); Doesn't work to IE neither Firefox;
-    //also, hash tags must be removed or no postback will occur.
-    //window.location.href = window.location.href.replace(/#.*$/, '');
-    //window.history.forward(1);
-    window.location.href = window.location.href+'?'+new Date();
-  }
 
 }

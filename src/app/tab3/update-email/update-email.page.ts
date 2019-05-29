@@ -89,7 +89,7 @@ export class UpdateEmailPage implements OnInit {
           this.modalController.dismiss({email:this.user.email});
       }
       catch(err){
-        if(err.status == 554){
+        if(err.status == 403){
           this.error = 'Invalid code. Please re-enter the code or go back and get another code.';
         }
         else {

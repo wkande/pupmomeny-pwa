@@ -32,24 +32,5 @@ export class AppComponent {
     });
   }
 
-
-
-  async presentToast() {
-    const toast = await this.toast.create({
-      header: 'Update',
-      message: 'An update to PupMoney is available now.',
-      position: 'middle',
-      color:'danger',
-      buttons: [
-        {
-          text: 'Update Now',
-          handler: () => {
-            window.location.reload();
-          }
-        }
-      ]
-    });
-    toast.present();
-  }
   
 }

@@ -9,9 +9,11 @@
 
 <ion-content [hidden]="!ready">
 
-
     <error-component [error]="error" [showButton]=false></error-component>
 
+    <div style="font-size:small;color:dimgray;width:100%;text-align:right;" padding>
+        {{json.version}}-{{ping.pup_version}}-{{ping.shard_versions[0]}}-{{ping.node_version}}
+    </div>
 
     <ion-list>
 
@@ -96,14 +98,7 @@
     </ion-list>
 
 
-    <ion-button size="medium" (click)="updateApp($event)">Update App</ion-button>
-
-
     
 </ion-content>
 
-<div style="font-size:small;color:dimgray;width:100%;margin-top:10px;text-align:right;" padding>
 
-    {{json.version}}-{{ping.pup_version}}-{{ping.shard_versions[0]}}-{{ping.node_version}}
-  
-</div>

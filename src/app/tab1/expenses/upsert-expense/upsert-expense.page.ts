@@ -130,10 +130,13 @@ export class UpsertExpensePage implements OnInit {
     this.modalController.dismiss(null);
   } 
 
-  toggleKeypad(en:any){
+  toggleKeypad(ev:any){
     this.hideKeypad = !this.hideKeypad;
   }
 
+  closeKeypad(ev:any){
+    this.hideKeypad = true;
+  }
 
   chars = [];
   @HostListener('window:keyup', ['$event'])
@@ -282,12 +285,14 @@ export class UpsertExpensePage implements OnInit {
 
 
   setToday(ev:any){
-      this.date = moment().format('YYYY-MM-DD'); //new Date().toString();
-      console.log('date', this.date)
+    this.hideKeypad = true;
+    this.date = moment().format('YYYY-MM-DD'); //new Date().toString();
+    console.log('date', this.date)
   }
 
 
   setYesterday(ev:any){
+    this.hideKeypad = true;
     //var prev_date = new Date();
     //prev_date.setDate(prev_date.getDate() - 1);
     this.date = moment().subtract(1, 'day').format('YYYY-MM-DD');; //prev_date.toString();

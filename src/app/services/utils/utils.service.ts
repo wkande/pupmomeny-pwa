@@ -19,17 +19,18 @@ export class UtilsService {
   }
 
 
-  getErrorMessage(err){
+  getErrorMessage(err:any){
     let message = '';
+
 
     if(err.status === 0) message += 'There seems to be a connection issue, please try again. ';
     else if(err.name == 'TimeoutError') message+=  'There was a timeout issue waiting for a response, please wait a moment and try again. ';
     else if(typeof err.status != 'undefined'){
-      message += "Error: " 
+      //message += "Error: " 
         //if (err.message) msg += err.message;
         //if (err.error && err.error.text) msg += err.text;
-        message += err.status+ ": "
-        if(err.error) message += (err.error.statusMessage || ' ')+" "+(err.error.statusMsg || ' ');
+        //message += err.status+ ": "
+        if(err.error) message += (err.error.message || ' ')+" "+(err.error.statusMsg || ' ');
     }
         
     // Something other than http errored

@@ -48,7 +48,7 @@ export class ErrorComponent implements OnInit {
       //console.log('this.error', this.error)
       this.message = this.utils.getErrorMessage(this.error);
    
-      if(this.error.status === 403){
+      if(this.error.status === 401){
           this.showLoginBtn = true;
       }
       else if(this.error.status === 504){

@@ -121,11 +121,12 @@ export class LoginPage implements OnInit {
 
         }
         catch(err){
+          console.log('login', err)
           if(err.status == 0){
             this.error = this.connectionTimeoutMsg;
             this.errorSupport = true;
           }
-          else if(err.status == 554){
+          else if(err.status == 401){
             this.error = 'Invalid code. Please re-enter the code or go back and get another code.';
           }
           else{

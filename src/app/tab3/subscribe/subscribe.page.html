@@ -16,8 +16,9 @@
   
   <ion-content [hidden]="!user" padding style="color:dimgray;font-family:arial;">
       
-    <ion-list>
 
+    <!-- CURRENT EXPIRATION DATE -->
+    <ion-list>
       <ion-item style="color:black;">
           <ion-label>Expiration Date</ion-label>
           {{user.sub_expires | date }}
@@ -34,6 +35,8 @@
     
     </ion-card>
 
+    <error-component [error]="error" [showButton]="showTryAgainBtn" (tryAgainSelected)="payNow($event)"></error-component>
+
 
 <div style="width:100%;text-align:center;">
     <ion-card [hidden]="!canPay" style="
@@ -42,40 +45,42 @@
       border:1px solid gray;box-shadow: 9px 9px;">
 
         <ion-card-header>
-          <ion-card-subtitle style="font-size:large;">Renew now: $1.99(US) for one year.</ion-card-subtitle>
+          <ion-card-subtitle style="font-size:large;">$1.99(US) for one year.</ion-card-subtitle>
           <div style="font-size:small;">New expire date: {{newExpire | date }}</div>
         </ion-card-header>
 
+
+        <!-- CARD NUMBER -->
         <ion-item style="padding-top:5px;">
-          <div style="width:100%;">
-            <ion-label>Card Number</ion-label>
+          <div slot="start">
+            <ion-label style="font-size:130%;">Card Number</ion-label>
 
-            <ion-input type="text"></ion-input>
-
-            <input class="input-card" type="text"/>
+            <ion-input type="{{platformInputType}}" placeholder='use of spaces allowed' [(ngModel)]="card.number"></ion-input>
 
           </div>
         </ion-item>
       
+
+        <!-- EXPIRE DATE -->
         <ion-item >
           <div slot="start">
-            <ion-label>Expires (MM/YYYY)</ion-label>
-            <ion-input placeholder='MM/YY'></ion-input>
+            <ion-label style="font-size:130%;">Expires</ion-label>
+            <ion-input type="{{platformInputType}}" placeholder='mm/yy' [(ngModel)]="card.expires"></ion-input>
           </div>
         </ion-item>
       
+        <!-- CV -->
         <ion-item>
             <div slot="start">
-                <ion-label>CV</ion-label>
-                <ion-input></ion-input>
+                <ion-label style="font-size:130%;">CV</ion-label>
+                <ion-input type="number" placeholder='back of card' [(ngModel)]="card.cv"></ion-input>
               </div>
         </ion-item>
 
 
         <ion-item text-wrap>
-              <ion-button size="medium" slot="end">Pay $1.99 Now</ion-button>
-
-          </ion-item>
+            <ion-button size="medium" slot="end" (click)="payNow($event)">Pay $1.99 Now</ion-button>
+        </ion-item>
 
       </ion-card>
 </div>
@@ -96,20 +101,6 @@
 
   </ion-content>
   
-  <!-- CLEAVE MASKING -->
-  
-  <!--script>
-      //document.addEventListener('DOMContentLoaded', () => {
-        console.log('---- HERE')
-        var Cleave = require('cleave.js');
 
-        var cleave = new Cleave('.input-card', {
-            creditCard: true,
-            onCreditCardTypeChanged: function (type) {
-                console.log(type);
-            }
-        });
-      //});
-  </script-->
 
   

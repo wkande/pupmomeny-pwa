@@ -123,7 +123,7 @@
 
               <div style="width:100%;">
                 <!-- value="{{dateDefault}}"-->
-                <ion-datetime #datePicker  [(ngModel)]="date" (ionChange)="dateChanged($event)" placeholder="Select Date"
+                <ion-datetime #datePicker  [(ngModel)]="date" (ionChange)="dateChanged($event)" (click)="closeKeypad($event)" placeholder="Select Date"
                   display-format="MMMM DD, YYYY,  DDDD" picker-format="MMMM-DD-YYYY">
                 </ion-datetime>
                 <div style="width:100%;text-align:right;">

@@ -13,7 +13,7 @@
         </ion-segment>
               
     
-    <div [hidden]="!error" padding style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
+    <div [hidden]="!error || segment=='terms'" padding style="text-align:center;color:red;margin-top:20px;">{{error}}</div>
     <div [hidden]="!errorSupport" padding style="text-align:center;color:dimgray;margin-top:5px;">
         Please make sure your internet connection is working. If this issue persists please email supportme@pupmoney.com.
     </div>
