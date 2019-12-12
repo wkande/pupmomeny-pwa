@@ -116,6 +116,7 @@ export class Tab1Page {
 
   async getCategories(){
     try{
+      console.log('Tab1Page.getCategories FIRED')
       this.error = null;
       this.loading = true;
       this.totalAmt = 0;
@@ -212,7 +213,7 @@ export class Tab1Page {
       //this.total = currency(this.total, this.wallet['currency']).format(true);
       this.totalAmt = currency(result['totalAmt'], this.wallet['currency']).format(true);
       this.ready = true;
-console.log(this.expenses)
+
       // Prevents buttons causing screen flicker
       let self = this;
       await setTimeout(function(){
@@ -220,7 +221,6 @@ console.log(this.expenses)
       }, 200);
     }
     catch(err){
-      console.log('getExpenses', err)
       this.error = err;
     }
     finally{

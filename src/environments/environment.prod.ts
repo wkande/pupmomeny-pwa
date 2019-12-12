@@ -18,9 +18,9 @@ const dev = {
 }
 
 
-const stage = {
+const beta = {
   name:"Stage",
-  url:"https://pupmoney-backend-stage.herokuapp.com"
+  url:"https://pupmoney-beta.herokuapp.com"
 }
 
 

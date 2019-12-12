@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 import { AuthGuard } from '../services/auth.guard';
-import { ModalController, NavController, Events } from '@ionic/angular';
+import { NavController, Events } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UtilsService } from '../services/utils/utils.service';
 import { BACKEND } from '../../environments/environment';
@@ -42,7 +42,6 @@ export class Tab4Page {
   redrawNeeded:boolean = false; // If not the current view hold onto the need to redraw 
 
   constructor(private http: HttpClient, private authGuard:AuthGuard, 
-    private modalController:ModalController,
     private utils:UtilsService, private navCtrl:NavController, private events:Events) { 
       console.log('>>>>>>>>>>>>>>>> Tab4Page.constructor <<<<<<<<<<<<<<<<<')
   }
@@ -99,6 +98,7 @@ export class Tab4Page {
       this.utils.currentView = 'Tab4Page'
       console.log('---> Tab4Page.ionViewDidEnter')
       if(this.redrawNeeded) {
+        console.log('---> Tab4Page.ionViewDidEnter REDRAW NEEDED')
         this.redrawNeeded = false;
         this.tryAgain(null);
       }
@@ -131,7 +131,7 @@ export class Tab4Page {
         begin = this.period.yearly.begin;
         end = this.period.yearly.end;
       }
-      console.log(begin, end)
+      console.log('DATE RANGE', begin, end)
       let headers = new HttpHeaders();
       headers = headers.set('Authorization', 'Bearer '+this.authGuard.getUser()['token']);
       headers = headers.set('wallet',  JSON.stringify(this.wallet));
@@ -141,6 +141,7 @@ export class Tab4Page {
       .pipe(timeout(7000), delay (this.utils.delayTimer))
       .toPromise();
       this.categories = result['categories'];
+      console.log('>', this.categories)
 
       for(var i=0; i<this.categories.length; i++){
             this.cntTotal += this.categories[i].sum.cnt;
@@ -279,6 +280,7 @@ export class Tab4Page {
 
 
   async tryAgain(ev:any){
+    console.log('Tab4Page.tryAgain')
     this.getCategories();
   }
 

@@ -5,16 +5,17 @@ Under development using Ionic 4 and Angular 7
 
 
 ## Build and Serve
-To serve or build for dev, stage or prod change the value of the BACKEND env.
+To serve or build for dev, beta or prod change the value of the BACKEND env.
 
 For ionic **serve** in src/environment.ts as follows;
 For ionic **build** in src/environment.prod.ts as follows;
 
 ```typescript
-export const BACKEND = stage; // or dev, prod
+// Set in environemnet file
+export const BACKEND = beta; // or dev, prod
 ```
 
-**Build** with the --prod flag for stage and prod.
+**Build** with the --prod flag for beta and prod.
 
 ```bash
 ionic build --prod
@@ -22,7 +23,7 @@ OR
 npm run ionic:build --prod
 ```
 
-**Serve** for dev, stage and prod BACKEND.url.
+**Serve** for dev, beta and prod BACKEND.url.
 
 ```bash
 ionic serve -c 
@@ -46,26 +47,26 @@ cd www
 # Show the current project
 firebase list 
 # Change project if needed
-firebase use pupmoney-stage
+firebase use pupmoney-beta # or pupmoney-prod 
 firebase deploy
 # OR 
 firebase deploy -m "Deploying the best new feature ever."
 
-=== Deploying to 'pupmoney-stage'...
+=== Deploying to 'pupmoney-beta'...
 
 i  deploying hosting
-i  hosting[pupmoney-stage]: beginning deploy...
-i  hosting[pupmoney-stage]: found 1 files in public
-✔  hosting[pupmoney-stage]: file upload complete
-i  hosting[pupmoney-stage]: finalizing version...
-✔  hosting[pupmoney-stage]: version finalized
-i  hosting[pupmoney-stage]: releasing new version...
-✔  hosting[pupmoney-stage]: release complete
+i  hosting[pupmoney-beta]: beginning deploy...
+i  hosting[pupmoney-beta]: found 1 files in public
+✔  hosting[pupmoney-beta]: file upload complete
+i  hosting[pupmoney-beta]: finalizing version...
+✔  hosting[pupmoney-beta]: version finalized
+i  hosting[pupmoney-beta]: releasing new version...
+✔  hosting[pupmoney-beta]: release complete
 
 ✔  Deploy complete!
 
-Project Console: https://console.firebase.google.com/project/pupmoney-stage/overview
-Hosting URL: https://pupmoney-stage.firebaseapp.com
+Project Console: https://console.firebase.google.com/project/pupmoney-beta/overview
+Hosting URL: https://pupmoney-beta.firebaseapp.com
 ```
 
 ## PWA Links 

@@ -443,7 +443,6 @@ export class UpsertExpensePage implements OnInit {
 
   categorySelected(ev:any){
     this.error = null;
-    console.log('categorySelected > ev', ev);
     this.category = {id:ev.id, name:ev.name, vendors:ev.vendors};
     this.hideCatPicker = true;
   }
@@ -451,7 +450,6 @@ export class UpsertExpensePage implements OnInit {
 
   vendorSelected(ev:any){
     this.error = null;
-    console.log('vendorSelected > ev', ev);
     this.vendor = ev.name
     //this.vendorInput.nativeElement.value = ev.name;
     this.hideVendorPicker = true;

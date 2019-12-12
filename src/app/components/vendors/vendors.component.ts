@@ -47,7 +47,7 @@ export class VendorsComponent implements OnInit, OnChanges {
 
   constructor(private http:HttpClient, private authGuard:AuthGuard, private loadingController:LoadingController,
     private utils:UtilsService, private cache:CacheService, private events:Events) { 
-    //console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
+    console.log('>>>>>>>>>>>>>>>> VendorsComponent.constructor <<<<<<<<<<<<<<<<<')
   }
 
 
@@ -81,7 +81,6 @@ export class VendorsComponent implements OnInit, OnChanges {
 
   manageCloseEventHandler(){
     this.manage = false;
-    console.log('clode vendor pick list')
   }
 
 
@@ -92,7 +91,8 @@ export class VendorsComponent implements OnInit, OnChanges {
 
 
   setManageVendors(ev:any){
-    this.vendorsManage = JSON.parse(JSON.stringify(this.category.vendors))
+    console.log('setManageVendors', ev)
+    this.vendorsManage = JSON.parse(JSON.stringify(this.category.vendors));
     this.manage = true; 
   }
 
@@ -108,7 +108,6 @@ export class VendorsComponent implements OnInit, OnChanges {
 
 
   manageVendorsCancel(ev:any){
-    console.log('VendorsComponent.manageVendorsCancel')
     this.manage = false;
   }
 
@@ -128,6 +127,8 @@ export class VendorsComponent implements OnInit, OnChanges {
         
         var inputs:any = document.querySelectorAll('#manageForm input');
         this.category.vendors = [];
+        
+
         for(let i=0;i<inputs.length; i++){
           // Remove double quotes from vendor name
 
@@ -137,7 +138,7 @@ export class VendorsComponent implements OnInit, OnChanges {
           if(inputs[i].value && inputs[i].value.length > 0)
             this.category.vendors.push(inputs[i].value);
         }
-
+        this.category.vendors.sort();
 
         this.error = null;
         this.showTryAgainBtn = false;
@@ -151,7 +152,9 @@ export class VendorsComponent implements OnInit, OnChanges {
           {vendors:this.category.vendors}, {headers: headers} ).pipe(timeout(5000), delay (this.utils.delayTimer)).toPromise();
 
         // Update the category vendor array in the CacheService
-        this.cache.setVendors(this.category.id, this.category.vendors)
+        this.cache.setVendors(this.category.id, this.category.vendors);
+        // Reset the manage list
+        this.vendorsManage = JSON.parse(JSON.stringify(this.category.vendors));
         this.manage = false;
     }
     catch(err){

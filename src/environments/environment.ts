@@ -25,7 +25,7 @@ const prod = {
 }
 
 
-export const BACKEND = dev;
+export const BACKEND = prod;
 
 
 /*

@@ -125,9 +125,9 @@ export class SubscribePage implements OnInit {
 cvChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   validateCv(){
       if(this.card.cv.length === 0) return false;
-      //console.log('validateNumber')
+      console.log('validateNumber')
       let arr = this.card.number.split("");
-      //console.log('= array', arr)
+      console.log('= array', arr)
       for(let i=0; i<arr.length; i++){
         if (!this.cvChars.includes(arr[i]))
             return false;

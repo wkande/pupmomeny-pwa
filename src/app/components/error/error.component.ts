@@ -41,7 +41,7 @@ export class ErrorComponent implements OnInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('>>>>>>>>>>>>>> ngOnChange fired.', this.error);
+    console.log('>>>>>>>>>>>>>> ErrorComponent.ngOnChange fired.', this.error);
     this.offline = false;
     if(this.error){
       //console.log('ngOnChanges', changes.errorMsg.currentValue);
@@ -63,6 +63,7 @@ export class ErrorComponent implements OnInit {
 
 
   tryAgain(event:any){
+    console.log('ErrorComponent.tryAgain')
     this.tryAgainSelected.emit();
   }
 

@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar style="padding-bottom:4px;">
-        <ion-segment [(ngModel)]="segment" color="light" style="margin-top:5px;" (ionChange)="tryAgain($event)">
+        <ion-segment [(ngModel)]="segment" color="light" style="margin-top:5px;" (click)="tryAgain($event)"><!-- Double fires onInit (ionChange)="tryAgain($event)"-->
           <ion-segment-button value="monthly" checked>
             <ion-label class="segment-font-size">Monthly</ion-label>
           </ion-segment-button>
