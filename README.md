@@ -15,6 +15,17 @@ For ionic **build** in src/environment.prod.ts as follows;
 export const BACKEND = beta; // or dev, prod
 ```
 
+```bash
+// Switch to version 10x of Nodejs udsing n
+n
+```
+
+```bash
+// saas may need to be rebuilt if ionic serve -c gives saas error
+npm rebuild node-sass
+
+```
+
 **Build** with the --prod flag for beta and prod.
 
 ```bash
